@@ -21,7 +21,7 @@ const profileSchema = z.object({
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 interface ProfileFormProps {
-  language?: 'en' | 'ja';
+  language?: 'en' | 'ja' | 'th';
 }
 
 export function ProfileForm({ language = 'en' }: ProfileFormProps) {
@@ -84,6 +84,18 @@ export function ProfileForm({ language = 'en' }: ProfileFormProps) {
       servicePlan: 'サービスプラン',
       save: '変更を保存',
       saving: '保存中...',
+    },
+    th: {
+      title: 'ตั้งค่าโปรไฟล์',
+      description: 'จัดการข้อมูลส่วนตัวและการตั้งค่าของคุณ',
+      firstName: 'ชื่อ',
+      lastName: 'นามสกุล',
+      email: 'อีเมล',
+      company: 'บริษัท',
+      phone: 'เบอร์โทรศัพท์',
+      servicePlan: 'แผนบริการ',
+      save: 'บันทึกการเปลี่ยนแปลง',
+      saving: 'กำลังบันทึก...',
     },
   };
 

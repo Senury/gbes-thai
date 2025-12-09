@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/sidebar";
 
 interface AppSidebarProps {
-  language?: 'en' | 'ja';
+  language?: 'en' | 'ja' | 'th';
 }
 
 export function AppSidebar({ language = 'en' }: AppSidebarProps) {
@@ -38,21 +38,25 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
   const { toast } = useToast();
   const currentPath = location.pathname;
 
-  const isEnglish = language === 'en';
+  const getText = (en: string, ja: string, th: string) => {
+    if (language === 'en') return en;
+    if (language === 'th') return th;
+    return ja;
+  };
 
   const userItems = [
     { 
-      title: isEnglish ? "Dashboard" : "ダッシュボード", 
+      title: getText("Dashboard", "ダッシュボード", "แดชบอร์ด"), 
       url: `/${language}/dashboard`, 
       icon: Home 
     },
     { 
-      title: isEnglish ? "Profile" : "プロフィール", 
+      title: getText("Profile", "プロフィール", "โปรไฟล์"), 
       url: `/${language}/profile`, 
       icon: User 
     },
     { 
-      title: isEnglish ? "Registration" : "登録", 
+      title: getText("Registration", "登録", "ลงทะเบียน"), 
       url: `/${language}/register`, 
       icon: FileText 
     },
@@ -60,17 +64,17 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
 
   const adminItems = [
     { 
-      title: isEnglish ? "Admin Panel" : "管理パネル", 
+      title: getText("Admin Panel", "管理パネル", "แผงผู้ดูแล"), 
       url: `/${language}/admin`, 
       icon: Shield 
     },
     { 
-      title: isEnglish ? "All Users" : "全ユーザー", 
+      title: getText("All Users", "全ユーザー", "ผู้ใช้ทั้งหมด"), 
       url: `/${language}/admin/users`, 
       icon: Users 
     },
     { 
-      title: isEnglish ? "Analytics" : "分析", 
+      title: getText("Analytics", "分析", "การวิเคราะห์"), 
       url: `/${language}/admin/analytics`, 
       icon: BarChart3 
     },
@@ -86,20 +90,20 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
       if (error) {
         toast({
           variant: "destructive",
-          title: isEnglish ? "Error" : "エラー",
-          description: isEnglish ? "Failed to sign out" : "サインアウトに失敗しました",
+          title: getText("Error", "エラー", "ข้อผิดพลาด"),
+          description: getText("Failed to sign out", "サインアウトに失敗しました", "ออกจากระบบล้มเหลว"),
         });
       } else {
         toast({
-          title: isEnglish ? "Signed out successfully" : "サインアウトしました",
+          title: getText("Signed out successfully", "サインアウトしました", "ออกจากระบบเรียบร้อย"),
         });
         navigate(`/${language}`);
       }
     } catch (error) {
       toast({
         variant: "destructive",
-        title: isEnglish ? "Error" : "エラー",
-        description: isEnglish ? "Failed to sign out" : "サインアウトに失敗しました",
+        title: getText("Error", "エラー", "ข้อผิดพลาด"),
+        description: getText("Failed to sign out", "サインアウトに失敗しました", "ออกจากระบบล้มเหลว"),
       });
     }
   };
@@ -117,7 +121,7 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
         {/* User Menu */}
         <SidebarGroup>
           <SidebarGroupLabel>
-            {isEnglish ? "Main" : "メイン"}
+            {getText("Main", "メイン", "หลัก")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -138,7 +142,7 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
         {/* Admin Menu - Show only for admin users */}
         <SidebarGroup>
           <SidebarGroupLabel>
-            {isEnglish ? "Admin" : "管理"}
+            {getText("Admin", "管理", "ผู้ดูแล")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -163,7 +167,7 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  {state !== "collapsed" && <span>{isEnglish ? "Sign Out" : "サインアウト"}</span>}
+                  {state !== "collapsed" && <span>{getText("Sign Out", "サインアウト", "ออกจากระบบ")}</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

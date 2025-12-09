@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  language?: 'en' | 'ja';
+  language?: 'en' | 'ja' | 'th';
 }
 
 export function DashboardLayout({ children, language = 'en' }: DashboardLayoutProps) {
@@ -51,7 +51,7 @@ export function DashboardLayout({ children, language = 'en' }: DashboardLayoutPr
             <SidebarTrigger className="ml-2" />
             <div className="ml-4">
               <h1 className="text-lg font-semibold">
-                {language === 'en' ? 'Dashboard' : 'ダッシュボード'}
+                {language === 'en' ? 'Dashboard' : language === 'th' ? 'แดชบอร์ด' : 'ダッシュボード'}
               </h1>
             </div>
           </header>
