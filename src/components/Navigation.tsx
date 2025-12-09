@@ -90,6 +90,9 @@ const Navigation = () => {
               <Link to="/en" className="text-muted-foreground hover:text-primary transition-colors duration-200 whitespace-nowrap">
                 English
               </Link>
+              <Link to="/th" className="text-muted-foreground hover:text-primary transition-colors duration-200 whitespace-nowrap">
+                ไทย
+              </Link>
             </div>
           </div>
 
@@ -156,6 +159,9 @@ const Navigation = () => {
             </button>
             <Link to="/en" className="block px-3 py-2 text-muted-foreground hover:text-primary transition-colors duration-200" onClick={closeMenu}>
               English
+            </Link>
+            <Link to="/th" className="block px-3 py-2 text-muted-foreground hover:text-primary transition-colors duration-200" onClick={closeMenu}>
+              ไทย
             </Link>
             <div className="px-3 py-2 space-y-2">
               {user ? (

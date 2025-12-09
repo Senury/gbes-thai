@@ -101,6 +101,9 @@ const Navigation = () => {
               <Link to="/ja" className="text-muted-foreground hover:text-primary px-2 py-2 text-sm font-medium transition-colors whitespace-nowrap">
                 日本語
               </Link>
+              <Link to="/th" className="text-muted-foreground hover:text-primary px-2 py-2 text-sm font-medium transition-colors whitespace-nowrap">
+                ไทย
+              </Link>
             </div>
           </div>
           
@@ -174,6 +177,9 @@ const Navigation = () => {
             </button>
             <Link to="/ja" className="text-muted-foreground hover:text-primary block px-3 py-2 text-base font-medium" onClick={closeMenu}>
               日本語
+            </Link>
+            <Link to="/th" className="text-muted-foreground hover:text-primary block px-3 py-2 text-base font-medium" onClick={closeMenu}>
+              ไทย
             </Link>
             
             <div className="px-3 py-2 space-y-2">
