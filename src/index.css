@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 220 15% 97%;
+    --foreground: 215 25% 15%;
+
+    --card: 220 10% 96%;
+    --card-foreground: 215 25% 15%;
+
+    --popover: 220 10% 98%;
+    --popover-foreground: 215 25% 15%;
+
+    --primary: 210 30% 50%;
+    --primary-foreground: 220 15% 98%;
+
+    --secondary: 215 20% 90%;
+    --secondary-foreground: 215 25% 25%;
+
+    --muted: 215 15% 88%;
+    --muted-foreground: 215 20% 40%;
+
+    --accent: 210 25% 85%;
+    --accent-foreground: 215 25% 20%;
+
+    --destructive: 0 50% 65%;
+    --destructive-foreground: 220 15% 98%;
+
+    --border: 215 15% 85%;
+    --input: 215 15% 85%;
+    --ring: 210 30% 50%;
+
+    /* Custom design tokens - Enhanced CTA focus */
+    --primary-glow: 210 40% 65%;
+    --cta-primary: 15 78% 55%;
+    --cta-primary-foreground: 0 0% 100%;
+    --cta-primary-hover: 15 78% 50%;
+    --gradient-primary: linear-gradient(135deg, hsl(210, 30%, 50%), hsl(210, 40%, 65%));
+    --gradient-cta: linear-gradient(135deg, hsl(15, 78%, 55%), hsl(25, 85%, 60%));
+    --gradient-secondary: linear-gradient(135deg, hsl(215, 20%, 90%) 0%, hsl(210, 25%, 85%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(220, 15%, 97%) 0%, hsl(210, 25%, 85%) 100%);
+    --glass-bg: hsla(215, 20%, 90%, 0.3);
+    --glass-border: hsla(210, 30%, 50%, 0.2);
+    --shadow-glow: 0 8px 25px -8px hsl(210, 30%, 50%, 0.15);
+    --shadow-cta: 0 10px 30px -5px hsl(15, 78%, 55%, 0.4);
+    --shadow-soft: 0 4px 15px -4px hsl(215, 15%, 85%, 0.4);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 215 25% 8%;
+    --foreground: 220 15% 92%;
+
+    --card: 215 25% 10%;
+    --card-foreground: 220 15% 92%;
+
+    --popover: 215 25% 8%;
+    --popover-foreground: 220 15% 92%;
+
+    --primary: 210 30% 60%;
+    --primary-foreground: 215 25% 8%;
+
+    --secondary: 215 20% 15%;
+    --secondary-foreground: 220 15% 85%;
+
+    --muted: 215 20% 15%;
+    --muted-foreground: 215 15% 65%;
+
+    --accent: 215 20% 15%;
+    --accent-foreground: 220 15% 85%;
+
+    --destructive: 0 50% 60%;
+    --destructive-foreground: 220 15% 92%;
+
+    --border: 215 20% 18%;
+    --input: 215 20% 18%;
+    --ring: 210 30% 60%;
+    
+    /* Dark mode custom tokens */
+    --primary-glow: 210 40% 70%;
+    --cta-primary: 15 85% 65%;
+    --cta-primary-foreground: 0 0% 100%;
+    --cta-primary-hover: 15 85% 60%;
+    --gradient-primary: linear-gradient(135deg, hsl(210, 30%, 60%), hsl(210, 40%, 70%));
+    --gradient-cta: linear-gradient(135deg, hsl(15, 85%, 65%), hsl(25, 90%, 70%));
+    --gradient-secondary: linear-gradient(135deg, hsl(215, 20%, 15%) 0%, hsl(210, 25%, 20%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(215, 25%, 8%) 0%, hsl(215, 20%, 15%) 100%);
+    --glass-bg: hsla(215, 20%, 15%, 0.3);
+    --glass-border: hsla(210, 30%, 60%, 0.2);
+    --shadow-glow: 0 8px 25px -8px hsl(210, 30%, 60%, 0.2);
+    --shadow-cta: 0 10px 30px -5px hsl(15, 85%, 65%, 0.5);
+    --shadow-soft: 0 4px 15px -4px hsl(215, 20%, 15%, 0.4);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 4rem; /* Account for fixed navigation header */
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
