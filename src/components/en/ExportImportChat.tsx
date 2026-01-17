@@ -89,7 +89,7 @@ const ExportImportChat = () => {
         <Button
           onClick={() => setIsOpen(true)}
           size="lg"
-          className="rounded-full h-16 w-16 shadow-lg hover:shadow-xl transition-all duration-300 bg-primary hover:bg-primary/90 animate-pulse"
+          className="rounded-full h-16 w-16 shadow-lg hover:shadow-xl transition-all duration-300 bg-primary hover:bg-primary/90"
         >
           <div className="flex flex-col items-center">
             <MessageCircle className="h-7 w-7" />
