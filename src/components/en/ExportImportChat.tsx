@@ -56,14 +56,18 @@ const ExportImportChat = () => {
       data: { session },
     } = await supabase.auth.getSession();
 
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      Accept: "text/plain",
+      ...(supabaseAnonKey ? { apikey: supabaseAnonKey } : {}),
+    };
+    if (session?.access_token) {
+      headers.Authorization = `Bearer ${session.access_token}`;
+    }
+
     const response = await fetch(`${supabaseUrl}/functions/v1/chat-export-import`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "text/plain",
-        Authorization: session?.access_token ? `Bearer ${session.access_token}` : undefined,
-        ...(supabaseAnonKey ? { apikey: supabaseAnonKey } : {}),
-      },
+      headers,
       body: JSON.stringify({ message: text, language: "en" }),
     });
 
