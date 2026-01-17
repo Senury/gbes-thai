@@ -44,9 +44,9 @@ const Hero = () => {
             </Button>
           </div>
 
-          <div className="mt-12 animate-float">
+          <div className="mt-12">
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
-              <div className="h-2 w-2 bg-primary rounded-full animate-glow mr-2"></div>
+              <div className="h-2 w-2 bg-primary rounded-full mr-2"></div>
               <span className="text-sm text-foreground">ライブ • 1,234人のユーザーがオンライン</span>
             </div>
           </div>

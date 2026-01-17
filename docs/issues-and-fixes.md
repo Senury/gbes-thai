@@ -50,6 +50,12 @@ Working document that tracks the functional problems surfaced so far plus the ag
 - **Fix Implemented**: Added localized language selectors with pill buttons in each footer (`src/components/Footer.tsx`, `src/components/en/Footer.tsx`, `src/components/th/Footer.tsx`) so visitors can swap locales from the bottom of any page.
 - **Status**: ✅ done.
 
+## 9. EN/TH Hero Missing Live Badge + Scroll Cue
+- **Symptom**: The Japanese hero showcased the “ライブ • 1,234人のユーザーがオンライン” badge and mouse-scroll hint, but the English/Thai heroes lacked these cues, and the badge in Japanese gently floated/animated.
+- **Fix Implemented**:
+  - Added localized live-status pills plus the mouse scroll indicator to `src/components/en/Hero.tsx` and `src/components/th/Hero.tsx` for parity, and removed the float/glow animation from `src/components/Hero.tsx` so all badges stay static per request.
+- **Status**: ✅ done.
+
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
 - Partner Search deep-dive findings (pending action):

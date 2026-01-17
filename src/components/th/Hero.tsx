@@ -33,6 +33,19 @@ const Hero = () => {
             เรียนรู้เพิ่มเติม
           </Button>
         </div>
+
+        <div className="mt-12">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
+            <div className="h-2 w-2 bg-primary rounded-full mr-2"></div>
+            <span className="text-sm text-foreground">ไลฟ์ • ผู้ใช้งานออนไลน์ 1,234 ราย</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div className="w-6 h-10 border-2 border-primary/50 rounded-full flex justify-center">
+          <div className="w-1 h-3 bg-primary rounded-full mt-2 animate-pulse"></div>
+        </div>
       </div>
     </section>
   );
