@@ -61,7 +61,7 @@ const ExportImportChat = () => {
       headers: {
         "Content-Type": "application/json",
         Accept: "text/plain",
-        Authorization: `Bearer ${session?.access_token ?? supabaseAnonKey}`,
+        Authorization: session?.access_token ? `Bearer ${session.access_token}` : undefined,
         ...(supabaseAnonKey ? { apikey: supabaseAnonKey } : {}),
       },
       body: JSON.stringify({ message: text, language: "ja" }),
