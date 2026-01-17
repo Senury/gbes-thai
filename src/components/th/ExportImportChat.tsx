@@ -4,10 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, MessageCircle, Bot, User } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { renderMarkdown } from "@/utils/markdown";
 
 interface Message {
   id: string;
@@ -153,11 +152,12 @@ const ExportImportChat = () => {
                     }`}
                   >
                     {message.isUser ? (
-                      message.content
+                      <span className="whitespace-pre-line">{message.content}</span>
                     ) : (
-                      <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose prose-sm dark:prose-invert max-w-none">
-                        {message.content}
-                      </ReactMarkdown>
+                      <div
+                        className="prose prose-sm dark:prose-invert max-w-none"
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}
+                      />
                     )}
                   </div>
                   {message.isUser && (
