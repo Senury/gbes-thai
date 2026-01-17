@@ -59,7 +59,7 @@ Working document that tracks the functional problems surfaced so far plus the ag
 ## 10. Chat Widget Response Was Static & Plain Text
 - **Symptom**: The floating export/import chat modal waited for full responses and rendered plain text, so long replies felt laggy and markdown (lists, code) looked unformatted.
 - **Fix Implemented**:
-  - Added Markdown rendering across locales and reverted to the proven JSON response path (streaming is deferred until Supabase Edge streaming is GA) so replies render reliably again (`src/components/*/ExportImportChat.tsx`, `supabase/functions/chat-export-import/index.ts`).
+  - Added a lightweight Markdown renderer for assistant replies and reverted to the proven JSON response path (streaming is deferred until Supabase Edge streaming is GA) so replies render reliably again (`src/components/*/ExportImportChat.tsx`, `src/utils/markdown.ts`, `supabase/functions/chat-export-import/index.ts`).
 - **Status**: ✅ done (chat works again with formatted output; revisit streaming later).
 
 ## Notes on Scope / Next Steps
