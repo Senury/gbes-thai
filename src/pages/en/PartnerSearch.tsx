@@ -367,6 +367,7 @@ Best regards`);
               <DataSourceSelector
                 selectedSources={selectedDataSources}
                 onSourcesChange={setSelectedDataSources}
+                locale="en"
               />
             </div>
           )}

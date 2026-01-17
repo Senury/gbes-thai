@@ -374,6 +374,7 @@ const PartnerSearch = () => {
             <DataSourceSelector
               selectedSources={selectedDataSources}
               onSourcesChange={setSelectedDataSources}
+              locale="ja"
             />
           </div>
         )}
