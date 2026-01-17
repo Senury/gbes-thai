@@ -7,7 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -93,24 +92,23 @@ const Navigation = () => {
               </button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="px-3 py-2 rounded-full text-foreground hover:text-primary transition-colors whitespace-nowrap">
+                  <Button variant="ghost" size="sm" className="px-3 py-2 rounded-full text-foreground hover:text-primary transition-colors whitespace-nowrap" aria-label="เมนูเพิ่มเติม">
                     <span className="mr-1">เพิ่มเติม</span>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>เพิ่มเติม</DropdownMenuLabel>
-                  <DropdownMenuItem onSelect={() => handleSectionClick('contact')}>
+                  <DropdownMenuItem onClick={() => handleSectionClick('contact')} className="px-3">
                     ติดต่อ
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => navigate('/th/social-media')}>
+                  <DropdownMenuItem onClick={() => navigate('/th/social-media')} className="px-3">
                     โซเชียล
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={() => navigate('/ja')}>
+                  <div className="h-px bg-border rounded" />
+                  <DropdownMenuItem onClick={() => navigate('/ja')} className="px-3">
                     日本語
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => navigate('/en')}>
+                  <DropdownMenuItem onClick={() => navigate('/en')} className="px-3">
                     English
                   </DropdownMenuItem>
                 </DropdownMenuContent>

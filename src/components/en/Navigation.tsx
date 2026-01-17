@@ -7,7 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -102,24 +101,23 @@ const Navigation = () => {
               </button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="px-3 py-2 rounded-full text-sm text-foreground hover:text-primary transition-colors whitespace-nowrap">
+                  <Button variant="ghost" size="sm" className="px-3 py-2 rounded-full text-sm text-foreground hover:text-primary transition-colors whitespace-nowrap" aria-label="More links">
                     <span className="mr-1">More</span>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>More</DropdownMenuLabel>
-                  <DropdownMenuItem onSelect={() => handleSectionClick('contact')}>
+                  <DropdownMenuItem onClick={() => handleSectionClick('contact')} className="px-3">
                     Contact
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => navigate('/en/social-media')}>
+                  <DropdownMenuItem onClick={() => navigate('/en/social-media')} className="px-3">
                     Social
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={() => navigate('/ja')}>
+                  <div className="h-px bg-border rounded" />
+                  <DropdownMenuItem onClick={() => navigate('/ja')} className="px-3">
                     日本語
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => navigate('/th')}>
+                  <DropdownMenuItem onClick={() => navigate('/th')} className="px-3">
                     ไทย
                   </DropdownMenuItem>
                 </DropdownMenuContent>

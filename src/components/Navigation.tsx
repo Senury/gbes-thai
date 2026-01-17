@@ -7,7 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -74,9 +73,9 @@ const Navigation = () => {
           
           <div className="hidden md:flex flex-1 justify-center">
             <div className="flex items-center gap-2 text-sm">
-              <Link to="/ja" className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
+              <button onClick={() => handleSectionClick('home')} className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 ホーム
-              </Link>
+              </button>
               <button onClick={() => handleSectionClick('mission')} className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 ミッション
               </button>
@@ -91,24 +90,23 @@ const Navigation = () => {
               </button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="px-3 py-2 rounded-full text-foreground hover:text-primary transition-colors whitespace-nowrap">
+                  <Button variant="ghost" size="sm" className="px-3 py-2 rounded-full text-foreground hover:text-primary transition-colors whitespace-nowrap" aria-label="その他メニュー">
                     <span className="mr-1">その他</span>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>その他</DropdownMenuLabel>
-                  <DropdownMenuItem onSelect={() => handleSectionClick('contact')}>
+                  <DropdownMenuItem onClick={() => handleSectionClick('contact')} className="px-3">
                     お問い合わせ
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => navigate('/ja/social-media')}>
+                  <DropdownMenuItem onClick={() => navigate('/ja/social-media')} className="px-3">
                     SNS自動化
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={() => navigate('/en')}>
+                  <div className="h-px bg-border rounded" />
+                  <DropdownMenuItem onClick={() => navigate('/en')} className="px-3">
                     English
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => navigate('/th')}>
+                  <DropdownMenuItem onClick={() => navigate('/th')} className="px-3">
                     ไทย
                   </DropdownMenuItem>
                 </DropdownMenuContent>
