@@ -61,8 +61,9 @@ const ExportImportChat = () => {
       Accept: "text/plain",
       ...(supabaseAnonKey ? { apikey: supabaseAnonKey } : {}),
     };
-    if (session?.access_token) {
-      headers.Authorization = `Bearer ${session.access_token}`;
+    const authToken = session?.access_token ?? supabaseAnonKey;
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
     }
 
     const response = await fetch(`${supabaseUrl}/functions/v1/chat-export-import`, {
