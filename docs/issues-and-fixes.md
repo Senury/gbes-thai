@@ -53,7 +53,7 @@ Working document that tracks the functional problems surfaced so far plus the ag
 ## 9. EN/TH Hero Missing Live Badge + Scroll Cue
 - **Symptom**: The Japanese hero showcased the “ライブ • 1,234人のユーザーがオンライン” badge and mouse-scroll hint, but the English/Thai heroes lacked these cues, and the badge in Japanese gently floated/animated.
 - **Fix Implemented**:
-  - Added localized live-status pills plus the mouse scroll indicator to `src/components/en/Hero.tsx` and `src/components/th/Hero.tsx` for parity, and removed the float/glow animation from `src/components/Hero.tsx` so all badges stay static per request.
+  - Added localized live-status pills plus the mouse scroll indicator to `src/components/en/Hero.tsx` and `src/components/th/Hero.tsx` for parity, and removed the float/glow animation from `src/components/Hero.tsx` so all badges stay static per request. Increased EN/TH badge text to `text-base` for readability.
 - **Status**: ✅ done.
 
 ## Notes on Scope / Next Steps
