@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, MessageCircle, Bot, User } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -35,37 +37,90 @@ const ExportImportChat = () => {
     scrollToBottom();
   }, [messages]);
 
+  const appendToMessage = (id: string, chunk: string) => {
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === id ? { ...msg, content: msg.content + chunk } : msg
+      )
+    );
+  };
+
+  const streamResponse = async (text: string) => {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    if (!supabaseUrl) {
+      throw new Error("Supabase URL is not configured");
+    }
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const response = await fetch(`${supabaseUrl}/functions/v1/chat-export-import`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "text/plain",
+        Authorization: `Bearer ${session?.access_token ?? supabaseAnonKey}`,
+        ...(supabaseAnonKey ? { apikey: supabaseAnonKey } : {}),
+      },
+      body: JSON.stringify({ message: text, language: "en" }),
+    });
+
+    if (!response.ok || !response.body) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Failed to connect to chat service");
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      if (chunk) {
+        appendToMessage(streamingMessageIdRef.current, chunk);
+      }
+    }
+  };
+
+  const streamingMessageIdRef = useRef<string>("");
+
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
 
+    const timestamp = Date.now();
+
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: `${timestamp}`,
       content: input,
       isUser: true,
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const assistantId = `${timestamp}-ai`;
+    streamingMessageIdRef.current = assistantId;
+    const assistantMessage: Message = {
+      id: assistantId,
+      content: "",
+      isUser: false,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage, assistantMessage]);
     setInput("");
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('chat-export-import', {
-        body: { message: input, language: 'en' }
-      });
-
-      if (error) throw error;
-
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: data.response,
-        isUser: false,
-        timestamp: new Date(),
-      };
-
-      setMessages(prev => [...prev, aiMessage]);
+      await streamResponse(userMessage.content);
     } catch (error) {
       console.error('Chat error:', error);
+      setMessages((prev) =>
+        prev.filter(
+          (msg) => !(msg.id === assistantId && msg.content.length === 0)
+        )
+      );
       toast({
         title: "Error",
         description: "Failed to send message. Please try again later.",
@@ -142,13 +197,18 @@ const ExportImportChat = () => {
                     </div>
                   )}
                   <div
-                    className={`max-w-[280px] rounded-lg px-3 py-2 text-sm ${
+                    className={`max-w-[280px] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap ${
                       message.isUser
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-muted text-foreground'
                     }`}
                   >
-                    {message.content}
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      className={`${message.isUser ? '' : 'prose prose-sm dark:prose-invert max-w-none'}`}
+                    >
+                      {message.content || (message.isUser ? '' : '')}
+                    </ReactMarkdown>
                   </div>
                   {message.isUser && (
                     <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0">

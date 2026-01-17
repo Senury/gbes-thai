@@ -48,7 +48,8 @@ serve(async (req) => {
           { role: 'user', content: message }
         ],
         max_tokens: 1000,
-        temperature: 0.7
+        temperature: 0.7,
+        stream: true
       }),
     });
 
@@ -70,12 +71,69 @@ serve(async (req) => {
       });
     }
 
-    const data = await response.json();
-    const aiResponse = data.choices[0].message.content;
-    console.log('Successfully received AI response');
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          const reader = response.body?.getReader();
+          if (!reader) {
+            controller.close();
+            return;
+          }
+          let buffer = '';
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() ?? '';
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed || trimmed === 'data:' || trimmed === 'data: [DONE]' || trimmed === '[DONE]') {
+                continue;
+              }
+              if (trimmed.startsWith('data:')) {
+                const payload = trimmed.replace(/^data:\s*/, '');
+                if (payload === '[DONE]') continue;
+                const json = JSON.parse(payload);
+                const text = json.choices?.[0]?.delta?.content;
+                if (text) {
+                  controller.enqueue(encoder.encode(text));
+                }
+              }
+            }
+          }
+          if (buffer.trim()) {
+            try {
+              const payload = buffer.replace(/^data:\s*/, '');
+              if (payload && payload !== '[DONE]') {
+                const json = JSON.parse(payload);
+                const text = json.choices?.[0]?.delta?.content;
+                if (text) {
+                  controller.enqueue(encoder.encode(text));
+                }
+              }
+            } catch {
+              // ignore parse issues on final buffer
+            }
+          }
+        } catch (streamError) {
+          console.error('Streaming error:', streamError);
+          controller.error(streamError);
+          return;
+        }
+        controller.close();
+      }
+    });
 
-    return new Response(JSON.stringify({ response: aiResponse }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    return new Response(stream, {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache',
+        'Transfer-Encoding': 'chunked'
+      },
     });
   } catch (error) {
     console.error('Error in chat-export-import function:', error);
