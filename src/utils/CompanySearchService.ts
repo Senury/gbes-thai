@@ -218,14 +218,24 @@ export class CompanySearchService {
       
       // If we have fewer results than requested, try to fetch more from external sources
       if (filteredResults.companies.length < pageSize && page === 0) {
-        console.log('Searching external sources for more companies...');
-        const enabledSources = filters.dataSources || this.getEnabledDataSources();
-        await this.searchMultipleExternalSources(query, filters, enabledSources);
-        
-        // Search again after populating with external data
-        const updatedResults = await this.searchExistingCompanies(query, filters, page, pageSize);
-        const finalResults = await this.filterContactInformation(updatedResults);
-        return finalResults;
+        const hasSearchQuery = Boolean(query && query.trim().length >= 2);
+        const hasFilterCriteria =
+          Boolean(filters.industry && filters.industry !== 'all') ||
+          Boolean(filters.location && filters.location !== 'all-regions') ||
+          Boolean(filters.companySize && filters.companySize !== 'all');
+
+        if (hasSearchQuery || hasFilterCriteria) {
+          console.log('Searching external sources for more companies...');
+          const enabledSources = filters.dataSources || this.getEnabledDataSources();
+          await this.searchMultipleExternalSources(query, filters, enabledSources);
+          
+          // Search again after populating with external data
+          const updatedResults = await this.searchExistingCompanies(query, filters, page, pageSize);
+          const finalResults = await this.filterContactInformation(updatedResults);
+          return finalResults;
+        } else {
+          console.log('Skipping external search: no keyword or filter criteria provided.');
+        }
       }
       
       return filteredResults;

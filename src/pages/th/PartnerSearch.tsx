@@ -123,8 +123,8 @@ const PartnerSearch = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="flex-1">
+        <div className="flex flex-col lg:flex-row gap-4 mb-6">
+          <div className="w-full lg:flex-[3]">
             <Input
               placeholder="ค้นหาตามชื่อบริษัท อุตสาหกรรม บริการ..."
               value={searchQuery}
@@ -133,14 +133,15 @@ const PartnerSearch = () => {
               className="w-full"
             />
           </div>
-          <div className="flex gap-2">
-            <Button onClick={searchCompanies} disabled={loading}>
+          <div className="flex flex-wrap lg:flex-nowrap gap-2 w-full lg:flex-[2] lg:justify-end">
+            <Button onClick={searchCompanies} disabled={loading} className="w-full sm:w-auto">
               <Search className="w-4 h-4 mr-2" />
               {isSearching ? "กำลังค้นหา..." : "ค้นหา"}
             </Button>
             <Button 
               variant="outline" 
               onClick={() => setShowFilters(!showFilters)}
+              className="w-full sm:w-auto"
             >
               <Filter className="w-4 h-4 mr-2" />
               ตัวกรอง
@@ -148,10 +149,35 @@ const PartnerSearch = () => {
             <Button 
               variant="outline" 
               onClick={() => setShowDataSourceSelector(!showDataSourceSelector)}
+              className="w-full sm:w-auto"
             >
               <Globe className="w-4 h-4 mr-2" />
               แหล่งข้อมูล ({selectedDataSources.length})
             </Button>
+            <Dialog open={showScrapeDialog} onOpenChange={setShowScrapeDialog}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="w-full sm:w-auto">
+                  <Plus className="w-4 h-4 mr-2" />
+                  เพิ่มบริษัท
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>ดึงข้อมูลบริษัทจากเว็บไซต์</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <Textarea
+                    placeholder="กรอก URL เว็บไซต์ (หนึ่งรายการต่อบรรทัด)"
+                    value={websiteUrls}
+                    onChange={(e) => setWebsiteUrls(e.target.value)}
+                    rows={6}
+                  />
+                  <Button onClick={scrapeWebsites} disabled={loading}>
+                    ดึงข้อมูล
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 

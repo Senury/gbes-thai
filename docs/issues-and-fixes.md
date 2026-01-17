@@ -4,9 +4,9 @@ Working document that tracks the functional problems surfaced so far plus the ag
 
 ## 1. Partner Search Allows Blank Queries but Backend Rejects Them
 - **Symptom**: `PartnerSearch` (all locales) sends `CompanySearchService.searchCompanies(searchQuery || "")`, but the Edge function refuses empty queries when filters are `"all"` and silently throws. Users see the generic “検索エラー/ข้อผิดพลาดในการค้นหา/Search error” toast despite the UI claiming blank searches are valid.
-- **Planned Fix**:
-  - Either enforce a non-empty keyword on the client or pass explicit industry/location filter tokens even for “all” so the function can build a query.
-  - Update the backend guard (`supabase/functions/search-companies/index.ts`) so it interprets an empty string plus filter flags as intentional.
+- **Fix Implemented**:
+  - Updated `CompanySearchService.searchCompanies` to skip `searchMultipleExternalSources` when the user supplied neither a meaningful keyword (>=2 chars) nor any filters (industry/location/company size). This prevents the backend from receiving invalid empty queries while still allowing DB-only searches when users haven’t entered criteria.
+- **Status**: ✅ done (blank searches no longer trigger backend errors; they simply return existing DB results).
 
 ## 2. Data Source “Test” Button Always Fails
 - **Symptom**: `DataSourceSelector`→`testDataSourceConnection` posts `{ test: true }`, but the Edge function looks for `testConnection` before short-circuiting. Even if that flag lined up, the client expects `data.success` while the server returns `{ connectionTest: boolean }`. Result: toast + icon always show failure.
@@ -25,12 +25,25 @@ Working document that tracks the functional problems surfaced so far plus the ag
 - **Fix Implemented**: Removed the `animate-pulse` Tailwind class from all locale variants (`src/components/ExportImportChat.tsx`, `src/components/en/ExportImportChat.tsx`, `src/components/th/ExportImportChat.tsx`) so the button stays static while keeping hover affordances.
 - **Status**: ✅ done (no animation now across JP/EN/TH pages).
 
-## 5. English Hero Overflows on Mobile
-- **Symptom**: On `/en` the hero headline + CTA buttons use desktop typography/padding, causing horizontal overflow on small screens (buttons can extend off-screen, forcing sideways scrolling).
+## 5. English Hero Overflows on Mobile / Buttons Too Tight
+- **Symptom**: On `/en` the hero headline + CTA buttons use desktop typography/padding, causing horizontal overflow on small screens and cramped button padding on larger screens.
 - **Fix Implemented**:
   - Updated `src/components/en/Hero.tsx` with responsive typography and button sizing: mobile headings are slightly smaller but still bold (`text-4xl` base, up to `text-7xl` on desktops) and paragraph text starts at `text-lg`.
-  - CTA buttons become full-width on small screens with wrapping text so content stays within the viewport.
+  - CTA buttons become full-width on small screens with wrapping text, and their padding/spacing was increased (`px-8/py-5` mobile, `px-10/py-7` desktop) with a wider container to match the Japanese hero spacing.
 - **Status**: ✅ done (verify via mobile emulator on `/en`).
+
+## 6. Partner Search Controls Cramped at Tablet Width
+- **Symptom**: Around 650 px wide screens the search input shrinks dramatically because the action buttons (Search, Filters, Data Sources, Add) stay in a single row, forcing the input to give up space. Around 1000 px the opposite happens (input much wider than buttons).
+- **Fix Implemented**:
+  - Updated all locale pages (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`) so the search/input row only switches to side-by-side layout on large screens. Buttons now wrap/full-width on smaller viewports, and at larger widths the input gets `flex-[3]` while the button group gets `flex-[2]` plus `lg:flex-nowrap` to keep a single row without squishing.
+- **Status**: ✅ done (check tablet breakpoint ~650 px and wider screens ~1050 px).
 
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
+- Partner Search deep-dive findings (pending action):
+  - ✅ Role-gated contact info works by masking `contact_email/phone` per company via `CompanySearchService.filterContactInformation` and showing `ContactAccessPrompt`.
+  - ⚠️ `ContactAccessPrompt`’s “Upgrade” button always scrolls to `/ja#pricing`, even from `/en` or `/th`, so non-Japanese users get bounced to the wrong locale.
+  - ⚠️ “Search” allows empty keywords, but `search-companies` Edge function rejects blank queries without filters, leading to confusing “Search Error” toasts.
+  - ⚠️ `DataSourceSelector` test button never succeeds because client/server disagree on the test flag and response shape.
+  - ⚠️ `CompanySearchService.searchMultipleExternalSources` doesn’t enforce a minimum keyword; calling it with `''` still triggers remote APIs that may reject the request or return irrelevant data.
+  - ⚠️ `CompanySearchService.scrapeCompanyWebsites` allows non-logged-in users to attempt scrapes; consider gating behind auth to prevent anonymous abuse.

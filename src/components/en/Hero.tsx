@@ -25,18 +25,18 @@ const Hero = () => {
           Comprehensive support from translation to digital distribution and partner discovery.
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch sm:items-center max-w-xl mx-auto">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch sm:items-center max-w-2xl mx-auto">
           <Button
             variant="cta"
             size="xl"
-            className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 shadow-lg hover:shadow-xl transition-all duration-300 whitespace-normal leading-snug"
+            className="w-full sm:w-auto text-base sm:text-lg px-8 sm:px-10 py-5 sm:py-7 shadow-lg hover:shadow-xl transition-all duration-300 whitespace-normal leading-snug"
           >
             Register Now and Connect with the World
           </Button>
           <Button
             variant="outline"
             size="lg"
-            className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 whitespace-normal leading-snug"
+            className="w-full sm:w-auto text-base sm:text-lg px-8 sm:px-10 py-5 sm:py-7 whitespace-normal leading-snug"
           >
             Learn More
           </Button>
