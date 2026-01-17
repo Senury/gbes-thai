@@ -1,8 +1,16 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link, useLocation } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,35 +72,47 @@ const Navigation = () => {
             </div>
           </div>
           
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-2 lg:space-x-3 xl:space-x-4 text-sm">
-              <Link to="/ja" className="text-foreground hover:text-primary transition-colors duration-200 whitespace-nowrap">
+          <div className="hidden md:flex flex-1 justify-center">
+            <div className="flex items-center gap-2 text-sm">
+              <Link to="/ja" className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 ホーム
               </Link>
-              <button onClick={() => handleSectionClick('mission')} className="text-foreground hover:text-primary transition-colors duration-200 whitespace-nowrap">
+              <button onClick={() => handleSectionClick('mission')} className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 ミッション
               </button>
-              <button onClick={() => handleSectionClick('services')} className="text-foreground hover:text-primary transition-colors duration-200 whitespace-nowrap">
+              <button onClick={() => handleSectionClick('services')} className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 サービス
               </button>
-              <Link to="/ja/partner-search" className="text-foreground hover:text-primary transition-colors duration-200 whitespace-nowrap">
+              <Link to="/ja/partner-search" className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 パートナー探し
               </Link>
-              <button onClick={() => handleSectionClick('pricing')} className="text-foreground hover:text-primary transition-colors duration-200 whitespace-nowrap">
+              <button onClick={() => handleSectionClick('pricing')} className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 料金プラン
               </button>
-              <button onClick={() => handleSectionClick('contact')} className="text-foreground hover:text-primary transition-colors duration-200 whitespace-nowrap">
-                お問い合わせ
-              </button>
-              <Link to="/ja/social-media" className="text-foreground hover:text-primary transition-colors duration-200 whitespace-nowrap">
-                SNS自動化
-              </Link>
-              <Link to="/en" className="text-muted-foreground hover:text-primary transition-colors duration-200 whitespace-nowrap">
-                English
-              </Link>
-              <Link to="/th" className="text-muted-foreground hover:text-primary transition-colors duration-200 whitespace-nowrap">
-                ไทย
-              </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="px-3 py-2 rounded-full text-foreground hover:text-primary transition-colors whitespace-nowrap">
+                    <span className="mr-1">その他</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>その他</DropdownMenuLabel>
+                  <DropdownMenuItem onSelect={() => handleSectionClick('contact')}>
+                    お問い合わせ
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => navigate('/ja/social-media')}>
+                    SNS自動化
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={() => navigate('/en')}>
+                    English
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => navigate('/th')}>
+                    ไทย
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 

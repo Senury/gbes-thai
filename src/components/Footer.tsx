@@ -1,4 +1,5 @@
 import { Github, Twitter, Linkedin, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -53,6 +54,21 @@ const Footer = () => {
               <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">利用規約</a></li>
               <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">プライバシー</a></li>
             </ul>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center gap-3 text-sm">
+          <span className="text-muted-foreground">言語:</span>
+          <div className="flex gap-2">
+            <Link to="/ja" className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
+              日本語
+            </Link>
+            <Link to="/en" className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
+              English
+            </Link>
+            <Link to="/th" className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
+              ไทย
+            </Link>
           </div>
         </div>
 

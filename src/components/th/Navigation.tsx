@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut } from "lucide-react";
+import { Menu, X, LogOut, ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link, useLocation } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,35 +74,47 @@ const Navigation = () => {
           </div>
           
           {/* Desktop Menu */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-2">
-              <button onClick={handleHomeClick} className="text-foreground hover:text-primary px-2 py-2 text-sm font-medium transition-colors whitespace-nowrap">
+          <div className="hidden md:flex flex-1 justify-center">
+            <div className="flex items-center gap-2 text-sm">
+              <button onClick={handleHomeClick} className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 หน้าแรก
               </button>
-              <button onClick={() => handleSectionClick('mission')} className="text-foreground hover:text-primary px-2 py-2 text-sm font-medium transition-colors whitespace-nowrap">
+              <button onClick={() => handleSectionClick('mission')} className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 พันธกิจ
               </button>
-              <button onClick={() => handleSectionClick('services')} className="text-foreground hover:text-primary px-2 py-2 text-sm font-medium transition-colors whitespace-nowrap">
+              <button onClick={() => handleSectionClick('services')} className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 บริการ
               </button>
-              <Link to="/th/partner-search" className="text-foreground hover:text-primary px-2 py-2 text-sm font-medium transition-colors whitespace-nowrap">
-                พันธมิตร
+              <Link to="/th/partner-search" className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
+                ค้นหาพันธมิตร
               </Link>
-              <button onClick={() => handleSectionClick('pricing')} className="text-foreground hover:text-primary px-2 py-2 text-sm font-medium transition-colors whitespace-nowrap">
+              <button onClick={() => handleSectionClick('pricing')} className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 ราคา
               </button>
-              <button onClick={() => handleSectionClick('contact')} className="text-foreground hover:text-primary px-2 py-2 text-sm font-medium transition-colors whitespace-nowrap">
-                ติดต่อ
-              </button>
-              <Link to="/th/social-media" className="text-foreground hover:text-primary px-2 py-2 text-sm font-medium transition-colors whitespace-nowrap">
-                โซเชียล
-              </Link>
-              <Link to="/en" className="text-muted-foreground hover:text-primary px-2 py-2 text-sm font-medium transition-colors whitespace-nowrap">
-                English
-              </Link>
-              <Link to="/ja" className="text-muted-foreground hover:text-primary px-2 py-2 text-sm font-medium transition-colors whitespace-nowrap">
-                日本語
-              </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="px-3 py-2 rounded-full text-foreground hover:text-primary transition-colors whitespace-nowrap">
+                    <span className="mr-1">เพิ่มเติม</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>เพิ่มเติม</DropdownMenuLabel>
+                  <DropdownMenuItem onSelect={() => handleSectionClick('contact')}>
+                    ติดต่อ
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => navigate('/th/social-media')}>
+                    โซเชียล
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={() => navigate('/ja')}>
+                    日本語
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => navigate('/en')}>
+                    English
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           

@@ -1,4 +1,5 @@
 import { Github, Twitter, Linkedin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -56,6 +57,21 @@ const Footer = () => {
           </div>
         </div>
         
+        <div className="mt-8 flex flex-wrap items-center gap-3 text-sm">
+          <span className="text-muted-foreground">Language:</span>
+          <div className="flex gap-2">
+            <Link to="/en" className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
+              English
+            </Link>
+            <Link to="/ja" className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
+              日本語
+            </Link>
+            <Link to="/th" className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
+              ไทย
+            </Link>
+          </div>
+        </div>
+
         <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-muted-foreground text-sm">
             © 2024 GBES. All rights reserved.

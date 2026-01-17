@@ -38,6 +38,17 @@ Working document that tracks the functional problems surfaced so far plus the ag
   - Updated all locale pages (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`) so the search/input row only switches to side-by-side layout on large screens. Buttons now wrap/full-width on smaller viewports, and at larger widths the input gets `flex-[3]` while the button group gets `flex-[2]` plus `lg:flex-nowrap` to keep a single row without squishing.
 - **Status**: ✅ done (check tablet breakpoint ~650 px and wider screens ~1050 px).
 
+## 7. Desktop Nav Bars Feel Cramped
+- **Symptom**: The `/ja`, `/en`, and `/th` nav bars all packed 8–9 links into a single row, making medium screens feel crowded.
+- **Fix Implemented**:
+  - Kept the five core links inline and moved secondary options into locale-specific dropdowns with chevron indicators (`src/components/Navigation.tsx`, `src/components/en/Navigation.tsx`, `src/components/th/Navigation.tsx`), keeping navigation accessible without overwhelming the bar.
+- **Status**: ✅ done (verify around 1024 px widths).
+
+## 8. Footer Lacked Language Switcher
+- **Symptom**: Once users scrolled to the footer there was no way to jump between `/ja`, `/en`, and `/th`, forcing them back to the top navigation.
+- **Fix Implemented**: Added localized language selectors with pill buttons in each footer (`src/components/Footer.tsx`, `src/components/en/Footer.tsx`, `src/components/th/Footer.tsx`) so visitors can swap locales from the bottom of any page.
+- **Status**: ✅ done.
+
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
 - Partner Search deep-dive findings (pending action):
