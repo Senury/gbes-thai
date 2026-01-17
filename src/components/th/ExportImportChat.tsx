@@ -73,9 +73,17 @@ const ExportImportChat = () => {
       body: JSON.stringify({ message: text, language: "th" }),
     });
 
-    if (!response.ok || !response.body) {
+    if (!response.ok) {
       const errorText = await response.text();
       throw new Error(errorText || "ไม่สามารถเชื่อมต่อกับบริการแชทได้");
+    }
+
+    if (!response.body) {
+      const text = await response.text();
+      if (text) {
+        appendToMessage(streamingMessageIdRef.current, text);
+      }
+      return;
     }
 
     const reader = response.body.getReader();

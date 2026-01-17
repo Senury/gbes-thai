@@ -71,9 +71,17 @@ const ExportImportChat = () => {
       body: JSON.stringify({ message: text, language: "ja" }),
     });
 
-    if (!response.ok || !response.body) {
+    if (!response.ok) {
       const errorText = await response.text();
       throw new Error(errorText || "Failed to connect to chat service");
+    }
+
+    if (!response.body) {
+      const text = await response.text();
+      if (text) {
+        appendToMessage(streamingMessageIdRef.current, text);
+      }
+      return;
     }
 
     const reader = response.body.getReader();
@@ -84,12 +92,8 @@ const ExportImportChat = () => {
       if (done) break;
       const chunk = decoder.decode(value, { stream: true });
       if (chunk) {
-        onChunk(chunk);
+        appendToMessage(streamingMessageIdRef.current, chunk);
       }
-    }
-
-    function onChunk(chunk: string) {
-      appendToMessage(streamingMessageIdRef.current, chunk);
     }
   };
 
