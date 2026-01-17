@@ -88,82 +88,13 @@ serve(async (req) => {
       });
     }
 
-    const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
-    const stream = new TransformStream();
-    const writer = stream.writable.getWriter();
+    const data = await response.json();
+    const aiResponse = data.choices?.[0]?.message?.content ?? '';
 
-    const reader = response.body?.getReader();
-    if (!reader) {
-      const text = await response.text();
-      await writer.write(encoder.encode(text));
-      await writer.close();
-      return new Response(stream.readable, {
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'text/plain; charset=utf-8',
-          'Cache-Control': 'no-cache'
-        },
-      });
-    }
+    console.log('Successfully received AI response');
 
-    (async () => {
-      try {
-        let buffer = '';
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop() ?? '';
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed || trimmed === 'data:' || trimmed === 'data: [DONE]' || trimmed === '[DONE]') {
-              continue;
-            }
-            if (trimmed.startsWith('data:')) {
-              const payload = trimmed.replace(/^data:\s*/, '');
-              if (payload === '[DONE]') continue;
-              try {
-                const json = JSON.parse(payload);
-                const text = json.choices?.[0]?.delta?.content;
-                if (text) {
-                  await writer.write(encoder.encode(text));
-                }
-              } catch (parseError) {
-                console.warn('Failed to parse stream chunk', parseError);
-              }
-            }
-          }
-        }
-        if (buffer.trim()) {
-          try {
-            const payload = buffer.replace(/^data:\s*/, '');
-            if (payload && payload !== '[DONE]') {
-              const json = JSON.parse(payload);
-              const text = json.choices?.[0]?.delta?.content;
-              if (text) {
-                await writer.write(encoder.encode(text));
-              }
-            }
-          } catch (finalError) {
-            console.warn('Failed parsing final chunk', finalError);
-          }
-        }
-      } catch (streamError) {
-        console.error('Streaming error:', streamError);
-      } finally {
-        await writer.close();
-      }
-    })();
-
-    return new Response(stream.readable, {
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'no-cache',
-        'Transfer-Encoding': 'chunked'
-      },
+    return new Response(JSON.stringify({ response: aiResponse }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Error in chat-export-import function:', error);

@@ -59,8 +59,8 @@ Working document that tracks the functional problems surfaced so far plus the ag
 ## 10. Chat Widget Response Was Static & Plain Text
 - **Symptom**: The floating export/import chat modal waited for full responses and rendered plain text, so long replies felt laggy and markdown (lists, code) looked unformatted.
 - **Fix Implemented**:
-  - Switched the `chat-export-import` Edge Function to stream OpenAI chunks and updated the JP/EN/TH widgets to read the stream, append tokens in real time, and render markdown via `react-markdown/remark-gfm` (`src/components/*/ExportImportChat.tsx`, `supabase/functions/chat-export-import/index.ts`).
-- **Status**: ✅ done (messages now stream + support Markdown).
+  - Added Markdown rendering across locales and reverted to the proven JSON response path (streaming is deferred until Supabase Edge streaming is GA) so replies render reliably again (`src/components/*/ExportImportChat.tsx`, `supabase/functions/chat-export-import/index.ts`).
+- **Status**: ✅ done (chat works again with formatted output; revisit streaming later).
 
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
