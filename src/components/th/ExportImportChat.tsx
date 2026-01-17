@@ -156,7 +156,7 @@ const ExportImportChat = () => {
                     ) : (
                       <div
                         className="prose prose-sm dark:prose-invert max-w-none"
-                        dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content || '') }}
                       />
                     )}
                   </div>
