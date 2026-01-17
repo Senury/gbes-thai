@@ -13,6 +13,7 @@ Working document that tracks the functional problems surfaced so far plus the ag
 - **Planned Fix**:
   - Send `testConnection: true` and read `data.connectionTest`.
   - Consider surfacing backend errors in the toast so users know when an API key is missing vs. the remote API is down.
+- **Note**: Selector now supports locale-aware labels (JP/EN/TH) so once the API issue is addressed, the UI will be consistent across languages.
 
 ## 3. Lint Suite Currently Broken
 - **Symptom**: `npm run lint` reports 46 errors (lots of `any`, empty blocks, @typescript-eslint rules, regex escape issues, illegal `require` in `tailwind.config.ts`, etc.).
