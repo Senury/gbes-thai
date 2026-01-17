@@ -25,5 +25,12 @@ Working document that tracks the functional problems surfaced so far plus the ag
 - **Fix Implemented**: Removed the `animate-pulse` Tailwind class from all locale variants (`src/components/ExportImportChat.tsx`, `src/components/en/ExportImportChat.tsx`, `src/components/th/ExportImportChat.tsx`) so the button stays static while keeping hover affordances.
 - **Status**: ✅ done (no animation now across JP/EN/TH pages).
 
+## 5. English Hero Overflows on Mobile
+- **Symptom**: On `/en` the hero headline + CTA buttons use desktop typography/padding, causing horizontal overflow on small screens (buttons can extend off-screen, forcing sideways scrolling).
+- **Fix Implemented**:
+  - Updated `src/components/en/Hero.tsx` with responsive typography and button sizing: mobile headings are slightly smaller but still bold (`text-4xl` base, up to `text-7xl` on desktops) and paragraph text starts at `text-lg`.
+  - CTA buttons become full-width on small screens with wrapping text so content stays within the viewport.
+- **Status**: ✅ done (verify via mobile emulator on `/en`).
+
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
