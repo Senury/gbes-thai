@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, MessageCircle, Bot, User } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { renderMarkdown } from "@/utils/markdown";
 
@@ -21,6 +21,7 @@ const ExportImportChat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const streamingMessageIdRef = useRef<string>("");
   const { toast } = useToast();
 
   const scrollToBottom = () => {
@@ -36,6 +37,66 @@ const ExportImportChat = () => {
     scrollToBottom();
   }, [messages]);
 
+  const appendToMessage = (id: string, chunk: string) => {
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === id ? { ...msg, content: msg.content + chunk } : msg
+      )
+    );
+  };
+
+  const streamResponse = async (text: string) => {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY ?? SUPABASE_PUBLISHABLE_KEY;
+    if (!supabaseUrl) {
+      throw new Error("Supabase URL is not configured");
+    }
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      Accept: "text/plain",
+      ...(supabaseAnonKey ? { apikey: supabaseAnonKey } : {}),
+    };
+    const authToken = session?.access_token ?? supabaseAnonKey;
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
+    }
+
+    const response = await fetch(`${supabaseUrl}/functions/v1/chat-export-import`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ message: text, language: "ja" }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Failed to connect to chat service");
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      const fullText = await response.text();
+      if (fullText) {
+        appendToMessage(streamingMessageIdRef.current, fullText);
+      }
+      return;
+    }
+
+    const decoder = new TextDecoder();
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      if (chunk) {
+        appendToMessage(streamingMessageIdRef.current, chunk);
+      }
+    }
+  };
+
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -48,27 +109,29 @@ const ExportImportChat = () => {
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const assistantMessageId = `${timestamp}-ai`;
+    streamingMessageIdRef.current = assistantMessageId;
+
+    const assistantMessage: Message = {
+      id: assistantMessageId,
+      content: "",
+      isUser: false,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage, assistantMessage]);
     setInput("");
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('chat-export-import', {
-        body: { message: userMessage.content, language: 'ja' }
-      });
-
-      if (error) throw error;
-
-      const aiMessage: Message = {
-        id: `${timestamp}-ai`,
-        content: data?.response ?? '',
-        isUser: false,
-        timestamp: new Date(),
-      };
-
-      setMessages(prev => [...prev, aiMessage]);
+      await streamResponse(userMessage.content);
     } catch (error) {
       console.error('Chat error:', error);
+      setMessages((prev) =>
+        prev.filter(
+          (msg) => !(msg.id === assistantMessageId && msg.content.length === 0)
+        )
+      );
       toast({
         title: "エラー",
         description: "メッセージの送信に失敗しました。しばらくしてからもう一度お試しください。",
@@ -167,20 +230,6 @@ const ExportImportChat = () => {
                   )}
                 </div>
               ))}
-              {isLoading && (
-                <div className="flex gap-2 justify-start">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Bot className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="bg-muted rounded-lg px-3 py-2 text-sm">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-current rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </ScrollArea>
           <div className="p-4 border-t">
