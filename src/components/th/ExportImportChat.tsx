@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, MessageCircle, Bot, User } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
 interface Message {
@@ -48,8 +48,8 @@ const ExportImportChat = () => {
   const streamingMessageIdRef = useRef<string>("");
 
   const streamResponse = async (text: string) => {
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY ?? SUPABASE_PUBLISHABLE_KEY;
     if (!supabaseUrl) {
       throw new Error("Supabase URL is not configured");
     }
