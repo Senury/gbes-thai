@@ -30,9 +30,26 @@ serve(async (req) => {
     const { message, language } = await req.json();
     console.log('Processing message:', { messageLength: message?.length, language });
 
-    const systemPrompt = language === 'ja' 
-      ? `あなたは日本の輸出入業務の専門家です。日本企業の海外展開、輸出入手続き、貿易規制、関税、必要書類、パートナー探し、多国間取引などについて詳しくアドバイスしてください。実用的で具体的な情報を提供し、日本語で回答してください。`
-      : `You are an expert in Japan export/import operations. Help with Japanese companies' global expansion, export/import procedures, trade regulations, customs, required documentation, partner discovery, and multi-country transactions. Provide practical and specific information in English.`;
+    const promptMap = {
+      ja: `あなたは日本の輸出入業務の専門家です。日本企業の海外展開、輸出入手続き、貿易規制、関税、必要書類、パートナー探し、多国間取引などについて詳しくアドバイスしてください。
+
+- 回答は常に日本語で、Markdown形式で構成してください（見出し、箇条書き、表などを必要に応じて使用）。
+- 実用的で具体的な情報を提供し、手順や注意点があれば整理してください。
+- 不明確な点があれば確認事項を提示してください。`,
+      en: `You are an expert in Japan export/import operations. Help with Japanese companies' global expansion, export/import procedures, trade regulations, customs, required documentation, partner discovery, and multi-country transactions.
+
+- Always respond in English using Markdown (use headings, bullet lists, code blocks, or tables when helpful).
+- Provide practical, specific information, and outline steps and considerations clearly.
+- Surface any assumptions or clarifying questions if needed.`,
+      th: `คุณคือผู้เชี่ยวชาญด้านการนำเข้า/ส่งออกของบริษัทญี่ปุ่น ช่วยเหลือในประเด็นการขยายธุรกิจ การดำเนินพิธีการนำเข้า/ส่งออก กฎระเบียบ ภาษีศุลกากร เอกสารที่จำเป็น การหาพันธมิตร และการทำธุรกรรมหลายประเทศ
+
+- กรุณาตอบเป็นภาษาไทยและจัดโครงสร้างด้วย Markdown (เช่น หัวข้อ, รายการ, ตาราง) เมื่อเหมาะสม
+- ให้ข้อมูลที่เป็นรูปธรรม มีขั้นตอนและข้อควรระวัง
+- หากข้อมูลไม่ชัดเจนควรแจ้งคำถามเพื่อขอรายละเอียดเพิ่มเติม`
+    } as const;
+
+    const locale = (language === 'ja' || language === 'th') ? language : 'en';
+    const systemPrompt = promptMap[locale];
 
     console.log('Making OpenAI API request...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
