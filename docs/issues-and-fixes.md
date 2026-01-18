@@ -62,6 +62,11 @@ Working document that tracks the functional problems surfaced so far plus the ag
   - Added a lightweight Markdown renderer for assistant replies and restored OpenAI streaming support end-to-end (custom fetch/stream reader per locale) so replies arrive live with formatting (`src/components/*/ExportImportChat.tsx`, `src/utils/markdown.ts`, `supabase/functions/chat-export-import/index.ts`).
 - **Status**: ✅ done (chat works again with formatted output; revisit streaming later).
 
+## 11. Filters/Data Sources Stay Open After Search
+- **Symptom**: On Partner Search pages, the advanced filter accordion and data source selector stayed open after a search, forcing users to manually close them to view results.
+- **Fix Implemented**: Each locale's `searchCompanies` now closes both panels (`setShowFilters(false)`, `setShowDataSourceSelector(false)`) in the `finally` block so the results are visible immediately (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
 - Partner Search deep-dive findings (pending action):

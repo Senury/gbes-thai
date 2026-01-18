@@ -115,6 +115,8 @@ const PartnerSearch = () => {
     } finally {
       setLoading(false);
       setIsSearching(false);
+      setShowFilters(false);
+      setShowDataSourceSelector(false);
     }
   };
 
