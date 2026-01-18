@@ -67,6 +67,11 @@ Working document that tracks the functional problems surfaced so far plus the ag
 - **Fix Implemented**: Each locale's `searchCompanies` now closes both panels (`setShowFilters(false)`, `setShowDataSourceSelector(false)`) in the `finally` block so the results are visible immediately (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
 - **Status**: ✅ done.
 
+## 12. Navbar Profile Actions Were Static
+- **Symptom**: When logged in, the navbar just displayed the user's email text, and the “登録” button was always shown even for paid subscribers.
+- **Fix Implemented**: The email is now a dashboard button (desktop + mobile), and the register CTA hides for paying/premium users using `useUserRole` (`src/components/Navigation.tsx`).
+- **Status**: ✅ done.
+
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
 - Partner Search deep-dive findings (pending action):

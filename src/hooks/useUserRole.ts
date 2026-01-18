@@ -39,7 +39,6 @@ export const useUserRole = () => {
 
     const fetchUserRole = async () => {
       try {
-        // Get user's subscription and role info
         const { data: subscriptionInfo, error: subError } = await supabase
           .rpc('get_user_subscription_info', { _user_id: user.id });
 
@@ -47,7 +46,6 @@ export const useUserRole = () => {
           console.error('Error fetching user subscription info:', subError);
         }
 
-        // Get user's role level
         const { data: roleLevel, error: levelError } = await supabase
           .rpc('get_user_role_level', { _user_id: user.id });
 
@@ -55,7 +53,6 @@ export const useUserRole = () => {
           console.error('Error fetching user role level:', levelError);
         }
 
-        // Get user's roles for admin check
         const { data: roles, error: rolesError } = await supabase
           .from('user_roles')
           .select('role')
@@ -65,7 +62,6 @@ export const useUserRole = () => {
           console.error('Error fetching user roles:', rolesError);
         }
 
-        // Determine highest role
         let highestRole: UserRole = 'basic';
         if (roles?.some(r => r.role === 'admin')) {
           highestRole = 'admin';
@@ -125,8 +121,6 @@ export const useUserRole = () => {
     if (!user) return false;
 
     try {
-      // This would typically integrate with your subscription system
-      // For now, it's a placeholder that admins could use
       const { error } = await supabase
         .from('user_roles')
         .upsert({
@@ -140,16 +134,15 @@ export const useUserRole = () => {
         return false;
       }
 
-      // Refresh role info
       const { data: newRoleLevel } = await supabase
         .rpc('get_user_role_level', { _user_id: user.id });
 
-        setRoleInfo(prev => ({
-          ...prev,
-          role: targetRole,
-          roleLevel: newRoleLevel || prev.roleLevel,
-          canAccessContacts: targetRole === 'admin' || prev.hasSubscription
-        }));
+      setRoleInfo(prev => ({
+        ...prev,
+        role: targetRole,
+        roleLevel: newRoleLevel || prev.roleLevel,
+        canAccessContacts: targetRole === 'admin' || prev.hasSubscription
+      }));
 
       return true;
     } catch (error) {
