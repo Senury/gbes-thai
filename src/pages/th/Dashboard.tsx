@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { User, FileText, Calendar, Package } from "lucide-react";
 import SubscriptionStatus from "@/components/SubscriptionStatus";
+import { getPlanDetails } from "@/utils/servicePlans";
 
 interface Registration {
   id: string;
@@ -59,15 +60,6 @@ export default function Dashboard() {
 
     fetchRegistration();
   }, [user, toast]);
-
-  const getServiceDetails = (service: string) => {
-    const services = {
-      'token-a': { name: 'Token A', price: '฿350', color: 'bg-blue-100 text-blue-800' },
-      'token-b': { name: 'Token B', price: '฿700', color: 'bg-green-100 text-green-800' },
-      'premium': { name: 'Premium', price: '฿1,400', color: 'bg-purple-100 text-purple-800' }
-    };
-    return services[service as keyof typeof services] || { name: service, price: 'N/A', color: 'bg-gray-100 text-gray-800' };
-  };
 
   return (
     <DashboardLayout language="th">
@@ -122,10 +114,10 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {registration ? getServiceDetails(registration.service).name : 'ไม่มี'}
+                {registration ? getPlanDetails(registration.service, 'th').name : 'ไม่มี'}
               </div>
               <p className="text-xs text-muted-foreground">
-                {registration ? getServiceDetails(registration.service).price : 'ไม่มีแผนที่ใช้งาน'}
+                {registration ? getPlanDetails(registration.service, 'th').price : 'ไม่มีแผนที่ใช้งาน'}
               </p>
             </CardContent>
           </Card>
@@ -164,8 +156,8 @@ export default function Dashboard() {
               </div>
               <div className="flex items-center gap-2">
                 <label className="text-sm font-medium text-muted-foreground">แผนบริการ:</label>
-                <Badge className={getServiceDetails(registration.service).color}>
-                  {getServiceDetails(registration.service).name} - {getServiceDetails(registration.service).price}
+                <Badge className={getPlanDetails(registration.service, 'th').color}>
+                  {getPlanDetails(registration.service, 'th').name} - {getPlanDetails(registration.service, 'th').price}
                 </Badge>
               </div>
               <div className="flex items-center gap-2">

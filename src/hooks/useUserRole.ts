@@ -101,12 +101,17 @@ export const useUserRole = () => {
         }
         const registrationCompleted = !!(registrationData && registrationData.length);
         
+        const inferredSubscription =
+          (typeof subInfo?.has_subscription === 'boolean' && subInfo.has_subscription) ||
+          highestRole === 'premium' ||
+          highestRole === 'admin';
+
         const nextInfo = {
           role: highestRole,
           roleLevel: roleLevel || 1,
           canAccessContacts: subInfo?.can_access_contacts || false,
-          hasSubscription: subInfo?.has_subscription || false,
-          subscriptionTier: subInfo?.subscription_tier || null,
+           hasSubscription: inferredSubscription,
+          subscriptionTier: subInfo?.subscription_tier || (highestRole === 'premium' ? 'premium' : highestRole === 'admin' ? 'admin' : null),
           loading: false,
           registrationCompleted,
         };

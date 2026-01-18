@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { CreditCard, RefreshCw, Settings } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 import { format } from "date-fns";
 import { ja, enUS, th as thLocale } from "date-fns/locale";
 
@@ -59,6 +60,7 @@ const localeMap = {
 const SubscriptionStatus = ({ language = 'ja' }: SubscriptionStatusProps) => {
   const { user } = useAuth();
   const { subscription, loading, checkSubscription, openCustomerPortal } = useSubscription();
+  const { hasSubscription, subscriptionTier } = useUserRole();
   const t = translations[language] ?? translations.ja;
   const locale = localeMap[language] ?? ja;
   const localePrefix = language === 'ja' ? 'ja' : language === 'th' ? 'th' : 'en';
@@ -67,13 +69,16 @@ const SubscriptionStatus = ({ language = 'ja' }: SubscriptionStatusProps) => {
     return null;
   }
 
+  const isSubscribed = subscription.subscribed || hasSubscription;
+  const activeTier = subscription.subscription_tier || subscriptionTier;
+
   const getStatusVariant = () => {
-    if (subscription.subscribed) return "default";
+    if (isSubscribed) return "default";
     return "secondary";
   };
 
   const getStatusText = () => {
-    if (subscription.subscribed) return t.statusActive;
+    if (isSubscribed) return t.statusActive;
     return t.statusInactive;
   };
 
@@ -108,12 +113,12 @@ const SubscriptionStatus = ({ language = 'ja' }: SubscriptionStatusProps) => {
           </Badge>
         </div>
 
-        {subscription.subscribed && (
+        {isSubscribed && (
           <>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">{t.planLabel}</span>
               <span className="text-sm font-semibold">
-                {subscription.subscription_tier}
+                {activeTier || '-'}
               </span>
             </div>
             
@@ -128,7 +133,7 @@ const SubscriptionStatus = ({ language = 'ja' }: SubscriptionStatusProps) => {
           </>
         )}
 
-        {subscription.subscribed && (
+        {isSubscribed && (
           <div className="pt-4">
             <Button
               variant="outline"
@@ -141,7 +146,7 @@ const SubscriptionStatus = ({ language = 'ja' }: SubscriptionStatusProps) => {
           </div>
         )}
 
-        {!subscription.subscribed && (
+        {!isSubscribed && (
           <div className="pt-4">
             <p className="text-sm text-muted-foreground mb-4">
               {t.upgradeCopy}

@@ -20,6 +20,7 @@ export function useProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [initialData, setInitialData] = useState<Partial<Profile> | null>(null);
+  const [latestRegistrationPlan, setLatestRegistrationPlan] = useState<string | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -42,18 +43,23 @@ export function useProfile() {
         setProfile(data);
         setInitialData(data);
       } else {
-        const { data: registrationData, error: registrationError } = await supabase
-          .from('registrations')
-          .select('first_name,last_name,company,phone,service,email')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .maybeSingle();
+        setInitialData(null);
+      }
 
-        if (registrationError) {
-          throw registrationError;
-        }
+      const { data: registrationData, error: registrationError } = await supabase
+        .from('registrations')
+        .select('first_name,last_name,company,phone,service,email')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .maybeSingle();
 
-        if (registrationData) {
+      if (registrationError) {
+        throw registrationError;
+      }
+
+      if (registrationData) {
+        setLatestRegistrationPlan(registrationData.service || null);
+        if (!data) {
           setInitialData({
             first_name: registrationData.first_name || '',
             last_name: registrationData.last_name || '',
@@ -62,9 +68,9 @@ export function useProfile() {
             service_plan: registrationData.service || '',
             email: registrationData.email || user.email || '',
           } as Partial<Profile>);
-        } else {
-          setInitialData(null);
         }
+      } else {
+        setLatestRegistrationPlan(null);
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -153,6 +159,7 @@ export function useProfile() {
     profile,
     loading,
     initialData,
+    latestRegistrationPlan,
     updateProfile,
     createProfile,
     refetchProfile: fetchProfile,

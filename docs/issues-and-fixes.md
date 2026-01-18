@@ -84,7 +84,7 @@ Working document that tracks the functional problems surfaced so far plus the ag
 
 ## 15. Profile Form Didn’t Show Existing Data
 - **Symptom**: The dashboard/profile form always loaded empty inputs even when the user already had profile/registration data because `react-hook-form` initialized before the async fetch completed and never re-populated the fields.
-- **Fix Implemented**: `useProfile` now exposes `initialData` that falls back to the latest registration record when no profile row exists, `ProfileForm` resets whenever `profile` or `initialData` changes, and the service plan selector is now a localized segmented button set (Token A/B/Premium). All saved fields—including the plan—prefill automatically and can be edited with a single click (`src/hooks/useProfile.ts`, `src/components/ProfileForm.tsx`).
+- **Fix Implemented**: `useProfile` now also fetches the latest `registrations` entry (even when a profile exists) and exposes the plan from that record so `ProfileForm` can prioritize the exact same plan string the dashboard’s “Current Plan” card displays. `getPlanDetails` centralizes plan names/prices/colors per locale, and the read-only plan field mirrors that output (Token A/B/Premium/Admin). All saved fields—including the plan—prefill automatically so nothing can be accidentally overwritten (`src/hooks/useProfile.ts`, `src/components/ProfileForm.tsx`, `src/utils/servicePlans.ts`, `src/pages/*/Dashboard.tsx`).  
 - **Status**: ✅ done.
 
 ## 16. Sidebar Still Showed “Registration” Link After Completing Signup
@@ -95,6 +95,11 @@ Working document that tracks the functional problems surfaced so far plus the ag
 ## 17. Sidebar Blanked on Every Navigation
 - **Symptom**: Clicking any sidebar link briefly unmounted the entire dashboard because every page re-instantiated `useAuth`, which fetched Supabase session state anew, causing `DashboardLayout` to hit its loading skeleton each time.
 - **Fix Implemented**: Promoted the auth hook into a global context provider (`AuthProvider`) that initializes Supabase session once and shares the user state across the app. Wrapped `<App />` with the provider so the sidebar and layout retain state across route changes (`src/hooks/useAuth.tsx`, `src/App.tsx`). Transitions between dashboard sections now swap only the content without flashing the whole shell.
+- **Status**: ✅ done.
+
+## 18. Subscription Status Ignored Premium Roles
+- **Symptom**: Users with active subscriptions still saw “Not Subscribed” in the dashboard card because `useSubscription` could fail silently and `SubscriptionStatus` only trusted that hook. Even the fallback `useUserRole` was reporting `hasSubscription=false` when a user’s `user_roles` table already had `premium` assigned.
+- **Fix Implemented**: The component now also consumes `useUserRole` so it treats `hasSubscription`/`subscriptionTier` from our RPC as truthy even if the functions endpoint lags, and the role hook itself infers `hasSubscription` from the highest role (premium/admin) when the RPC returns null. Status badge, plan label, and CTA now reflect real premium accounts immediately (`src/components/SubscriptionStatus.tsx`, `src/hooks/useUserRole.ts`).
 - **Status**: ✅ done.
 
 ## Notes on Scope / Next Steps

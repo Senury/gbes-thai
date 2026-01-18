@@ -9,7 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useProfile, Profile } from '@/hooks/useProfile';
 import { useAuth } from '@/hooks/useAuth';
-import { cn } from '@/lib/utils';
+import { useUserRole } from '@/hooks/useUserRole';
+import { getPlanDetails, normalizePlanKey } from '@/utils/servicePlans';
 
 const profileSchema = z.object({
   first_name: z.string().optional(),
@@ -26,15 +27,15 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ language = 'en' }: ProfileFormProps) {
-  const { profile, loading, initialData, updateProfile, createProfile } = useProfile();
+  const { profile, loading, initialData, latestRegistrationPlan, updateProfile, createProfile } = useProfile();
   const { user } = useAuth();
+  const { subscriptionTier } = useUserRole();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
     handleSubmit,
     reset,
-    setValue,
     watch,
     formState: { errors },
   } = useForm<ProfileFormData>({
@@ -48,16 +49,28 @@ export function ProfileForm({ language = 'en' }: ProfileFormProps) {
     },
   });
 
+  const normalizePlan = (plan?: string | null) => {
+    if (!plan) return '';
+    const value = plan.toString().toLowerCase();
+    if (value.includes('token-a') || value.includes('token a')) return 'token-a';
+    if (value.includes('token-b') || value.includes('token b')) return 'token-b';
+    if (value.includes('premium')) return 'premium';
+    if (value.includes('admin')) return 'admin';
+    return plan.toString();
+  };
+
   useEffect(() => {
     const source = profile || initialData;
+    const planSource = latestRegistrationPlan || subscriptionTier || source?.service_plan || '';
+    const normalizedPlan = normalizePlan(planSource);
     reset({
       first_name: source?.first_name || '',
       last_name: source?.last_name || '',
       company: source?.company || '',
       phone: source?.phone || '',
-      service_plan: source?.service_plan || '',
+      service_plan: normalizedPlan,
     });
-  }, [profile, initialData, reset]);
+  }, [profile, initialData, subscriptionTier, latestRegistrationPlan, reset]);
 
   const onSubmit = async (data: ProfileFormData) => {
     setIsSubmitting(true);
@@ -84,6 +97,7 @@ export function ProfileForm({ language = 'en' }: ProfileFormProps) {
       company: 'Company',
       phone: 'Phone Number',
       servicePlan: 'Service Plan',
+      noPlan: 'No active plan',
       save: 'Save Changes',
       saving: 'Saving...',
     },
@@ -96,6 +110,7 @@ export function ProfileForm({ language = 'en' }: ProfileFormProps) {
       company: '会社',
       phone: '電話番号',
       servicePlan: 'サービスプラン',
+      noPlan: '契約プランはありません',
       save: '変更を保存',
       saving: '保存中...',
     },
@@ -108,30 +123,16 @@ export function ProfileForm({ language = 'en' }: ProfileFormProps) {
       company: 'บริษัท',
       phone: 'เบอร์โทรศัพท์',
       servicePlan: 'แผนบริการ',
+      noPlan: 'ยังไม่มีการสมัครแพ็กเกจ',
       save: 'บันทึกการเปลี่ยนแปลง',
       saving: 'กำลังบันทึก...',
     },
   };
 
   const t = texts[language];
-  const planOptions = {
-    en: [
-      { value: 'token-a', label: 'Token A' },
-      { value: 'token-b', label: 'Token B' },
-      { value: 'premium', label: 'Premium' },
-    ],
-    ja: [
-      { value: 'token-a', label: 'トークンA' },
-      { value: 'token-b', label: 'トークンB' },
-      { value: 'premium', label: 'プレミアム' },
-    ],
-    th: [
-      { value: 'token-a', label: 'โทเคน A' },
-      { value: 'token-b', label: 'โทเคน B' },
-      { value: 'premium', label: 'พรีเมียม' },
-    ],
-  } as const;
-  const plans = planOptions[language];
+  const currentPlanKey = watch('service_plan') || '';
+  const planDetails = getPlanDetails(currentPlanKey, language);
+  const planDisplay = currentPlanKey ? planDetails.name : t.noPlan;
 
   if (loading) {
     return (
@@ -222,29 +223,12 @@ export function ProfileForm({ language = 'en' }: ProfileFormProps) {
 
           <div className="space-y-2">
             <Label>{t.servicePlan}</Label>
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-              {plans.map((plan) => {
-                const selected = watch('service_plan') === plan.value;
-                return (
-                  <button
-                    type="button"
-                    key={plan.value}
-                    onClick={() => setValue('service_plan', plan.value)}
-                    className={cn(
-                      "rounded-md border px-3 py-2 text-left text-sm transition-colors",
-                      selected
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "hover:bg-muted"
-                    )}
-                  >
-                    {plan.label}
-                  </button>
-                );
-              })}
-            </div>
-            {errors.service_plan && (
-              <p className="text-sm text-destructive">{errors.service_plan.message}</p>
-            )}
+            <Input
+              id="service_plan"
+              value={planDisplay}
+              disabled
+              className="bg-muted"
+            />
           </div>
 
           <Button type="submit" disabled={isSubmitting}>
