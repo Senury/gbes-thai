@@ -69,7 +69,7 @@ Working document that tracks the functional problems surfaced so far plus the ag
 
 ## 12. Navbar Profile Actions Were Static
 - **Symptom**: When logged in, the navbar just displayed the user's email text, and the “登録” button was always shown even for paid subscribers.
-- **Fix Implemented**: The email is now a dashboard button (desktop + mobile), and the register CTA hides for paying/premium users using `useUserRole` (`src/components/Navigation.tsx`).
+- **Fix Implemented**: The email is now a dashboard button (desktop + mobile) and the register CTA hides for paying/premium or completed users across all locales using `useUserRole` (`src/components/Navigation.tsx`, `src/components/en/Navigation.tsx`, `src/components/th/Navigation.tsx`).
 - **Status**: ✅ done.
 
 ## Notes on Scope / Next Steps
