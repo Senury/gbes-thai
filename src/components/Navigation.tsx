@@ -16,6 +16,9 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut } = useAuth();
   const { hasSubscription, isPremium, loading: roleLoading } = useUserRole();
+  const isRegistrationComplete =
+    Boolean(user?.user_metadata?.registered) ||
+    user?.user_metadata?.registration_status === 'completed';
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -123,7 +126,7 @@ const Navigation = () => {
                   <User className="h-4 w-4 mr-2" />
                   {user.email}
                 </Button>
-                {!roleLoading && !(hasSubscription || isPremium) && (
+                {!roleLoading && !(hasSubscription || isPremium || isRegistrationComplete) && (
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/ja/register">登録</Link>
                   </Button>
@@ -191,7 +194,7 @@ const Navigation = () => {
                     <User className="h-4 w-4 mr-2" />
                     {user.email}
                   </Button>
-                  {!roleLoading && !(hasSubscription || isPremium) && (
+                  {!roleLoading && !(hasSubscription || isPremium || isRegistrationComplete) && (
                     <Button variant="outline" size="sm" className="w-full" asChild>
                       <Link to="/ja/register" onClick={closeMenu}>登録</Link>
                     </Button>
