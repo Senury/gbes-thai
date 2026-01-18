@@ -48,7 +48,6 @@ export function DashboardLayout({ children, language = 'en' }: DashboardLayoutPr
         
         <div className="flex-1 flex flex-col">
           <header className="h-12 flex items-center border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <SidebarTrigger className="ml-2" />
             <div className="ml-4">
               <h1 className="text-lg font-semibold">
                 {language === 'en' ? 'Dashboard' : language === 'th' ? 'แดชบอร์ด' : 'ダッシュボード'}
