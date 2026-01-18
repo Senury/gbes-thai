@@ -11,6 +11,7 @@ export interface UserRoleInfo {
   hasSubscription: boolean;
   subscriptionTier: string | null;
   loading: boolean;
+  registrationCompleted: boolean;
 }
 
 export const useUserRole = () => {
@@ -22,6 +23,7 @@ export const useUserRole = () => {
     hasSubscription: false,
     subscriptionTier: null,
     loading: true,
+    registrationCompleted: false,
   });
 
   useEffect(() => {
@@ -33,6 +35,7 @@ export const useUserRole = () => {
         hasSubscription: false,
         subscriptionTier: null,
         loading: false,
+        registrationCompleted: false,
       });
       return;
     }
@@ -70,6 +73,16 @@ export const useUserRole = () => {
         }
 
         const subInfo = subscriptionInfo?.[0];
+        const { data: registrationData, error: registrationError } = await supabase
+          .from('registrations')
+          .select('id')
+          .eq('user_id', user.id)
+          .limit(1);
+
+        if (registrationError) {
+          console.error('Error fetching registration info:', registrationError);
+        }
+        const registrationCompleted = !!(registrationData && registrationData.length);
         
         setRoleInfo({
           role: highestRole,
@@ -78,6 +91,7 @@ export const useUserRole = () => {
           hasSubscription: subInfo?.has_subscription || false,
           subscriptionTier: subInfo?.subscription_tier || null,
           loading: false,
+          registrationCompleted,
         });
       } catch (error) {
         console.error('Error in fetchUserRole:', error);
@@ -88,6 +102,7 @@ export const useUserRole = () => {
           hasSubscription: false,
           subscriptionTier: null,
           loading: false,
+          registrationCompleted: false,
         });
       }
     };

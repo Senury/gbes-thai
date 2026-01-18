@@ -15,7 +15,11 @@ import {
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut } = useAuth();
-  const { hasSubscription, isPremium, loading: roleLoading } = useUserRole();
+  const { hasSubscription, isPremium, loading: roleLoading, registrationCompleted } = useUserRole();
+  const isRegistrationComplete =
+    registrationCompleted ||
+    Boolean(user?.user_metadata?.registered) ||
+    user?.user_metadata?.registration_status === 'completed';
   const isRegistrationComplete =
     Boolean(user?.user_metadata?.registered) ||
     user?.user_metadata?.registration_status === 'completed';
