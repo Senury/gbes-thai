@@ -72,6 +72,11 @@ Working document that tracks the functional problems surfaced so far plus the ag
 - **Fix Implemented**: The email is now a dashboard button (desktop + mobile) and the register CTA hides for paying/premium or completed users across all locales using `useUserRole` (`src/components/Navigation.tsx`, `src/components/en/Navigation.tsx`, `src/components/th/Navigation.tsx`).
 - **Status**: ✅ done.
 
+## 13. Dashboard Header Had Duplicate Sidebar Toggle
+- **Symptom**: The dashboard top bar had its own sidebar toggle button even though the sidebar already includes an identical control, creating redundant UI.
+- **Fix Implemented**: Removed the header’s `<SidebarTrigger>` from `src/components/DashboardLayout.tsx`, keeping the sidebar as the single source of truth for collapsing/expanding navigation.
+- **Status**: ✅ done.
+
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
 - Partner Search deep-dive findings (pending action):
