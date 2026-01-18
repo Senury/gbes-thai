@@ -131,6 +131,16 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              {state !== "collapsed" && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild className="bg-primary/10 text-primary font-semibold">
+                    <NavLink to={`/${language === 'ja' ? 'ja' : language === 'th' ? 'th' : 'en'}`}>
+                      <Globe className="mr-2 h-4 w-4" />
+                      <span>{getText("Homepage", "ホーム", "หน้าแรก")}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
               {userItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
