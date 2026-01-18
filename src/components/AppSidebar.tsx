@@ -7,7 +7,8 @@ import {
   Settings, 
   LogOut,
   Shield,
-  BarChart3
+  BarChart3,
+  Globe
 } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -45,6 +46,11 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
   };
 
   const userItems = [
+    { 
+      title: getText("Homepage", "ホーム", "หน้าแรก"),
+      url: `/${language === 'ja' ? 'ja' : language === 'th' ? 'th' : 'en'}`,
+      icon: Globe
+    },
     { 
       title: getText("Dashboard", "ダッシュボード", "แดชบอร์ด"), 
       url: `/${language}/dashboard`, 
