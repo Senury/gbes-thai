@@ -1,14 +1,12 @@
-import { useState } from "react";
 import { 
   Home, 
   User, 
   Users, 
   FileText, 
-  Settings, 
   LogOut,
   Shield,
   BarChart3,
-  Globe
+  ArrowLeft
 } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -46,11 +44,6 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
   };
 
   const userItems = [
-    { 
-      title: getText("Homepage", "ホーム", "หน้าแรก"),
-      url: `/${language === 'ja' ? 'ja' : language === 'th' ? 'th' : 'en'}`,
-      icon: Globe
-    },
     { 
       title: getText("Dashboard", "ダッシュボード", "แดชบอร์ด"), 
       url: `/${language}/dashboard`, 
@@ -121,7 +114,22 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
       className={state === "collapsed" ? "w-14" : "w-60"}
       collapsible="icon"
     >
-      <SidebarTrigger className="m-2 self-end" />
+      <div className="flex items-center px-2 pt-2 gap-2">
+        <div className={`flex-1 flex ${state === "collapsed" ? "justify-center" : "justify-start"}`}>
+          <SidebarTrigger />
+        </div>
+        <div className="w-[160px] flex justify-end">
+          <button
+            onClick={() => navigate(`/${language === 'ja' ? 'ja' : language === 'th' ? 'th' : 'en'}`)}
+            className={`flex items-center text-sm text-muted-foreground transition-colors ${
+              state === 'collapsed' ? 'opacity-0 pointer-events-none select-none' : 'hover:text-foreground'
+            }`}
+          >
+            <ArrowLeft className="mr-1 h-4 w-4" />
+            <span>{getText("Back to site", "サイトに戻る", "กลับสู่เว็บไซต์")}</span>
+          </button>
+        </div>
+      </div>
 
       <SidebarContent>
         {/* User Menu */}
@@ -131,16 +139,6 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {state !== "collapsed" && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild className="bg-primary/10 text-primary font-semibold">
-                    <NavLink to={`/${language === 'ja' ? 'ja' : language === 'th' ? 'th' : 'en'}`}>
-                      <Globe className="mr-2 h-4 w-4" />
-                      <span>{getText("Homepage", "ホーム", "หน้าแรก")}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
               {userItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>

@@ -73,8 +73,8 @@ Working document that tracks the functional problems surfaced so far plus the ag
 - **Status**: ✅ done.
 
 ## 13. Dashboard Header/Sidebar Redundancies
-- **Symptom**: The dashboard top bar had its own sidebar toggle button, and the sidebar lacked a quick way back to the public homepage.
-- **Fix Implemented**: Removed the header `<SidebarTrigger>` (`src/components/DashboardLayout.tsx`) and added a “Homepage” shortcut (localized) to the sidebar menu (`src/components/AppSidebar.tsx`) so users can return to the main site without leaving the dashboard shell.
+- **Symptom**: The dashboard top bar had its own sidebar toggle button, and the sidebar lacked a quick way back to the public homepage (leading to duplicate toggles after design feedback).
+- **Fix Implemented**: Removed the header `<SidebarTrigger>` (`src/components/DashboardLayout.tsx`) and replaced the sidebar menu shortcut with a minimalist localized “Back to site” control that sits above the menu when expanded. The control stays in-flow with `opacity-0` in collapsed mode so the other icons never shift, and the collapse trigger now uses a flex-1 container that centers it in the collapsed state (while a fixed-width spacer preserves the back-link slot) so it aligns vertically with the remaining icons (`src/components/AppSidebar.tsx`).
 - **Status**: ✅ done.
 
 ## Notes on Scope / Next Steps

@@ -20,9 +20,6 @@ const Navigation = () => {
     registrationCompleted ||
     Boolean(user?.user_metadata?.registered) ||
     user?.user_metadata?.registration_status === 'completed';
-  const isRegistrationComplete =
-    Boolean(user?.user_metadata?.registered) ||
-    user?.user_metadata?.registration_status === 'completed';
   const navigate = useNavigate();
   const location = useLocation();
 
