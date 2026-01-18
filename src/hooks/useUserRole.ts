@@ -11,8 +11,24 @@ export interface UserRoleInfo {
   hasSubscription: boolean;
   subscriptionTier: string | null;
   loading: boolean;
-  registrationCompleted: boolean;
+  registrationCompleted: boolean | null;
 }
+
+const getStoredRegistration = (): boolean | null => {
+  if (typeof window === 'undefined') return null;
+  const value = localStorage.getItem('registrationCompleted');
+  if (value === null) return null;
+  return value === 'true';
+};
+
+const persistRegistration = (value: boolean | null) => {
+  if (typeof window === 'undefined') return;
+  if (value === null) {
+    localStorage.removeItem('registrationCompleted');
+  } else {
+    localStorage.setItem('registrationCompleted', value ? 'true' : 'false');
+  }
+};
 
 export const useUserRole = () => {
   const { user } = useAuth();
@@ -23,11 +39,12 @@ export const useUserRole = () => {
     hasSubscription: false,
     subscriptionTier: null,
     loading: true,
-    registrationCompleted: false,
+    registrationCompleted: getStoredRegistration(),
   });
 
   useEffect(() => {
     if (!user) {
+      persistRegistration(false);
       setRoleInfo({
         role: 'basic',
         roleLevel: 1,
@@ -35,7 +52,7 @@ export const useUserRole = () => {
         hasSubscription: false,
         subscriptionTier: null,
         loading: false,
-        registrationCompleted: false,
+        registrationCompleted: null,
       });
       return;
     }
@@ -84,7 +101,7 @@ export const useUserRole = () => {
         }
         const registrationCompleted = !!(registrationData && registrationData.length);
         
-        setRoleInfo({
+        const nextInfo = {
           role: highestRole,
           roleLevel: roleLevel || 1,
           canAccessContacts: subInfo?.can_access_contacts || false,
@@ -92,9 +109,12 @@ export const useUserRole = () => {
           subscriptionTier: subInfo?.subscription_tier || null,
           loading: false,
           registrationCompleted,
-        });
+        };
+        persistRegistration(registrationCompleted);
+        setRoleInfo(nextInfo);
       } catch (error) {
         console.error('Error in fetchUserRole:', error);
+        persistRegistration(null);
         setRoleInfo({
           role: 'basic',
           roleLevel: 1,
@@ -102,7 +122,7 @@ export const useUserRole = () => {
           hasSubscription: false,
           subscriptionTier: null,
           loading: false,
-          registrationCompleted: false,
+          registrationCompleted: null,
         });
       }
     };

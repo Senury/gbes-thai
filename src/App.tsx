@@ -34,6 +34,7 @@ import NotFound from "./pages/NotFound";
 import PartnerSearch from "./pages/PartnerSearch";
 import EnglishPartnerSearch from "./pages/en/PartnerSearch";
 import ThaiPartnerSearch from "./pages/th/PartnerSearch";
+import { AuthProvider } from "@/hooks/useAuth";
 
 // Language detection utility
 const detectLanguage = () => {
@@ -46,12 +47,13 @@ const detectLanguage = () => {
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
+  <AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
           <Route path="/" element={<Navigate to={`/${detectLanguage()}`} replace />} />
           <Route path="/dashboard" element={<Navigate to={`/${detectLanguage()}/dashboard`} replace />} />
           <Route path="/ja" element={<Japanese />} />
@@ -86,10 +88,11 @@ const App = () => (
           <Route path="/simple-email-test" element={<SimpleEmailTest />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </AuthProvider>
 );
 
 export default App;

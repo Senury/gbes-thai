@@ -11,6 +11,7 @@ import {
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useUserRole } from "@/hooks/useUserRole";
 
 import {
   Sidebar,
@@ -35,6 +36,7 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const { registrationCompleted, loading: roleLoading } = useUserRole();
   const currentPath = location.pathname;
 
   const getText = (en: string, ja: string, th: string) => {
@@ -54,12 +56,15 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
       url: `/${language}/profile`, 
       icon: User 
     },
-    { 
-      title: getText("Registration", "登録", "ลงทะเบียน"), 
-      url: `/${language}/register`, 
-      icon: FileText 
-    },
   ];
+
+  if (registrationCompleted === false && !roleLoading) {
+    userItems.push({
+      title: getText("Registration", "登録", "ลงทะเบียน"),
+      url: `/${language}/register`,
+      icon: FileText,
+    });
+  }
 
   const adminItems = [
     { 

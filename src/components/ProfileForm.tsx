@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useProfile, Profile } from '@/hooks/useProfile';
 import { useAuth } from '@/hooks/useAuth';
+import { cn } from '@/lib/utils';
 
 const profileSchema = z.object({
   first_name: z.string().optional(),
@@ -25,7 +26,7 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ language = 'en' }: ProfileFormProps) {
-  const { profile, loading, updateProfile, createProfile } = useProfile();
+  const { profile, loading, initialData, updateProfile, createProfile } = useProfile();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,17 +34,30 @@ export function ProfileForm({ language = 'en' }: ProfileFormProps) {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
-    values: {
-      first_name: profile?.first_name || '',
-      last_name: profile?.last_name || '',
-      company: profile?.company || '',
-      phone: profile?.phone || '',
-      service_plan: profile?.service_plan || '',
+    defaultValues: {
+      first_name: '',
+      last_name: '',
+      company: '',
+      phone: '',
+      service_plan: '',
     },
   });
+
+  useEffect(() => {
+    const source = profile || initialData;
+    reset({
+      first_name: source?.first_name || '',
+      last_name: source?.last_name || '',
+      company: source?.company || '',
+      phone: source?.phone || '',
+      service_plan: source?.service_plan || '',
+    });
+  }, [profile, initialData, reset]);
 
   const onSubmit = async (data: ProfileFormData) => {
     setIsSubmitting(true);
@@ -100,6 +114,24 @@ export function ProfileForm({ language = 'en' }: ProfileFormProps) {
   };
 
   const t = texts[language];
+  const planOptions = {
+    en: [
+      { value: 'token-a', label: 'Token A' },
+      { value: 'token-b', label: 'Token B' },
+      { value: 'premium', label: 'Premium' },
+    ],
+    ja: [
+      { value: 'token-a', label: 'トークンA' },
+      { value: 'token-b', label: 'トークンB' },
+      { value: 'premium', label: 'プレミアム' },
+    ],
+    th: [
+      { value: 'token-a', label: 'โทเคน A' },
+      { value: 'token-b', label: 'โทเคน B' },
+      { value: 'premium', label: 'พรีเมียม' },
+    ],
+  } as const;
+  const plans = planOptions[language];
 
   if (loading) {
     return (
@@ -189,12 +221,27 @@ export function ProfileForm({ language = 'en' }: ProfileFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="service_plan">{t.servicePlan}</Label>
-            <Input
-              id="service_plan"
-              {...register('service_plan')}
-              placeholder={t.servicePlan}
-            />
+            <Label>{t.servicePlan}</Label>
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+              {plans.map((plan) => {
+                const selected = watch('service_plan') === plan.value;
+                return (
+                  <button
+                    type="button"
+                    key={plan.value}
+                    onClick={() => setValue('service_plan', plan.value)}
+                    className={cn(
+                      "rounded-md border px-3 py-2 text-left text-sm transition-colors",
+                      selected
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "hover:bg-muted"
+                    )}
+                  >
+                    {plan.label}
+                  </button>
+                );
+              })}
+            </div>
             {errors.service_plan && (
               <p className="text-sm text-destructive">{errors.service_plan.message}</p>
             )}

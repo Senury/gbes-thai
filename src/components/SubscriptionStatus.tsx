@@ -5,11 +5,63 @@ import { CreditCard, RefreshCw, Settings } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
-import { ja } from "date-fns/locale";
+import { ja, enUS, th as thLocale } from "date-fns/locale";
 
-const SubscriptionStatus = () => {
+interface SubscriptionStatusProps {
+  language?: 'ja' | 'en' | 'th';
+}
+
+const translations = {
+  ja: {
+    title: "サブスクリプション状況",
+    refresh: "更新",
+    statusLabel: "ステータス:",
+    statusActive: "アクティブ",
+    statusInactive: "未契約",
+    planLabel: "プラン:",
+    renewalLabel: "次回更新日:",
+    manage: "サブスクリプション管理",
+    upgradeCopy: "プレミアム機能をご利用いただくにはサブスクリプションが必要です。",
+    upgradeCta: "プランを選択",
+  },
+  en: {
+    title: "Subscription Status",
+    refresh: "Refresh",
+    statusLabel: "Status:",
+    statusActive: "Active",
+    statusInactive: "Not Subscribed",
+    planLabel: "Plan:",
+    renewalLabel: "Next Renewal:",
+    manage: "Manage Subscription",
+    upgradeCopy: "Subscribe to access premium functionality.",
+    upgradeCta: "View Plans",
+  },
+  th: {
+    title: "สถานะการสมัครสมาชิก",
+    refresh: "รีเฟรช",
+    statusLabel: "สถานะ:",
+    statusActive: "ใช้งานอยู่",
+    statusInactive: "ยังไม่ได้สมัคร",
+    planLabel: "แพ็กเกจ:",
+    renewalLabel: "รอบบิลถัดไป:",
+    manage: "จัดการการสมัคร",
+    upgradeCopy: "จำเป็นต้องสมัครสมาชิกเพื่อใช้งานฟีเจอร์ระดับพรีเมียม",
+    upgradeCta: "เลือกแพ็กเกจ",
+  },
+} as const;
+
+const localeMap = {
+  ja,
+  en: enUS,
+  th: thLocale,
+};
+
+const SubscriptionStatus = ({ language = 'ja' }: SubscriptionStatusProps) => {
   const { user } = useAuth();
   const { subscription, loading, checkSubscription, openCustomerPortal } = useSubscription();
+  const t = translations[language] ?? translations.ja;
+  const locale = localeMap[language] ?? ja;
+  const localePrefix = language === 'ja' ? 'ja' : language === 'th' ? 'th' : 'en';
 
   if (!user) {
     return null;
@@ -21,12 +73,13 @@ const SubscriptionStatus = () => {
   };
 
   const getStatusText = () => {
-    if (subscription.subscribed) return "アクティブ";
-    return "未契約";
+    if (subscription.subscribed) return t.statusActive;
+    return t.statusInactive;
   };
 
   const formatDate = (dateString: string) => {
-    return format(new Date(dateString), "yyyy年MM月dd日", { locale: ja });
+    const template = language === 'en' ? "PPP" : language === 'th' ? "dd MMMM yyyy" : "yyyy年MM月dd日";
+    return format(new Date(dateString), template, { locale });
   };
 
   return (
@@ -34,7 +87,7 @@ const SubscriptionStatus = () => {
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-lg font-semibold flex items-center">
           <CreditCard className="h-5 w-5 mr-2" />
-          サブスクリプション状況
+          {t.title}
         </CardTitle>
         <Button
           variant="outline"
@@ -43,13 +96,13 @@ const SubscriptionStatus = () => {
           disabled={loading}
         >
           <RefreshCw className={`h-4 w-4 mr-1 ${loading ? 'animate-spin' : ''}`} />
-          更新
+          {t.refresh}
         </Button>
       </CardHeader>
       
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">ステータス:</span>
+          <span className="text-sm font-medium">{t.statusLabel}</span>
           <Badge variant={getStatusVariant()}>
             {getStatusText()}
           </Badge>
@@ -58,7 +111,7 @@ const SubscriptionStatus = () => {
         {subscription.subscribed && (
           <>
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">プラン:</span>
+              <span className="text-sm font-medium">{t.planLabel}</span>
               <span className="text-sm font-semibold">
                 {subscription.subscription_tier}
               </span>
@@ -66,7 +119,7 @@ const SubscriptionStatus = () => {
             
             {subscription.subscription_end && (
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">次回更新日:</span>
+                <span className="text-sm font-medium">{t.renewalLabel}</span>
                 <span className="text-sm">
                   {formatDate(subscription.subscription_end)}
                 </span>
@@ -83,7 +136,7 @@ const SubscriptionStatus = () => {
               onClick={openCustomerPortal}
             >
               <Settings className="h-4 w-4 mr-2" />
-              サブスクリプション管理
+              {t.manage}
             </Button>
           </div>
         )}
@@ -91,13 +144,13 @@ const SubscriptionStatus = () => {
         {!subscription.subscribed && (
           <div className="pt-4">
             <p className="text-sm text-muted-foreground mb-4">
-              プレミアム機能をご利用いただくにはサブスクリプションが必要です。
+              {t.upgradeCopy}
             </p>
             <Button 
               className="w-full" 
-              onClick={() => window.location.href = '/#pricing'}
+              onClick={() => window.location.href = `/${localePrefix}#pricing`}
             >
-              プランを選択
+              {t.upgradeCta}
             </Button>
           </div>
         )}

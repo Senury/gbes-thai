@@ -19,6 +19,7 @@ export interface Profile {
 export function useProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialData, setInitialData] = useState<Partial<Profile> | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -37,7 +38,34 @@ export function useProfile() {
 
       if (error) throw error;
       
-      setProfile(data);
+      if (data) {
+        setProfile(data);
+        setInitialData(data);
+      } else {
+        const { data: registrationData, error: registrationError } = await supabase
+          .from('registrations')
+          .select('first_name,last_name,company,phone,service,email')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .maybeSingle();
+
+        if (registrationError) {
+          throw registrationError;
+        }
+
+        if (registrationData) {
+          setInitialData({
+            first_name: registrationData.first_name || '',
+            last_name: registrationData.last_name || '',
+            company: registrationData.company || '',
+            phone: registrationData.phone || '',
+            service_plan: registrationData.service || '',
+            email: registrationData.email || user.email || '',
+          } as Partial<Profile>);
+        } else {
+          setInitialData(null);
+        }
+      }
     } catch (error) {
       console.error('Error fetching profile:', error);
       toast({
@@ -64,6 +92,7 @@ export function useProfile() {
       if (error) throw error;
 
       setProfile(data);
+      setInitialData(data);
       toast({
         title: "Success",
         description: "Profile updated successfully",
@@ -98,6 +127,7 @@ export function useProfile() {
       if (error) throw error;
 
       setProfile(data);
+      setInitialData(data);
       toast({
         title: "Success",
         description: "Profile created successfully",
@@ -122,6 +152,7 @@ export function useProfile() {
   return {
     profile,
     loading,
+    initialData,
     updateProfile,
     createProfile,
     refetchProfile: fetchProfile,

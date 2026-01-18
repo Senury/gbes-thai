@@ -77,6 +77,26 @@ Working document that tracks the functional problems surfaced so far plus the ag
 - **Fix Implemented**: Removed the header `<SidebarTrigger>` (`src/components/DashboardLayout.tsx`) and replaced the sidebar menu shortcut with a minimalist localized “Back to site” control that sits above the menu when expanded. The control stays in-flow with `opacity-0` in collapsed mode so the other icons never shift, and the collapse trigger now uses a flex-1 container that centers it in the collapsed state (while a fixed-width spacer preserves the back-link slot) so it aligns vertically with the remaining icons (`src/components/AppSidebar.tsx`).
 - **Status**: ✅ done.
 
+## 14. Dashboard Localization Gaps
+- **Symptom**: Visiting `/ja/dashboard` still rendered every heading/label in English, and the shared `SubscriptionStatus` widget always showed Japanese regardless of locale.
+- **Fix Implemented**: Localized all static strings in `src/pages/Dashboard.tsx` (welcome hero, card headers/descriptions, CTAs, fallback messages, toast text) and explicitly set `<DashboardLayout language="ja">`. `SubscriptionStatus` now accepts a `language` prop with JA/EN/TH copy, localized dates, and locale-aware pricing links; each dashboard passes its language so the subscription panel matches the page (`src/components/SubscriptionStatus.tsx`, `src/pages/*/Dashboard.tsx`).
+- **Status**: ✅ done.
+
+## 15. Profile Form Didn’t Show Existing Data
+- **Symptom**: The dashboard/profile form always loaded empty inputs even when the user already had profile/registration data because `react-hook-form` initialized before the async fetch completed and never re-populated the fields.
+- **Fix Implemented**: `useProfile` now exposes `initialData` that falls back to the latest registration record when no profile row exists, `ProfileForm` resets whenever `profile` or `initialData` changes, and the service plan selector is now a localized segmented button set (Token A/B/Premium). All saved fields—including the plan—prefill automatically and can be edited with a single click (`src/hooks/useProfile.ts`, `src/components/ProfileForm.tsx`).
+- **Status**: ✅ done.
+
+## 16. Sidebar Still Showed “Registration” Link After Completing Signup
+- **Symptom**: Even after finishing the paid registration flow, the dashboard sidebar continued to show the “Registration” menu item (and it would flicker back in briefly while role info was loading), sending customers to a redundant form.
+- **Fix Implemented**: `AppSidebar` now consumes `useUserRole.registrationCompleted` plus its loading state, and only adds the Registration entry when the role hook has finished loading and the user hasn’t completed registration. The hook now keeps that flag tri-stated (null/false/true) and persists it in `localStorage`, so we never show the link until we’re certain the user is incomplete (`src/components/AppSidebar.tsx`, `src/hooks/useUserRole.ts`).
+- **Status**: ✅ done.
+
+## 17. Sidebar Blanked on Every Navigation
+- **Symptom**: Clicking any sidebar link briefly unmounted the entire dashboard because every page re-instantiated `useAuth`, which fetched Supabase session state anew, causing `DashboardLayout` to hit its loading skeleton each time.
+- **Fix Implemented**: Promoted the auth hook into a global context provider (`AuthProvider`) that initializes Supabase session once and shares the user state across the app. Wrapped `<App />` with the provider so the sidebar and layout retain state across route changes (`src/hooks/useAuth.tsx`, `src/App.tsx`). Transitions between dashboard sections now swap only the content without flashing the whole shell.
+- **Status**: ✅ done.
+
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
 - Partner Search deep-dive findings (pending action):

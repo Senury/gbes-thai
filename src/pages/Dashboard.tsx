@@ -44,8 +44,8 @@ export default function Dashboard() {
           console.error('Error fetching registration:', error);
           toast({
             variant: "destructive",
-            title: "Error",
-            description: "Failed to load registration data",
+            title: "エラー",
+            description: "登録データの取得に失敗しました。",
           });
         } else if (data && data.length > 0) {
           setRegistration(data[0]);
@@ -70,54 +70,54 @@ export default function Dashboard() {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout language="ja">
       <div className="space-y-6">
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-6">
           <h1 className="text-2xl font-bold mb-2">
-            Welcome back, {user?.email}!
+            ようこそ、{user?.email} さん
           </h1>
           <p className="text-muted-foreground">
-            Here's an overview of your account and registration status.
+            アカウントと登録状況の概要をご確認ください。
           </p>
         </div>
 
         {/* Subscription Status */}
-        <SubscriptionStatus />
+        <SubscriptionStatus language="ja" />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Account Status</CardTitle>
+              <CardTitle className="text-sm font-medium">アカウント状況</CardTitle>
               <User className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Active</div>
+              <div className="text-2xl font-bold">アクティブ</div>
               <p className="text-xs text-muted-foreground">
-                Account created {new Date(user?.created_at || '').toLocaleDateString()}
+                作成日: {new Date(user?.created_at || '').toLocaleDateString()}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Registration Status</CardTitle>
+              <CardTitle className="text-sm font-medium">登録状況</CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {registration ? 'Completed' : 'Pending'}
+                {registration ? '完了' : '未完了'}
               </div>
               <p className="text-xs text-muted-foreground">
-                {registration ? 'Service registration complete' : 'Complete your service registration'}
+                {registration ? 'サービス登録が完了しています' : 'サービス登録を完了してください'}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Current Plan</CardTitle>
+              <CardTitle className="text-sm font-medium">現在のプラン</CardTitle>
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -137,33 +137,33 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
-                Registration Details
+                登録詳細
               </CardTitle>
               <CardDescription>
-                Your service registration information
+                最新のサービス登録情報
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Name</label>
+                  <label className="text-sm font-medium text-muted-foreground">氏名</label>
                   <p className="text-sm">{registration.first_name} {registration.last_name}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Email</label>
+                  <label className="text-sm font-medium text-muted-foreground">メールアドレス</label>
                   <p className="text-sm">{registration.email}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Company</label>
-                  <p className="text-sm">{registration.company || 'Not provided'}</p>
+                  <label className="text-sm font-medium text-muted-foreground">会社名</label>
+                  <p className="text-sm">{registration.company || '未入力'}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Phone</label>
-                  <p className="text-sm">{registration.phone || 'Not provided'}</p>
+                  <label className="text-sm font-medium text-muted-foreground">電話番号</label>
+                  <p className="text-sm">{registration.phone || '未入力'}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-muted-foreground">Service Plan:</label>
+                <label className="text-sm font-medium text-muted-foreground">契約プラン:</label>
                 <Badge className={getServiceDetails(registration.service).color}>
                   {getServiceDetails(registration.service).name} - {getServiceDetails(registration.service).price}
                 </Badge>
@@ -171,7 +171,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
-                  Registered on {new Date(registration.created_at).toLocaleDateString()}
+                  登録日: {new Date(registration.created_at).toLocaleDateString()}
                 </span>
               </div>
             </CardContent>
@@ -179,14 +179,14 @@ export default function Dashboard() {
         ) : (
           <Card>
             <CardHeader>
-              <CardTitle>Complete Your Registration</CardTitle>
+              <CardTitle>登録を完了してください</CardTitle>
               <CardDescription>
-                You haven't completed your service registration yet.
+                サービス登録がまだ完了していません。
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Button onClick={() => navigate('/ja/register')}>
-                Complete Registration
+                登録を完了する
               </Button>
             </CardContent>
           </Card>
