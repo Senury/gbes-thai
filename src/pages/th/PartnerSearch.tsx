@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/th/Navigation";
 import Footer from "@/components/th/Footer";
 import { CompanySearchService, CompanySearchFilters } from "@/utils/CompanySearchService";
+import { supabase } from "@/integrations/supabase/client";
 import { DataSourceSelector } from "@/components/DataSourceSelector";
 
 interface Company {
@@ -35,7 +36,8 @@ const PartnerSearch = () => {
   const [filters, setFilters] = useState<CompanySearchFilters>({
     industry: 'all',
     location: 'all-regions',
-    companySize: 'all'
+    companySize: 'all',
+    locationPlaceId: undefined,
   });
   const [isSearching, setIsSearching] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
@@ -44,6 +46,9 @@ const PartnerSearch = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedDataSources, setSelectedDataSources] = useState<string[]>(['google_places', 'opencorporates']);
   const [showDataSourceSelector, setShowDataSourceSelector] = useState(false);
+  const [locationQuery, setLocationQuery] = useState("");
+  const [locationSuggestions, setLocationSuggestions] = useState<any[]>([]);
+  const [isLocationLoading, setIsLocationLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -54,6 +59,54 @@ const PartnerSearch = () => {
     { value: "large", label: "ใหญ่ (250+ พนักงาน)" }
   ];
 
+  useEffect(() => {
+    if (!locationQuery || locationQuery.trim().length < 2) {
+      setLocationSuggestions([]);
+      return;
+    }
+
+    const handler = setTimeout(async () => {
+      try {
+        setIsLocationLoading(true);
+        const { data, error } = await supabase.functions.invoke('google-places-autocomplete', {
+          body: {
+            input: locationQuery,
+            language: 'th'
+          }
+        });
+        if (!error && data?.predictions) {
+          setLocationSuggestions(data.predictions);
+        }
+      } catch (error) {
+        console.error('Location autocomplete error:', error);
+      } finally {
+        setIsLocationLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [locationQuery]);
+
+  const handleSelectLocation = (prediction: any) => {
+    setFilters(prev => ({
+      ...prev,
+      location: prediction.description,
+      locationPlaceId: prediction.place_id,
+    }));
+    setLocationQuery(prediction.description);
+    setLocationSuggestions([]);
+  };
+
+  const clearSelectedLocation = () => {
+    setFilters(prev => ({
+      ...prev,
+      location: 'all-regions',
+      locationPlaceId: undefined,
+    }));
+    setLocationQuery("");
+    setLocationSuggestions([]);
+  };
+
   const searchCompanies = async () => {
     setIsSearching(true);
     setLoading(true);
@@ -62,7 +115,8 @@ const PartnerSearch = () => {
         industry: filters.industry && filters.industry !== 'all' ? filters.industry : undefined,
         location: filters.location && filters.location !== 'all-regions' ? filters.location : undefined,
         companySize: filters.companySize && filters.companySize !== 'all' ? filters.companySize : undefined,
-        dataSources: selectedDataSources
+        dataSources: selectedDataSources,
+        locationPlaceId: filters.locationPlaceId,
       };
       
       const results = await CompanySearchService.searchCompanies(searchQuery || "", searchFilters);
@@ -232,7 +286,7 @@ const PartnerSearch = () => {
                   <label className="text-sm font-medium mb-2 block">ภูมิภาค</label>
                   <Select 
                     value={filters.location || "all-regions"} 
-                    onValueChange={(value) => setFilters(prev => ({ ...prev, location: value }))}
+                    onValueChange={(value) => setFilters(prev => ({ ...prev, location: value, locationPlaceId: undefined }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="เลือกภูมิภาค" />
@@ -247,6 +301,47 @@ const PartnerSearch = () => {
                       <SelectItem value="usa">🇺🇸 สหรัฐอเมริกา</SelectItem>
                     </SelectContent>
                   </Select>
+                  <div className="space-y-2 mt-4">
+                    <label className="text-sm font-medium text-muted-foreground flex justify-between items-center">
+                      ค้นหาตำแหน่งด้วย Google
+                      {filters.locationPlaceId && (
+                        <button
+                          type="button"
+                          className="text-xs text-primary hover:underline"
+                          onClick={clearSelectedLocation}
+                        >
+                          เคลียร์
+                        </button>
+                      )}
+                    </label>
+                    <div className="relative">
+                      <Input
+                        placeholder="ค้นหาเมืองหรือแลนด์มาร์ก"
+                        value={locationQuery}
+                        onChange={(e) => {
+                          setLocationQuery(e.target.value);
+                          setFilters(prev => ({ ...prev, locationPlaceId: undefined }));
+                        }}
+                      />
+                      {locationSuggestions.length > 0 && (
+                        <div className="absolute z-20 mt-1 w-full rounded-md border bg-background shadow">
+                          {locationSuggestions.map((prediction) => (
+                            <button
+                              type="button"
+                              key={prediction.place_id}
+                              className="w-full text-left px-3 py-2 hover:bg-muted text-sm"
+                              onClick={() => handleSelectLocation(prediction)}
+                            >
+                              {prediction.description}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {isLocationLoading && (
+                        <p className="text-xs text-muted-foreground mt-1">กำลังดึงคำแนะนำ...</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 <div>
@@ -276,7 +371,11 @@ const PartnerSearch = () => {
                 </Button>
                 <Button 
                   variant="outline"
-                  onClick={() => setFilters({ industry: 'all', location: 'all-regions', companySize: 'all' })}
+                  onClick={() => {
+                    setFilters({ industry: 'all', location: 'all-regions', companySize: 'all', locationPlaceId: undefined });
+                    setLocationQuery("");
+                    setLocationSuggestions([]);
+                  }}
                 >
                   ล้างตัวกรอง
                 </Button>

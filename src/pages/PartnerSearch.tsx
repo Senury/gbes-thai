@@ -15,6 +15,7 @@ import { CompanySearchService, CompanySearchFilters } from "@/utils/CompanySearc
 import { DataSourceSelector } from "@/components/DataSourceSelector";
 import { ContactAccessPrompt } from "@/components/ContactAccessPrompt";
 import { useUserRole } from "@/hooks/useUserRole";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Company {
   id: string;
@@ -42,7 +43,8 @@ const PartnerSearch = () => {
   const [filters, setFilters] = useState<CompanySearchFilters>({
     industry: 'all',
     location: 'all-regions',
-    companySize: 'all'
+    companySize: 'all',
+    locationPlaceId: undefined,
   });
   const [isSearching, setIsSearching] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
@@ -54,6 +56,9 @@ const PartnerSearch = () => {
   const [showInquiryDialog, setShowInquiryDialog] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [inquiryMessage, setInquiryMessage] = useState("");
+  const [locationQuery, setLocationQuery] = useState("");
+  const [locationSuggestions, setLocationSuggestions] = useState<any[]>([]);
+  const [isLocationLoading, setIsLocationLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
   const { isPremium, isAdmin } = useUserRole();
@@ -80,10 +85,59 @@ const PartnerSearch = () => {
       setFilters({
         industry: 'all',
         location: 'all-regions',
-        companySize: 'all'
+        companySize: 'all',
+        locationPlaceId: undefined,
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (!locationQuery || locationQuery.trim().length < 2) {
+      setLocationSuggestions([]);
+      return;
+    }
+
+    const handler = setTimeout(async () => {
+      try {
+        setIsLocationLoading(true);
+        const { data, error } = await supabase.functions.invoke('google-places-autocomplete', {
+          body: {
+            input: locationQuery,
+            language: 'ja'
+          }
+        });
+        if (!error && data?.predictions) {
+          setLocationSuggestions(data.predictions);
+        }
+      } catch (error) {
+        console.error('Location autocomplete error:', error);
+      } finally {
+        setIsLocationLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [locationQuery]);
+
+  const handleSelectLocation = (prediction: any) => {
+    setFilters(prev => ({
+      ...prev,
+      location: prediction.description,
+      locationPlaceId: prediction.place_id,
+    }));
+    setLocationQuery(prediction.description);
+    setLocationSuggestions([]);
+  };
+
+  const clearSelectedLocation = () => {
+    setFilters(prev => ({
+      ...prev,
+      location: 'all-regions',
+      locationPlaceId: undefined,
+    }));
+    setLocationQuery("");
+    setLocationSuggestions([]);
+  };
 
   const searchCompanies = async () => {
     // Allow search with just filters, no keyword required
@@ -97,7 +151,8 @@ const PartnerSearch = () => {
         industry: filters.industry === "all" ? undefined : filters.industry || undefined,
         location: filters.location === "all-regions" ? undefined : filters.location || undefined,
         companySize: filters.companySize === "all" ? undefined : filters.companySize || undefined,
-        dataSources: selectedDataSources
+        dataSources: selectedDataSources,
+        locationPlaceId: filters.locationPlaceId,
       };
       
       console.log('Processed filters:', searchFilters);
@@ -422,12 +477,12 @@ const PartnerSearch = () => {
                 {/* Region Selection */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">地域・エリア</label>
-                  <Select 
-                    value={filters.location || "all-regions"} 
-                    onValueChange={(value) => setFilters(prev => ({ ...prev, location: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="地域を選択" />
+                    <Select
+                      value={filters.location || "all-regions"} 
+                      onValueChange={(value) => setFilters(prev => ({ ...prev, location: value, locationPlaceId: undefined }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="地域を選択" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all-regions">全ての地域</SelectItem>
@@ -464,6 +519,47 @@ const PartnerSearch = () => {
                         ))}
                       </SelectContent>
                     </Select>
+                    <div className="space-y-2 mt-4">
+                      <label className="text-sm font-medium text-muted-foreground flex justify-between items-center">
+                        Googleロケーション検索
+                        {filters.locationPlaceId && (
+                          <button
+                            type="button"
+                            onClick={clearSelectedLocation}
+                            className="text-xs text-primary hover:underline"
+                          >
+                            クリア
+                          </button>
+                        )}
+                      </label>
+                      <div className="relative">
+                        <Input
+                          placeholder="都市やランドマークを検索"
+                          value={locationQuery}
+                          onChange={(e) => {
+                            setLocationQuery(e.target.value);
+                            setFilters(prev => ({ ...prev, locationPlaceId: undefined }));
+                          }}
+                        />
+                        {locationSuggestions.length > 0 && (
+                          <div className="absolute z-20 mt-1 w-full rounded-md border bg-background shadow">
+                            {locationSuggestions.map((prediction) => (
+                              <button
+                                type="button"
+                                key={prediction.place_id}
+                                className="w-full text-left px-3 py-2 hover:bg-muted text-sm"
+                                onClick={() => handleSelectLocation(prediction)}
+                              >
+                                {prediction.description}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                        {isLocationLoading && (
+                          <p className="text-xs text-muted-foreground mt-1">候補を取得しています...</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
                 </div>
@@ -480,14 +576,17 @@ const PartnerSearch = () => {
                   </Button>
                   <Button 
                     variant="outline"
-                  onClick={() => {
-                    setFilters({ 
-                      industry: 'all', 
-                      location: 'all-regions', 
-                      companySize: 'all'
-                    });
-                    setSearchQuery('');
-                  }}
+                    onClick={() => {
+                      setFilters({ 
+                        industry: 'all', 
+                        location: 'all-regions', 
+                        companySize: 'all',
+                        locationPlaceId: undefined,
+                      });
+                      setSearchQuery('');
+                      setLocationQuery('');
+                      setLocationSuggestions([]);
+                    }}
                   >
                     リセット
                   </Button>

@@ -6,6 +6,7 @@ export interface CompanySearchFilters {
   companySize?: string;
   verified?: boolean;
   dataSources?: string[];
+  locationPlaceId?: string;
 }
 
 export interface DataSourceConfig {

@@ -35,7 +35,7 @@ interface OpenCorporatesResult {
 
 interface DataSourceHandler {
   name: string;
-  search: (query: string, location?: string, industry?: string, maxResults?: number) => Promise<any[]>;
+  search: (query: string, location?: string, industry?: string, maxResults?: number, options?: { locationPlaceId?: string }) => Promise<any[]>;
   testConnection: () => Promise<boolean>;
 }
 
@@ -80,7 +80,8 @@ serve(async (req) => {
       finalLocation, 
       finalIndustry, 
       dataSources || ['google_places', 'opencorporates', 'crunchbase', 'yellow_pages', 'companies_house'],
-      maxResults
+      maxResults,
+      { locationPlaceId: filters?.locationPlaceId }
     );
     
     // Store found companies in database
@@ -151,7 +152,8 @@ async function searchCompaniesFromMultipleSources(
   location?: string, 
   industry?: string, 
   dataSources?: string[],
-  maxResults: number = 20
+  maxResults: number = 20,
+  options?: { locationPlaceId?: string }
 ) {
   const companies = [];
   const sources = dataSources || ['google_places', 'opencorporates'];
@@ -165,7 +167,7 @@ async function searchCompaniesFromMultipleSources(
     }
 
     try {
-      const results = await handler.search(query, location, industry, resultsPerSource);
+      const results = await handler.search(query, location, industry, resultsPerSource, options);
       companies.push(...results);
       console.log(`Found ${results.length} companies from ${sourceName}`);
     } catch (error) {
@@ -176,10 +178,31 @@ async function searchCompaniesFromMultipleSources(
   return companies.slice(0, maxResults);
 }
 
-async function searchGooglePlaces(query: string, location?: string, industry?: string, maxResults: number = 20): Promise<any[]> {
+async function searchGooglePlaces(
+  query: string,
+  location?: string,
+  industry?: string,
+  maxResults: number = 20,
+  options?: { locationPlaceId?: string }
+): Promise<any[]> {
   if (!googlePlacesApiKey) {
     console.warn('Google Places API key not configured');
     return [];
+  }
+
+  let locationContext = '';
+  if (options?.locationPlaceId) {
+    try {
+      const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${options.locationPlaceId}&fields=geometry&key=${googlePlacesApiKey}`;
+      const detailsResponse = await fetch(detailsUrl);
+      const detailsData = await detailsResponse.json();
+      if (detailsData?.result?.geometry?.location) {
+        const { lat, lng } = detailsData.result.geometry.location;
+        locationContext = `&location=${lat},${lng}&radius=50000`;
+      }
+    } catch (error) {
+      console.warn('Failed to load place details for locationPlaceId', error);
+    }
   }
 
   // Construct search query based on available parameters
@@ -210,7 +233,9 @@ async function searchGooglePlaces(query: string, location?: string, industry?: s
     searchQuery += ` ${industry}`;
   }
 
-  const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(searchQuery)}&key=${googlePlacesApiKey}&fields=place_id,name,formatted_address,business_status,types,website,formatted_phone_number,rating`;
+  const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(
+    searchQuery,
+  )}&key=${googlePlacesApiKey}&type=establishment&language=en${locationContext}`;
 
   const response = await fetch(url);
   const data = await response.json();
