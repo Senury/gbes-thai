@@ -117,3 +117,4 @@ Working document that tracks the functional problems surfaced so far plus the ag
   - ⚠️ `CompanySearchService.searchMultipleExternalSources` doesn’t enforce a minimum keyword; calling it with `''` still triggers remote APIs that may reject the request or return irrelevant data.
   - ⚠️ `CompanySearchService.scrapeCompanyWebsites` allows non-logged-in users to attempt scrapes; consider gating behind auth to prevent anonymous abuse.
 - Navbar overflow: just before the layout switches to the tablet/mobile breakpoint, the navigation links overflow the container. Adjust the breakpoint or condense links earlier so the bar doesn’t clip at that width.
+- Google Places autocomplete: `google-places-autocomplete` returns `REQUEST_DENIED` until billing is enabled on the Google Cloud project tied to `GOOGLE_PLACES_API_KEY`, so location suggestions won’t appear without billing.
