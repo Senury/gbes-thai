@@ -102,6 +102,11 @@ Working document that tracks the functional problems surfaced so far plus the ag
 - **Fix Implemented**: The component now also consumes `useUserRole` so it treats `hasSubscription`/`subscriptionTier` from our RPC as truthy even if the functions endpoint lags, and the role hook itself infers `hasSubscription` from the highest role (premium/admin) when the RPC returns null. Status badge, plan label, and CTA now reflect real premium accounts immediately (`src/components/SubscriptionStatus.tsx`, `src/hooks/useUserRole.ts`).
 - **Status**: ✅ done.
 
+## 19. Partner Search Lacked Real Location Context
+- **Symptom**: Location filtering was limited to static region dropdowns and didn’t leverage the Google Places data source, so users couldn’t target specific cities/landmarks or feed precise locations into the search.
+- **Fix Implemented**: Added a Supabase Edge function that proxies Google Places Autocomplete, extended `search-companies` to honor selected Place IDs when calling Google Places, and updated all Partner Search locales (JA/EN/TH) to include a Google-powered location field. Selecting a suggestion stores the `place_id`, feeds it through `CompanySearchService`, and drives more accurate Google Places results. (`supabase/functions/google-places-autocomplete`, `supabase/functions/search-companies/index.ts`, `src/utils/CompanySearchService.ts`, `src/pages/*/PartnerSearch.tsx`)
+- **Status**: ✅ done.
+
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
 - Partner Search deep-dive findings (pending action):
@@ -111,3 +116,4 @@ Working document that tracks the functional problems surfaced so far plus the ag
   - ⚠️ `DataSourceSelector` test button never succeeds because client/server disagree on the test flag and response shape.
   - ⚠️ `CompanySearchService.searchMultipleExternalSources` doesn’t enforce a minimum keyword; calling it with `''` still triggers remote APIs that may reject the request or return irrelevant data.
   - ⚠️ `CompanySearchService.scrapeCompanyWebsites` allows non-logged-in users to attempt scrapes; consider gating behind auth to prevent anonymous abuse.
+- Navbar overflow: just before the layout switches to the tablet/mobile breakpoint, the navigation links overflow the container. Adjust the breakpoint or condense links earlier so the bar doesn’t clip at that width.
