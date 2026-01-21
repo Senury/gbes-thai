@@ -77,7 +77,7 @@ const Navigation = () => {
             </div>
           </div>
           
-          <div className="hidden md:flex flex-1 justify-center">
+          <div className="hidden lg:flex flex-1 justify-center">
             <div className="flex items-center gap-2 text-sm">
               <button onClick={() => handleSectionClick('home')} className="px-3 py-2 rounded-full text-foreground hover:text-primary hover:bg-primary/10 transition-colors whitespace-nowrap">
                 ホーム
@@ -120,7 +120,7 @@ const Navigation = () => {
             </div>
           </div>
 
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             {user ? (
               <>
                 <Button variant="outline" size="sm" onClick={() => navigate('/ja/dashboard')}>
@@ -149,7 +149,7 @@ const Navigation = () => {
             )}
           </div>
 
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <Button
               variant="ghost"
               size="icon"
@@ -162,7 +162,7 @@ const Navigation = () => {
       </div>
 
       {isOpen && (
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-background/95 backdrop-blur-md">
             <Link to="/ja" className="block px-3 py-2 text-foreground hover:text-primary transition-colors duration-200" onClick={closeMenu}>
               ホーム
