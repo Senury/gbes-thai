@@ -107,6 +107,11 @@ Working document that tracks the functional problems surfaced so far plus the ag
 - **Fix Implemented**: Added a Supabase Edge function that proxies Google Places Autocomplete, extended `search-companies` to honor selected Place IDs when calling Google Places, and updated all Partner Search locales (JA/EN/TH) to include a Google-powered location field. Selecting a suggestion stores the `place_id`, feeds it through `CompanySearchService`, and drives more accurate Google Places results. (`supabase/functions/google-places-autocomplete`, `supabase/functions/search-companies/index.ts`, `src/utils/CompanySearchService.ts`, `src/pages/*/PartnerSearch.tsx`)
 - **Status**: ✅ done.
 
+## 20. Navbar Overflow Near Tablet Breakpoint
+- **Symptom**: Just before the layout switches to the tablet/mobile breakpoint, the navigation links overflow the container and clip.
+- **Fix Implemented**: Shifted the desktop navigation to start at `lg` so the mobile menu takes over earlier, preventing overflow in all locales (`src/components/Navigation.tsx`, `src/components/en/Navigation.tsx`, `src/components/th/Navigation.tsx`).
+- **Status**: ✅ done.
+
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
 - Partner Search deep-dive findings (pending action):
@@ -116,5 +121,4 @@ Working document that tracks the functional problems surfaced so far plus the ag
   - ⚠️ `DataSourceSelector` test button never succeeds because client/server disagree on the test flag and response shape.
   - ⚠️ `CompanySearchService.searchMultipleExternalSources` doesn’t enforce a minimum keyword; calling it with `''` still triggers remote APIs that may reject the request or return irrelevant data.
   - ⚠️ `CompanySearchService.scrapeCompanyWebsites` allows non-logged-in users to attempt scrapes; consider gating behind auth to prevent anonymous abuse.
-- Navbar overflow: just before the layout switches to the tablet/mobile breakpoint, the navigation links overflow the container. Adjust the breakpoint or condense links earlier so the bar doesn’t clip at that width.
 - Google Places autocomplete: `google-places-autocomplete` returns `REQUEST_DENIED` until billing is enabled on the Google Cloud project tied to `GOOGLE_PLACES_API_KEY`, so location suggestions won’t appear without billing.
