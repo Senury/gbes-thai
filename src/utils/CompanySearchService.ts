@@ -766,13 +766,21 @@ export class CompanySearchService {
 
   static async scrapeCompanyWebsites(
     urls: string[],
-    industry?: string
+    industry?: string,
+    options?: {
+      confirm?: boolean;
+      replace?: boolean;
+      llm?: boolean;
+    }
   ): Promise<any> {
     try {
       const { data, error } = await supabase.functions.invoke('scrape-company-data', {
         body: {
           urls,
-          industry
+          industry,
+          confirm: options?.confirm ?? false,
+          replace: options?.replace ?? false,
+          llm: options?.llm ?? false,
         }
       });
 

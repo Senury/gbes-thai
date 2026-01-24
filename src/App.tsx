@@ -36,6 +36,7 @@ import EnglishPartnerSearch from "./pages/en/PartnerSearch";
 import ThaiPartnerSearch from "./pages/th/PartnerSearch";
 import { AuthProvider } from "@/hooks/useAuth";
 import LocaleSync from "@/components/LocaleSync";
+import ScrollToTop from "@/components/ScrollToTop";
 
 // Language detection utility
 const detectLanguage = () => {
@@ -55,6 +56,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <LocaleSync />
+          <ScrollToTop />
           <Routes>
           <Route path="/" element={<Navigate to={`/${detectLanguage()}`} replace />} />
           <Route path="/dashboard" element={<Navigate to={`/${detectLanguage()}/dashboard`} replace />} />

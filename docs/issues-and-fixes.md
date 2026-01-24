@@ -2,6 +2,13 @@
 
 Working document that tracks the functional problems surfaced so far plus the agreed direction for fixes/features.
 
+## 36. Partner Search Scrape Workflow + Extraction Quality
+- **Symptom**: Scrape results were stored immediately (no confirmation), “rescrape” was not possible, and extracted data contained mojibake, generic descriptions, and HTML fragments. Contact data and industry/specialties were often missing or incorrect.
+- **Fix Implemented**:
+  - Added preview-first scrape flow with explicit confirmation and optional “Rescrape & replace” to overwrite existing rows (`src/pages/PartnerSearch.tsx`, `src/utils/CompanySearchService.ts`, `supabase/functions/scrape-company-data/index.ts`).
+  - Optional OpenAI enrichment pass added (guarded by `OPENAI_API_KEY` and UI toggle) to fill missing/weak fields without overwriting strong heuristics (`supabase/functions/scrape-company-data/index.ts`, `src/pages/PartnerSearch.tsx`, `src/utils/CompanySearchService.ts`).
+- **Status**: ✅ done (requires edge function redeploy; use “Rescrape & replace” to overwrite old records).
+
 ## 1. Partner Search Allows Blank Queries but Backend Rejects Them
 - **Symptom**: `PartnerSearch` (all locales) sends `CompanySearchService.searchCompanies(searchQuery || "")`, but the Edge function refuses empty queries when filters are `"all"` and silently throws. Users see the generic “検索エラー/ข้อผิดพลาดในการค้นหา/Search error” toast despite the UI claiming blank searches are valid.
 - **Fix Implemented**:

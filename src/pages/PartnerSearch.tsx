@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -52,6 +53,14 @@ const PartnerSearch = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [websiteUrls, setWebsiteUrls] = useState('');
   const [showScrapeDialog, setShowScrapeDialog] = useState(false);
+  const [showScrapeResults, setShowScrapeResults] = useState(false);
+  const [scrapeResults, setScrapeResults] = useState<Company[]>([]);
+  const [lastScrapeUrls, setLastScrapeUrls] = useState<string[]>([]);
+  const [lastScrapeIndustry, setLastScrapeIndustry] = useState<string | undefined>(undefined);
+  const [confirmingScrape, setConfirmingScrape] = useState(false);
+  const [scrapePreviewOnly, setScrapePreviewOnly] = useState(false);
+  const [useLlm, setUseLlm] = useState(false);
+  const [lastScrapeUseLlm, setLastScrapeUseLlm] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedDataSources, setSelectedDataSources] = useState<string[]>(['supabase', 'google_places', 'opencorporates']);
   const [showDataSourceSelector, setShowDataSourceSelector] = useState(false);
@@ -264,25 +273,30 @@ const PartnerSearch = () => {
 
     setLoading(true);
     try {
+      setLastScrapeUrls(urls);
+      setLastScrapeIndustry(filters.industry || undefined);
+      setLastScrapeUseLlm(useLlm);
+
       const result = await CompanySearchService.scrapeCompanyWebsites(
         urls,
-        filters.industry || undefined
+        filters.industry || undefined,
+        { confirm: false, llm: useLlm }
       );
 
+      const scrapedCompanies = (result?.companies || []) as Company[];
+      setScrapeResults(scrapedCompanies);
+      setShowScrapeResults(scrapedCompanies.length > 0);
+      setScrapePreviewOnly(true);
+
       toast({
-        title: t("partnerSearch.toasts.scrapeCompleteTitle"),
-        description: t("partnerSearch.toasts.scrapeCompleteDescription", {
+        title: t("partnerSearch.toasts.scrapePreviewTitle"),
+        description: t("partnerSearch.toasts.scrapePreviewDescription", {
           count: result?.count || 0,
         }),
       });
 
       setWebsiteUrls('');
       setShowScrapeDialog(false);
-      
-      // Refresh search if there's an active query
-      if (searchQuery.trim()) {
-        await searchCompanies();
-      }
     } catch (error: any) {
       console.error('Scraping error:', error);
       toast({
@@ -292,6 +306,51 @@ const PartnerSearch = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const confirmScrape = async (replace = false) => {
+    if (lastScrapeUrls.length === 0) {
+      toast({
+        title: t("partnerSearch.toasts.validationErrorTitle"),
+        description: t("partnerSearch.toasts.websiteRequiredDescription"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setConfirmingScrape(true);
+    try {
+      const result = await CompanySearchService.scrapeCompanyWebsites(
+        lastScrapeUrls,
+        lastScrapeIndustry,
+        { confirm: true, replace, llm: lastScrapeUseLlm }
+      );
+
+      const scrapedCompanies = (result?.companies || []) as Company[];
+      setScrapeResults(scrapedCompanies);
+      setShowScrapeResults(scrapedCompanies.length > 0);
+      setScrapePreviewOnly(false);
+
+      toast({
+        title: t("partnerSearch.toasts.scrapeCompleteTitle"),
+        description: t("partnerSearch.toasts.scrapeCompleteDescription", {
+          count: result?.storedCount ?? result?.count ?? 0,
+        }),
+      });
+
+      if (searchQuery.trim()) {
+        await searchCompanies();
+      }
+    } catch (error: any) {
+      console.error('Scrape confirm error:', error);
+      toast({
+        title: t("partnerSearch.toasts.scrapeErrorTitle"),
+        description: t("partnerSearch.toasts.scrapeErrorDescription"),
+        variant: "destructive",
+      });
+    } finally {
+      setConfirmingScrape(false);
     }
   };
 
@@ -421,6 +480,21 @@ const PartnerSearch = () => {
                       <p id="scrape-description" className="text-sm text-muted-foreground">
                         {t("partnerSearch.scrapeDescription")}
                       </p>
+                      <label className="flex items-start gap-3 rounded-xl border border-border bg-background/80 px-3 py-2 text-sm text-muted-foreground">
+                        <Checkbox
+                          checked={useLlm}
+                          onCheckedChange={(checked) => setUseLlm(Boolean(checked))}
+                          className="mt-0.5"
+                        />
+                        <span>
+                          <span className="font-medium text-foreground">
+                            {t("partnerSearch.scrapeUseAiLabel")}
+                          </span>
+                          <span className="block text-xs text-muted-foreground">
+                            {t("partnerSearch.scrapeUseAiHint")}
+                          </span>
+                        </span>
+                      </label>
                       <div className="flex gap-2">
                         <Button 
                           onClick={scrapeWebsites} 
@@ -456,6 +530,165 @@ const PartnerSearch = () => {
             </CardContent>
           </Card>
         )}
+
+        <Dialog open={showScrapeResults} onOpenChange={setShowScrapeResults}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>{t("partnerSearch.scrapeResultsTitle")}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                <Badge variant="secondary" className="text-xs">
+                  {scrapePreviewOnly
+                    ? t("partnerSearch.scrapeResultsPreview")
+                    : t("partnerSearch.scrapeResultsAdded")}
+                </Badge>
+                <span>
+                  {scrapePreviewOnly
+                    ? t("partnerSearch.scrapeResultsSubtitlePreview", { count: scrapeResults.length })
+                    : t("partnerSearch.scrapeResultsSubtitle", { count: scrapeResults.length })}
+                </span>
+              </div>
+              {scrapeResults.length > 0 ? (
+                <div className="max-h-[420px] overflow-y-auto rounded-2xl border border-border bg-card/80 p-4 space-y-4">
+                  {scrapeResults.map((company) => {
+                    const location = [company.location_city, company.location_country]
+                      .filter(Boolean)
+                      .join(", ");
+                    return (
+                      <div key={company.id || company.website_url} className="rounded-2xl border border-border bg-background/90 p-4">
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div>
+                            <p className="text-base font-semibold text-foreground">
+                              {company.name || company.website_url || t("partnerSearch.fields.noValue")}
+                            </p>
+                            {company.website_url && (
+                              <a
+                                href={company.website_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-muted-foreground hover:text-primary"
+                              >
+                                {company.website_url.replace(/^https?:\/\//, '')}
+                              </a>
+                            )}
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {scrapePreviewOnly
+                              ? t("partnerSearch.scrapeResultsPreview")
+                              : t("partnerSearch.scrapeResultsAdded")}
+                          </Badge>
+                        </div>
+
+                        <div className="mt-3 grid gap-4 md:grid-cols-2">
+                          <div>
+                            <p className="text-xs font-semibold uppercase text-muted-foreground">
+                              {t("partnerSearch.fields.description")}
+                            </p>
+                            <p className="text-sm text-foreground/90 line-clamp-3">
+                              {company.description || t("partnerSearch.fields.noValue")}
+                            </p>
+                          </div>
+                          <div className="space-y-3 text-sm">
+                            <div>
+                              <p className="text-xs font-semibold uppercase text-muted-foreground">
+                                {t("partnerSearch.fields.location")}
+                              </p>
+                              <p className="text-foreground/90">{location || t("partnerSearch.fields.noValue")}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-semibold uppercase text-muted-foreground">
+                                {t("partnerSearch.fields.companySize")}
+                              </p>
+                              <p className="text-foreground/90">{company.company_size || t("partnerSearch.fields.noValue")}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 grid gap-4 md:grid-cols-2">
+                          <div>
+                            <p className="text-xs font-semibold uppercase text-muted-foreground">
+                              {t("partnerSearch.fields.industry")}
+                            </p>
+                            <div className="mt-1 flex flex-wrap gap-2">
+                              {company.industry?.length ? (
+                                company.industry.map((item, index) => (
+                                  <Badge key={`${item}-${index}`} variant="outline" className="text-[11px]">
+                                    {item}
+                                  </Badge>
+                                ))
+                              ) : (
+                                <span className="text-sm text-muted-foreground">{t("partnerSearch.fields.noValue")}</span>
+                              )}
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold uppercase text-muted-foreground">
+                              {t("partnerSearch.fields.specialties")}
+                            </p>
+                            <div className="mt-1 flex flex-wrap gap-2">
+                              {company.specialties?.length ? (
+                                company.specialties.map((item, index) => (
+                                  <Badge key={`${item}-${index}`} variant="secondary" className="text-[11px]">
+                                    {item}
+                                  </Badge>
+                                ))
+                              ) : (
+                                <span className="text-sm text-muted-foreground">{t("partnerSearch.fields.noValue")}</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 grid gap-4 md:grid-cols-2 text-sm">
+                          <div>
+                            <p className="text-xs font-semibold uppercase text-muted-foreground">
+                              {t("partnerSearch.fields.contactEmail")}
+                            </p>
+                            <p className="text-foreground/90">{company.contact_email || t("partnerSearch.fields.noValue")}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold uppercase text-muted-foreground">
+                              {t("partnerSearch.fields.phone")}
+                            </p>
+                            <p className="text-foreground/90">{company.phone || t("partnerSearch.fields.noValue")}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="rounded-xl border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
+                  {t("partnerSearch.scrapeResultsEmpty")}
+                </div>
+              )}
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-xs text-muted-foreground">
+                  {t("partnerSearch.scrapeConfirmNote")}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => confirmScrape(true)}
+                    disabled={confirmingScrape}
+                  >
+                    {confirmingScrape ? t("partnerSearch.scraping") : t("partnerSearch.scrapeReplaceAction")}
+                  </Button>
+                  <Button
+                    onClick={() => confirmScrape(false)}
+                    disabled={confirmingScrape}
+                  >
+                    {confirmingScrape ? t("partnerSearch.scraping") : t("partnerSearch.scrapeConfirmAction")}
+                  </Button>
+                  <Button variant="outline" onClick={() => setShowScrapeResults(false)}>
+                    {t("partnerSearch.close")}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Advanced Filters */}
         {showFilters && (
