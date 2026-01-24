@@ -8,6 +8,15 @@ Working document that tracks the functional problems surfaced so far plus the ag
   - Updated `CompanySearchService.searchCompanies` to skip `searchMultipleExternalSources` when the user supplied neither a meaningful keyword (>=2 chars) nor any filters (industry/location/company size). This prevents the backend from receiving invalid empty queries while still allowing DB-only searches when users haven’t entered criteria.
 - **Status**: ✅ done (blank searches no longer trigger backend errors; they simply return existing DB results).
 
+## 0. Locale Architecture & i18n Consolidation
+- **Symptom**: Locale-specific components/pages diverged in layout and copy, causing visual drift and duplicated maintenance across `/ja`, `/en`, `/th`.
+- **Fix Implemented**:
+  - Added centralized i18n with route-synced locale selection (`src/i18n.ts`, `src/components/LocaleSync.tsx`).
+  - Converted shared components/pages to use translation keys; EN/TH routes now render shared pages for layout parity.
+  - Removed locale-specific component folders once unused (`src/components/en`, `src/components/th`).
+  - Added locale resources under `src/locales/` and ensured route navigation uses the active locale prefix.
+- **Status**: ✅ done (single source of truth for UI + copy, consistent layouts across locales).
+
 ## 2. Data Source “Test” Button Always Fails
 - **Symptom**: `DataSourceSelector`→`testDataSourceConnection` posts `{ test: true }`, but the Edge function looks for `testConnection` before short-circuiting. Even if that flag lined up, the client expects `data.success` while the server returns `{ connectionTest: boolean }`. Result: toast + icon always show failure.
 - **Planned Fix**:
