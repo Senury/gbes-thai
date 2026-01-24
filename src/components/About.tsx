@@ -1,29 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Shield, Eye, FileText } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const About = () => {
-  const securityFeatures = [
-    "ISO認証取得を予定（情報セキュリティ基準）",
-    "データの透明性と契約の明確化", 
-    "国内外の法律とコンプライアンスに準拠",
-    "エンドツーエンド暗号化によるデータ保護",
-    "定期的なセキュリティ監査と更新"
-  ];
+  const { t } = useTranslation();
+  const securityFeatures = t("about.features", { returnObjects: true }) as string[];
+  const cards = t("about.cards", { returnObjects: true }) as Array<{
+    title: string;
+    description: string;
+  }>;
+  const cardIcons = [Shield, Eye, FileText];
 
   return (
-    <section id="trust" className="py-20 bg-secondary/20">
+    <section id="trust" className="py-20 bg-section-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
-                安全性と信頼
-              </span>
+              {t("about.title")}
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              GBESは最高レベルのセキュリティ基準と透明性を維持し、
-              お客様のビジネス情報と取引を安全に保護します。
-              国際基準に準拠した信頼できるプラットフォームを提供しています。
+              {t("about.description")}
             </p>
             
             <div className="space-y-4 mb-8">
@@ -36,46 +33,27 @@ const About = () => {
             </div>
 
             <Button variant="hero" size="lg">
-              セキュリティ詳細
+              {t("about.cta")}
             </Button>
           </div>
 
           <div className="space-y-6">
-            <div className="bg-gradient-primary rounded-2xl p-6 shadow-glow">
-              <div className="bg-background/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 text-center">
-                <Shield className="h-8 w-8 text-primary-foreground mx-auto mb-3" />
-                <h4 className="text-lg font-semibold text-primary-foreground mb-2">
-                  ISO認証準拠
-                </h4>
-                <p className="text-primary-foreground/80 text-sm">
-                  国際セキュリティ基準に基づく安全なシステム設計
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-gradient-primary rounded-2xl p-6 shadow-glow">
-              <div className="bg-background/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 text-center">
-                <Eye className="h-8 w-8 text-primary-foreground mx-auto mb-3" />
-                <h4 className="text-lg font-semibold text-primary-foreground mb-2">
-                  完全な透明性
-                </h4>
-                <p className="text-primary-foreground/80 text-sm">
-                  すべての取引と契約条件を明確に開示
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-gradient-primary rounded-2xl p-6 shadow-glow">
-              <div className="bg-background/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 text-center">
-                <FileText className="h-8 w-8 text-primary-foreground mx-auto mb-3" />
-                <h4 className="text-lg font-semibold text-primary-foreground mb-2">
-                  法的コンプライアンス
-                </h4>
-                <p className="text-primary-foreground/80 text-sm">
-                  国内外の法律と規制に完全準拠
-                </p>
-              </div>
-            </div>
+            {cards.map((card, index) => {
+              const Icon = cardIcons[index];
+              return (
+                <div key={card.title} className="rounded-2xl border border-border bg-card/80 p-6 shadow-soft">
+                  <div className="bg-background/70 rounded-xl p-4 border border-border text-center">
+                    <Icon className="h-8 w-8 text-primary mx-auto mb-3" />
+                    <h4 className="text-lg font-semibold text-foreground mb-2">
+                      {card.title}
+                    </h4>
+                    <p className="text-muted-foreground text-sm">
+                      {card.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

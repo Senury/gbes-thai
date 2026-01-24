@@ -1,9 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Play, ShieldCheck, Globe2, Sparkles } from "lucide-react";
 import heroImage from "@/assets/hero-bg.jpg";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Hero = () => {
+  const { t, i18n } = useTranslation();
+  const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
+  const stats = t("hero.stats", { returnObjects: true }) as Array<{ label: string; value: string }>;
+  const titleSuffix = t("hero.titleSuffix");
+
   const handleScrollToServices = () => {
     const servicesSection = document.getElementById("services");
     if (servicesSection) {
@@ -12,52 +18,77 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `url(${heroImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-hero opacity-90"></div>
-      </div>
+    <section id="home" className="relative min-h-screen flex items-start lg:items-center overflow-hidden bg-hero-surface pt-24 md:pt-28 lg:pt-0">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
+          <div className="animate-fade-in-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm text-foreground mb-6">
+              <ShieldCheck className="h-4 w-4 text-primary" />
+              {t("hero.badge")}
+            </div>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold text-foreground mb-6 tracking-tight">
+              {t("hero.titlePrefix")}{" "}
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                {t("hero.titleHighlight")}
+              </span>
+              {titleSuffix ? ` ${titleSuffix}` : null}
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl">
+              {t("hero.description")}
+            </p>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="animate-fade-in-up">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6">
-            グローバル・ビジネス・{" "}
-            <span className="bg-gradient-primary bg-clip-text text-transparent">
-              エクスパンション
-            </span>{" "}
-            ・システム
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            日本の中小企業のグローバル展開を支援する、AI搭載・多機能プラットフォームです。
-            翻訳、デジタル発信、パートナー発見まで、すべてを一括サポートします。
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button variant="cta" size="xl" className="group" asChild>
-              <Link to="/ja/signup" className="inline-flex items-center">
-                今すぐ登録して世界とつながる
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-            <Button variant="glass" size="lg" className="group" onClick={handleScrollToServices}>
-              <Play className="mr-2 h-4 w-4" />
-              サービス詳細
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+              <Button variant="cta" size="xl" className="group" asChild>
+                <Link to={`/${localePrefix}/signup`} className="inline-flex items-center">
+                  {t("hero.ctaPrimary")}
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+              <Button variant="glass" size="lg" className="group" onClick={handleScrollToServices}>
+                <Play className="mr-2 h-4 w-4" />
+                {t("hero.ctaSecondary")}
+              </Button>
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {stats.map((stat) => (
+                <div key={stat.label} className="rounded-2xl border border-border bg-card/80 px-4 py-4 shadow-soft">
+                  <div className="text-2xl font-semibold text-foreground">{stat.value}</div>
+                  <div className="text-xs text-muted-foreground">{stat.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="mt-12">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
-              <div className="h-2 w-2 bg-primary rounded-full mr-2"></div>
-              <span className="text-sm text-foreground">ライブ • 1,234人のユーザーがオンライン</span>
+          <div className="relative">
+            <div className="rounded-3xl border border-border bg-card/80 p-4">
+              <div className="relative rounded-2xl border border-border bg-background overflow-hidden">
+                <img
+                  src={heroImage}
+                  alt="GBES platform preview"
+                  className="h-[380px] w-full object-cover"
+                />
+                <div className="absolute top-4 right-4 hidden lg:inline-flex items-center gap-2 rounded-full border border-border bg-background/90 px-3 py-1 text-xs text-foreground">
+                  <span className="h-2 w-2 rounded-full bg-primary" />
+                  {t("hero.live")}
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-border bg-background/90 px-4 py-3">
+                <div className="flex flex-wrap gap-2">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs text-foreground">
+                    <Globe2 className="h-3.5 w-3.5 text-primary" />
+                    {t("hero.pillGlobal")}
+                  </div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs text-foreground">
+                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                    {t("hero.pillAi")}
+                  </div>
+                </div>
+                <div className="mt-3 border-l-2 border-primary/60 pl-3 text-sm text-foreground">
+                  {t("hero.note")}
+                </div>
+              </div>
             </div>
           </div>
         </div>

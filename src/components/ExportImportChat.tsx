@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, MessageCircle, Bot, User } from "lucide-react";
+import { Send, MessageCircle, Bot, User, X } from "lucide-react";
 import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { renderMarkdown } from "@/utils/markdown";
+import { useTranslation } from "react-i18next";
 
 interface Message {
   id: string;
@@ -23,6 +24,8 @@ const ExportImportChat = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const streamingMessageIdRef = useRef<string>("");
   const { toast } = useToast();
+  const { t, i18n } = useTranslation();
+  const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -69,7 +72,7 @@ const ExportImportChat = () => {
     const response = await fetch(`${supabaseUrl}/functions/v1/chat-export-import`, {
       method: "POST",
       headers,
-      body: JSON.stringify({ message: text, language: "ja" }),
+      body: JSON.stringify({ message: text, language: localePrefix }),
     });
 
     if (!response.ok) {
@@ -133,8 +136,8 @@ const ExportImportChat = () => {
         )
       );
       toast({
-        title: "エラー",
-        description: "メッセージの送信に失敗しました。しばらくしてからもう一度お試しください。",
+        title: t("chat.errorTitle"),
+        description: t("chat.errorDescription"),
         variant: "destructive",
       });
     } finally {
@@ -159,7 +162,7 @@ const ExportImportChat = () => {
         >
           <div className="flex flex-col items-center">
             <MessageCircle className="h-7 w-7" />
-            <span className="text-xs font-bold mt-1">チャット</span>
+            <span className="text-xs font-bold mt-1">{t("chat.buttonLabel")}</span>
           </div>
         </Button>
       </div>
@@ -168,12 +171,12 @@ const ExportImportChat = () => {
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      <Card className="w-96 h-[500px] shadow-xl border-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/90">
-        <CardHeader className="pb-3">
+      <Card className="w-[360px] sm:w-[380px] h-[520px] border border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/90">
+        <CardHeader className="pb-3 border-b border-border">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg flex items-center gap-2">
               <Bot className="h-5 w-5 text-primary" />
-              輸出入専門チャット
+              {t("chat.title")}
             </CardTitle>
             <Button
               variant="ghost"
@@ -181,20 +184,20 @@ const ExportImportChat = () => {
               onClick={() => setIsOpen(false)}
               className="h-8 w-8 p-0"
             >
-              ×
+              <X className="h-4 w-4" />
             </Button>
           </div>
-          <p className="text-sm text-muted-foreground">
-            日本の輸出入業務について何でもお聞きください
-          </p>
+          <div className="text-xs text-muted-foreground mt-1">
+            {t("chat.subtitle")}
+          </div>
         </CardHeader>
-        <CardContent className="p-0 flex flex-col h-[400px]">
-          <ScrollArea ref={scrollAreaRef} className="flex-1 px-4">
+        <CardContent className="p-0 flex flex-col h-[420px]">
+          <ScrollArea ref={scrollAreaRef} className="flex-1 px-4 py-4">
             <div className="space-y-4 pb-4">
               {messages.length === 0 && (
-                <div className="text-center text-muted-foreground text-sm py-8">
-                  輸出入に関する質問をどうぞ！<br />
-                  例：「アメリカへの食品輸出の手続きは？」
+                <div className="rounded-2xl border border-border bg-background/80 px-4 py-5 text-center text-muted-foreground text-sm">
+                  {t("chat.emptyPrompt")}<br />
+                  {t("chat.example")}
                 </div>
               )}
               {messages.map((message) => (
@@ -203,15 +206,15 @@ const ExportImportChat = () => {
                   className={`flex gap-2 ${message.isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   {!message.isUser && (
-                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 border border-primary/20">
                       <Bot className="h-4 w-4 text-primary" />
                     </div>
                   )}
                   <div
-                    className={`max-w-[280px] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap ${
+                    className={`max-w-[280px] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap ${
                       message.isUser
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted text-foreground'
+                        ? 'bg-primary text-primary-foreground rounded-br-md'
+                        : 'bg-background text-foreground border border-border rounded-bl-md'
                     }`}
                   >
                     {message.isUser ? (
@@ -224,7 +227,7 @@ const ExportImportChat = () => {
                     )}
                   </div>
                   {message.isUser && (
-                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0 border border-border">
                       <User className="h-4 w-4" />
                     </div>
                   )}
@@ -232,13 +235,13 @@ const ExportImportChat = () => {
               ))}
             </div>
           </ScrollArea>
-          <div className="p-4 border-t">
+          <div className="p-4 border-t border-border bg-background/90">
             <div className="flex gap-2">
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="質問を入力してください..."
+                placeholder={t("chat.placeholder")}
                 disabled={isLoading}
                 className="flex-1"
               />

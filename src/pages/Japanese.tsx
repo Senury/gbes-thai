@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import Mission from "@/components/Mission";
@@ -11,6 +12,8 @@ import Footer from "@/components/Footer";
 import ExportImportChat from "@/components/ExportImportChat";
 
 const Japanese = () => {
+  const { i18n } = useTranslation();
+
   // Handle URL hash scrolling on page load
   useEffect(() => {
     const handleHashScroll = () => {
@@ -35,6 +38,10 @@ const Japanese = () => {
       window.removeEventListener('hashchange', handleHashScroll);
     };
   }, []);
+
+  useEffect(() => {
+    i18n.changeLanguage("ja");
+  }, [i18n]);
 
   return (
     <div className="min-h-screen bg-background">

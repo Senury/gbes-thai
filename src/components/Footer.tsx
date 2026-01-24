@@ -1,17 +1,24 @@
 import { Github, Twitter, Linkedin, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
+  const { t, i18n } = useTranslation();
+
   return (
-    <footer className="bg-secondary/30 border-t border-border">
+    <footer className="bg-section-surface border-t border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <div className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              GBES
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 rounded-xl bg-gradient-primary shadow-glow" />
+              <div>
+                <div className="text-lg font-bold text-foreground">GBES</div>
+                <div className="text-xs text-muted-foreground">Global Business Expansion</div>
+              </div>
             </div>
             <p className="text-muted-foreground">
-              日本の中小企業のグローバル展開を支援するAI搭載プラットフォームです。
+              {t("footer.description")}
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
@@ -27,57 +34,57 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-4">プロダクト</h3>
+            <h3 className="font-semibold text-foreground mb-4">{t("footer.product")}</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">機能</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">料金</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">API</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">ドキュメント</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.services")}</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.pricing")}</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.api")}</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.documentation")}</a></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-4">会社</h3>
+            <h3 className="font-semibold text-foreground mb-4">{t("footer.company")}</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">会社概要</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">ブログ</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">採用情報</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">お問い合わせ</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.about")}</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.news")}</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.careers")}</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.contact")}</a></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-4">サポート</h3>
+            <h3 className="font-semibold text-foreground mb-4">{t("footer.support")}</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">ヘルプセンター</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">ステータス</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">利用規約</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">プライバシー</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.helpCenter")}</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.status")}</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.terms")}</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.privacy")}</a></li>
             </ul>
           </div>
         </div>
 
         <div className="mt-8 flex flex-wrap items-center gap-3 text-sm">
-          <span className="text-muted-foreground">言語:</span>
+          <span className="text-muted-foreground">{t("footer.languageLabel")}</span>
           <div className="flex gap-2">
-            <Link to="/ja" className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
-              日本語
+            <Link to="/ja" onClick={() => i18n.changeLanguage("ja")} className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
+              {t("nav.languageJa")}
             </Link>
-            <Link to="/en" className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
-              English
+            <Link to="/en" onClick={() => i18n.changeLanguage("en")} className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
+              {t("nav.languageEn")}
             </Link>
-            <Link to="/th" className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
-              ไทย
+            <Link to="/th" onClick={() => i18n.changeLanguage("th")} className="px-3 py-1 rounded-full border border-border text-foreground hover:border-primary hover:text-primary transition-colors">
+              {t("nav.languageTh")}
             </Link>
           </div>
         </div>
 
         <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-muted-foreground text-sm">
-            © 2024 GBES。すべての権利を保有しています。
+            {t("footer.rights")}
           </p>
           <p className="text-muted-foreground text-sm flex items-center">
-            <Heart className="h-4 w-4 text-red-500 mx-1" /> GBESチームによって作られました
+            <Heart className="h-4 w-4 text-red-500 mx-1" /> {t("footer.madeBy")}
           </p>
         </div>
       </div>

@@ -18,6 +18,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ["\"Zen Kaku Gothic New\"", "system-ui", "sans-serif"],
+				display: ["\"Source Sans 3\"", "\"Zen Kaku Gothic New\"", "system-ui", "sans-serif"]
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -45,6 +49,11 @@ export default {
 					DEFAULT: 'hsl(var(--accent))',
 					foreground: 'hsl(var(--accent-foreground))'
 				},
+				cta: {
+					DEFAULT: 'hsl(var(--cta-primary))',
+					foreground: 'hsl(var(--cta-primary-foreground))',
+					hover: 'hsl(var(--cta-primary-hover))'
+				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
 					foreground: 'hsl(var(--popover-foreground))'
@@ -71,7 +80,8 @@ export default {
 			},
 			boxShadow: {
 				'glow': 'var(--shadow-glow)',
-				'soft': 'var(--shadow-soft)'
+				'soft': 'var(--shadow-soft)',
+				'cta': 'var(--shadow-cta)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

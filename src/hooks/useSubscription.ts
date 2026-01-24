@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import i18n from "@/i18n";
 
 interface SubscriptionData {
   subscribed: boolean;
@@ -42,8 +43,8 @@ export function useSubscription() {
     } catch (error) {
       console.error('Error checking subscription:', error);
       toast({
-        title: "エラー",
-        description: "サブスクリプション状況の確認に失敗しました",
+        title: i18n.t("subscription.errorTitle"),
+        description: i18n.t("subscription.checkError"),
         variant: "destructive",
       });
     } finally {
@@ -54,8 +55,8 @@ export function useSubscription() {
   const createCheckout = async (planId: string) => {
     if (!user || !session) {
       toast({
-        title: "認証が必要です",
-        description: "サブスクリプションを開始するにはログインが必要です",
+        title: i18n.t("subscription.authRequiredTitle"),
+        description: i18n.t("subscription.authRequiredDescription"),
         variant: "destructive",
       });
       return;
@@ -76,8 +77,8 @@ export function useSubscription() {
     } catch (error) {
       console.error('Error creating checkout:', error);
       toast({
-        title: "エラー",
-        description: "チェックアウトの作成に失敗しました",
+        title: i18n.t("subscription.errorTitle"),
+        description: i18n.t("subscription.checkoutError"),
         variant: "destructive",
       });
     }
@@ -86,8 +87,8 @@ export function useSubscription() {
   const openCustomerPortal = async () => {
     if (!user || !session) {
       toast({
-        title: "認証が必要です",
-        description: "サブスクリプション管理にはログインが必要です",
+        title: i18n.t("subscription.authRequiredTitle"),
+        description: i18n.t("subscription.manageAuthRequired"),
         variant: "destructive",
       });
       return;
@@ -107,8 +108,8 @@ export function useSubscription() {
     } catch (error) {
       console.error('Error opening customer portal:', error);
       toast({
-        title: "エラー",
-        description: "カスタマーポータルの開設に失敗しました",
+        title: i18n.t("subscription.errorTitle"),
+        description: i18n.t("subscription.portalError"),
         variant: "destructive",
       });
     }

@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { User, FileText, Calendar, Package } from "lucide-react";
 import SubscriptionStatus from "@/components/SubscriptionStatus";
 import { getPlanDetails } from "@/utils/servicePlans";
+import { useTranslation } from "react-i18next";
 
 interface Registration {
   id: string;
@@ -23,6 +24,9 @@ interface Registration {
 }
 
 export default function Dashboard() {
+  const { t, i18n } = useTranslation();
+  const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
+  const dateLocale = localePrefix === "ja" ? "ja-JP" : localePrefix === "th" ? "th-TH" : "en-US";
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -45,8 +49,8 @@ export default function Dashboard() {
           console.error('Error fetching registration:', error);
           toast({
             variant: "destructive",
-            title: "エラー",
-            description: "登録データの取得に失敗しました。",
+            title: t("dashboard.toasts.errorTitle"),
+            description: t("dashboard.toasts.errorDescription"),
           });
         } else if (data && data.length > 0) {
           setRegistration(data[0]);
@@ -62,62 +66,68 @@ export default function Dashboard() {
   }, [user, toast]);
 
   return (
-    <DashboardLayout language="ja">
+    <DashboardLayout language={localePrefix}>
       <div className="space-y-6">
         {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-6">
-          <h1 className="text-2xl font-bold mb-2">
-            ようこそ、{user?.email} さん
+        <div className="rounded-2xl border border-border bg-background/80 p-6">
+          <h1 className="text-2xl font-bold mb-2 text-foreground">
+            {t("dashboard.welcome", { email: user?.email })}
           </h1>
           <p className="text-muted-foreground">
-            アカウントと登録状況の概要をご確認ください。
+            {t("dashboard.welcomeSubtitle")}
           </p>
         </div>
 
         {/* Subscription Status */}
-        <SubscriptionStatus language="ja" />
+        <SubscriptionStatus language={localePrefix} />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
+          <Card className="bg-card/80 border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">アカウント状況</CardTitle>
-              <User className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">{t("dashboard.accountStatusTitle")}</CardTitle>
+              <div className="h-8 w-8 rounded-full border border-border bg-background flex items-center justify-center">
+                <User className="h-4 w-4 text-muted-foreground" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">アクティブ</div>
+              <div className="text-2xl font-bold">{t("dashboard.accountStatusActive")}</div>
               <p className="text-xs text-muted-foreground">
-                作成日: {new Date(user?.created_at || '').toLocaleDateString()}
+                {t("dashboard.accountCreated", { date: new Date(user?.created_at || '').toLocaleDateString(dateLocale) })}
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-card/80 border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">登録状況</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">{t("dashboard.registrationStatusTitle")}</CardTitle>
+              <div className="h-8 w-8 rounded-full border border-border bg-background flex items-center justify-center">
+                <FileText className="h-4 w-4 text-muted-foreground" />
+              </div>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {registration ? '完了' : '未完了'}
+                {registration ? t("dashboard.registrationCompleted") : t("dashboard.registrationPending")}
               </div>
               <p className="text-xs text-muted-foreground">
-                {registration ? 'サービス登録が完了しています' : 'サービス登録を完了してください'}
+                {registration ? t("dashboard.registrationCompletedNote") : t("dashboard.registrationPendingNote")}
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-card/80 border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">現在のプラン</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">{t("dashboard.currentPlanTitle")}</CardTitle>
+              <div className="h-8 w-8 rounded-full border border-border bg-background flex items-center justify-center">
+                <Package className="h-4 w-4 text-muted-foreground" />
+              </div>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {registration ? getPlanDetails(registration.service, 'ja').name : 'None'}
+                {registration ? getPlanDetails(registration.service, localePrefix).name : t("dashboard.noPlan")}
               </div>
               <p className="text-xs text-muted-foreground">
-                {registration ? getPlanDetails(registration.service, 'ja').price : 'No active plan'}
+                {registration ? getPlanDetails(registration.service, localePrefix).price : t("dashboard.noPlanDescription")}
               </p>
             </CardContent>
           </Card>
@@ -125,60 +135,60 @@ export default function Dashboard() {
 
         {/* Registration Details */}
         {registration ? (
-          <Card>
+          <Card className="bg-card/80 border-border">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
-                登録詳細
+                {t("dashboard.registrationDetailsTitle")}
               </CardTitle>
               <CardDescription>
-                最新のサービス登録情報
+                {t("dashboard.registrationDetailsSubtitle")}
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">氏名</label>
+                  <label className="text-sm font-medium text-muted-foreground">{t("dashboard.labels.name")}</label>
                   <p className="text-sm">{registration.first_name} {registration.last_name}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">メールアドレス</label>
+                  <label className="text-sm font-medium text-muted-foreground">{t("dashboard.labels.email")}</label>
                   <p className="text-sm">{registration.email}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">会社名</label>
-                  <p className="text-sm">{registration.company || '未入力'}</p>
+                  <label className="text-sm font-medium text-muted-foreground">{t("dashboard.labels.company")}</label>
+                  <p className="text-sm">{registration.company || t("dashboard.notProvided")}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">電話番号</label>
-                  <p className="text-sm">{registration.phone || '未入力'}</p>
+                  <label className="text-sm font-medium text-muted-foreground">{t("dashboard.labels.phone")}</label>
+                  <p className="text-sm">{registration.phone || t("dashboard.notProvided")}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-muted-foreground">契約プラン:</label>
-                <Badge className={getPlanDetails(registration.service, 'ja').color}>
-                  {getPlanDetails(registration.service, 'ja').name} - {getPlanDetails(registration.service, 'ja').price}
+                <label className="text-sm font-medium text-muted-foreground">{t("dashboard.labels.plan")}</label>
+                <Badge className={getPlanDetails(registration.service, localePrefix).color}>
+                  {getPlanDetails(registration.service, localePrefix).name} - {getPlanDetails(registration.service, localePrefix).price}
                 </Badge>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
-                  登録日: {new Date(registration.created_at).toLocaleDateString()}
+                  {t("dashboard.registeredOn", { date: new Date(registration.created_at).toLocaleDateString(dateLocale) })}
                 </span>
               </div>
             </CardContent>
           </Card>
         ) : (
-          <Card>
+          <Card className="bg-card/80 border-border">
             <CardHeader>
-              <CardTitle>登録を完了してください</CardTitle>
+              <CardTitle>{t("dashboard.completeRegistrationTitle")}</CardTitle>
               <CardDescription>
-                サービス登録がまだ完了していません。
+                {t("dashboard.completeRegistrationDescription")}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button onClick={() => navigate('/ja/register')}>
-                登録を完了する
+              <Button onClick={() => navigate(`/${localePrefix}/register`)}>
+                {t("dashboard.completeRegistrationCta")}
               </Button>
             </CardContent>
           </Card>

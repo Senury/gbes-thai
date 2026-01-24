@@ -15,6 +15,8 @@ import { CompanySearchService, CompanySearchFilters } from "@/utils/CompanySearc
 import { DataSourceSelector } from "@/components/DataSourceSelector";
 import { ContactAccessPrompt } from "@/components/ContactAccessPrompt";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useTranslation } from "react-i18next";
+import PageShell from "@/components/PageShell";
 
 interface Company {
   id: string;
@@ -36,6 +38,8 @@ interface Company {
 }
 
 const PartnerSearch = () => {
+  const { t, i18n } = useTranslation();
+  const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -84,25 +88,17 @@ const PartnerSearch = () => {
     });
   };
 
-  const industries = [
-    "製造業", "技術", "物流", "貿易", "金融", "ファッション", "テキスタイル", "自動車", "ソフトウェア"
-  ];
-
-  const companySizes = [
-    { value: "micro", label: "マイクロ企業 (1-9人)" },
-    { value: "small", label: "小企業 (10-49人)" },
-    { value: "medium", label: "中企業 (50-249人)" },
-    { value: "large", label: "大企業 (250人以上)" }
-  ];
+  const industries = t("partnerSearch.industries", { returnObjects: true }) as Array<{ value: string; label: string }>;
+  const companySizes = t("partnerSearch.companySizes", { returnObjects: true }) as Array<{ value: string; label: string }>;
 
   // Add defensive error boundary for the component
   useEffect(() => {
-    console.log('PartnerSearch component mounted');
-    console.log('Initial filters state:', filters);
-    
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  useEffect(() => {
     // Validate that all filter values are valid
     if (!filters.industry || !filters.location || !filters.companySize) {
-      console.warn('Invalid filter state detected, resetting...');
       setFilters({
         industry: 'all',
         location: 'all-regions',
@@ -116,9 +112,6 @@ const PartnerSearch = () => {
     setIsSearching(true);
     setLoading(true);
     try {
-      console.log('Starting search with query:', searchQuery);
-      console.log('Current filters:', filters);
-      
       const searchFilters = {
         industry: filters.industry === "all" ? undefined : filters.industry || undefined,
         location: filters.location === "all-regions" ? undefined : filters.location || undefined,
@@ -129,8 +122,6 @@ const PartnerSearch = () => {
           : undefined,
       };
       
-      console.log('Processed filters:', searchFilters);
-      
       const results = await CompanySearchService.searchCompanies(
         searchQuery || "", // Allow empty search query
         searchFilters,
@@ -138,9 +129,6 @@ const PartnerSearch = () => {
         pageSize
       );
 
-      console.log('Search results:', results.companies);
-      console.log('First company:', results.companies[0]);
-      console.log('About to set companies. Current filters:', filters);
       const sortedCompanies = sortByQueryRelevance(results.companies, searchQuery);
       setCompanies(sortedCompanies);
       setTotalCount(results.count);
@@ -153,15 +141,18 @@ const PartnerSearch = () => {
       setTotalPages(computedTotalPages);
       if (showToast) {
         toast({
-          title: "検索完了",
-          description: `全${results.count}件の企業が見つかりました（${selectedDataSources.length}件のデータソース）。`,
+          title: t("partnerSearch.toasts.searchCompleteTitle"),
+          description: t("partnerSearch.toasts.searchCompleteDescription", {
+            count: results.count,
+            sources: selectedDataSources.length,
+          }),
         });
       }
     } catch (error: any) {
       console.error('Search error:', error);
       toast({
-        title: "検索エラー",
-        description: "検索中にエラーが発生しました。",
+        title: t("partnerSearch.toasts.searchErrorTitle"),
+        description: t("partnerSearch.toasts.searchErrorDescription"),
         variant: "destructive",
       });
     } finally {
@@ -201,34 +192,27 @@ const PartnerSearch = () => {
   const openInquiryDialog = (company: Company) => {
     if (!user) {
       toast({
-        title: "ログインが必要です",
-        description: "お問い合わせにはログインが必要です",
+        title: t("partnerSearch.toasts.loginRequiredTitle"),
+        description: t("partnerSearch.toasts.loginRequiredDescription"),
         variant: "destructive",
       });
       return;
     }
     
     setSelectedCompany(company);
-    setInquiryMessage(`${getDisplayName(company)}様
-
-お世話になっております。
-
-貴社のサービス・事業内容について興味を持ち、パートナーシップの可能性について相談させていただきたくご連絡いたします。
-
-具体的には以下についてお聞かせいただけますでしょうか：
-・パートナーシップの形態や条件
-・協業における具体的なメリット
-・今後のビジネス展開について
-
-ご検討のほど、よろしくお願いいたします。`);
+    setInquiryMessage(
+      t("partnerSearch.inquiryTemplate", {
+        company: getDisplayName(company),
+      })
+    );
     setShowInquiryDialog(true);
   };
 
   const handleInquiry = async () => {
     if (!selectedCompany || !inquiryMessage.trim()) {
       toast({
-        title: "エラー",
-        description: "メッセージを入力してください",
+        title: t("partnerSearch.toasts.validationErrorTitle"),
+        description: t("partnerSearch.toasts.validationErrorDescription"),
         variant: "destructive",
       });
       return;
@@ -241,8 +225,8 @@ const PartnerSearch = () => {
       );
 
       toast({
-        title: "お問い合わせ送信完了",
-        description: "パートナー企業にお問い合わせを送信しました",
+        title: t("partnerSearch.toasts.inquirySentTitle"),
+        description: t("partnerSearch.toasts.inquirySentDescription"),
       });
       
       setShowInquiryDialog(false);
@@ -251,8 +235,8 @@ const PartnerSearch = () => {
     } catch (error: any) {
       console.error('Inquiry error:', error);
       toast({
-        title: "送信エラー",
-        description: error.message || "お問い合わせの送信中にエラーが発生しました",
+        title: t("partnerSearch.toasts.sendErrorTitle"),
+        description: error.message || t("partnerSearch.toasts.sendErrorDescription"),
         variant: "destructive",
       });
     }
@@ -261,8 +245,8 @@ const PartnerSearch = () => {
   const scrapeWebsites = async () => {
     if (!websiteUrls.trim()) {
       toast({
-        title: "エラー",
-        description: "WebサイトのURLを入力してください。",
+        title: t("partnerSearch.toasts.validationErrorTitle"),
+        description: t("partnerSearch.toasts.websiteRequiredDescription"),
         variant: "destructive",
       });
       return;
@@ -271,8 +255,8 @@ const PartnerSearch = () => {
     const urls = websiteUrls.split('\n').map(url => url.trim()).filter(Boolean);
     if (urls.length === 0) {
       toast({
-        title: "エラー",
-        description: "有効なURLを入力してください。",
+        title: t("partnerSearch.toasts.validationErrorTitle"),
+        description: t("partnerSearch.toasts.websiteInvalidDescription"),
         variant: "destructive",
       });
       return;
@@ -286,8 +270,10 @@ const PartnerSearch = () => {
       );
 
       toast({
-        title: "スクレイピング完了",
-        description: `${result?.count || 0}件の企業データを取得しました。`,
+        title: t("partnerSearch.toasts.scrapeCompleteTitle"),
+        description: t("partnerSearch.toasts.scrapeCompleteDescription", {
+          count: result?.count || 0,
+        }),
       });
 
       setWebsiteUrls('');
@@ -300,8 +286,8 @@ const PartnerSearch = () => {
     } catch (error: any) {
       console.error('Scraping error:', error);
       toast({
-        title: "スクレイピングエラー",
-        description: "Webサイトからのデータ取得中にエラーが発生しました。",
+        title: t("partnerSearch.toasts.scrapeErrorTitle"),
+        description: t("partnerSearch.toasts.scrapeErrorDescription"),
         variant: "destructive",
       });
     } finally {
@@ -310,14 +296,8 @@ const PartnerSearch = () => {
   };
 
   const getDataSourceLabel = (source: string) => {
-    const labels: { [key: string]: string } = {
-      'google_places': 'Google Places',
-      'opencorporates': 'OpenCorporates',
-      'web_scraping': 'Webスクレイピング',
-      'sample': 'サンプル',
-      'manual': '手動'
-    };
-    return labels[source] || source;
+    const label = t(`partnerSearch.dataSources.${source}`);
+    return label && !label.startsWith("partnerSearch.dataSources.") ? label : source;
   };
 
   // Helper function to get a displayable company name
@@ -341,195 +321,215 @@ const PartnerSearch = () => {
       } catch {}
     }
 
-    // Fallback: Industry + Location (JA)
-    const industry = company.industry?.[0] || '企業';
+    const industry = company.industry?.[0] || t("partnerSearch.companyFallback");
     const location = company.location_city || company.location_country || '';
     return `${industry}${location ? ' - ' + location : ''}`;
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
       
-      <main className="container mx-auto px-4 py-8 mt-20">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
-            パートナー検索
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            世界中の信頼できるビジネスパートナーを見つけて、新たな機会を創出しましょう
-          </p>
-        </div>
-
+      <PageShell className="container mx-auto px-4 py-8 flex-1 min-h-[calc(100vh+8rem)]">
+        <section className="rounded-3xl border border-border bg-hero-surface px-6 py-10 md:px-10 md:py-14 mb-10">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-xs text-foreground mb-4">
+                <CheckCircle className="h-4 w-4 text-primary" />
+                {t("partnerSearch.heroBadge")}
+              </div>
+              <h1 className="text-4xl md:text-5xl font-semibold text-foreground mb-4">
+                {t("partnerSearch.title")}
+              </h1>
+              <p className="text-base md:text-lg text-muted-foreground">
+                {t("partnerSearch.subtitle")}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+              <div className="rounded-2xl border border-border bg-background/80 px-4 py-3">
+                <div className="text-xs">{t("partnerSearch.selectedSourcesLabel")}</div>
+                <div className="text-lg font-semibold text-foreground">{selectedDataSources.length} {t("partnerSearch.countUnit")}</div>
+              </div>
+              <div className="rounded-2xl border border-border bg-background/80 px-4 py-3">
+                <div className="text-xs">{t("partnerSearch.totalResultsLabel")}</div>
+                <div className="text-lg font-semibold text-foreground">{totalCount.toLocaleString()} {t("partnerSearch.countUnit")}</div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Search Bar */}
-        <div className="flex flex-col lg:flex-row gap-4 mb-6">
-          <div className="w-full lg:flex-[3]">
-            <Input
-              placeholder="企業名、業界、サービス等で検索..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && searchCompanies()}
-              className="w-full"
-            />
-          </div>
-          <div className="flex flex-wrap lg:flex-nowrap gap-2 w-full lg:flex-[2] lg:justify-end">
-            <Button onClick={() => searchCompanies(0, true)} disabled={loading} className="w-full sm:w-auto">
-              <Search className="w-4 h-4 mr-2" />
-              {isSearching ? "検索中..." : "検索"}
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setShowFilters(prev => !prev);
-                setShowDataSourceSelector(false);
-              }}
-              className="w-full sm:w-auto"
-            >
-              <Filter className="w-4 h-4 mr-2" />
-              フィルター
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setShowDataSourceSelector(prev => !prev);
-                setShowFilters(false);
-              }}
-              className="w-full sm:w-auto"
-            >
-              <Globe className="w-4 h-4 mr-2" />
-              データソース ({selectedDataSources.length})
-            </Button>
-            <Dialog open={showScrapeDialog} onOpenChange={setShowScrapeDialog}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="w-full sm:w-auto">
-                  <Plus className="w-4 h-4 mr-2" />
-                  企業追加
+        <Card className="mb-6 bg-card/80 border-border">
+          <CardContent className="p-6">
+            <div className="flex flex-col lg:flex-row gap-4">
+              <div className="w-full lg:flex-[3] relative">
+                <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder={t("partnerSearch.searchPlaceholder")}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && searchCompanies()}
+                  className="w-full pl-10"
+                />
+              </div>
+              <div className="flex flex-wrap lg:flex-nowrap gap-2 w-full lg:flex-[2] lg:justify-end">
+                <Button onClick={() => searchCompanies(0, true)} disabled={loading} className="w-full sm:w-auto">
+                  <Search className="w-4 h-4 mr-2" />
+                  {isSearching ? t("partnerSearch.searching") : t("partnerSearch.search")}
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Webサイトから企業データを取得</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <Textarea
-                    placeholder="WebサイトのURLを入力してください（1行に1つ）&#10;例：&#10;https://example.com&#10;https://company2.com"
-                    value={websiteUrls}
-                    onChange={(e) => setWebsiteUrls(e.target.value)}
-                    rows={6}
-                    aria-describedby="scrape-description"
-                  />
-                  <p id="scrape-description" className="text-sm text-muted-foreground">
-                    入力されたWebサイトから企業情報を自動的に抽出します。
-                  </p>
-                  <div className="flex gap-2">
-                    <Button 
-                      onClick={scrapeWebsites} 
-                      disabled={loading}
-                      className="flex-1"
-                    >
-                      {loading ? "取得中..." : "データ取得"}
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setShowFilters(prev => !prev);
+                    setShowDataSourceSelector(false);
+                  }}
+                  className="w-full sm:w-auto"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  {t("partnerSearch.filters")}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setShowDataSourceSelector(prev => !prev);
+                    setShowFilters(false);
+                  }}
+                  className="w-full sm:w-auto"
+                >
+                  <Globe className="w-4 h-4 mr-2" />
+                  {t("partnerSearch.dataSourcesLabel", { count: selectedDataSources.length })}
+                </Button>
+                <Dialog open={showScrapeDialog} onOpenChange={setShowScrapeDialog}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full sm:w-auto">
+                      <Plus className="w-4 h-4 mr-2" />
+                      {t("partnerSearch.addCompanies")}
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setShowScrapeDialog(false)}
-                    >
-                      キャンセル
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </div>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>{t("partnerSearch.scrapeTitle")}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <Textarea
+                        placeholder={t("partnerSearch.scrapePlaceholder")}
+                        value={websiteUrls}
+                        onChange={(e) => setWebsiteUrls(e.target.value)}
+                        rows={6}
+                        aria-describedby="scrape-description"
+                      />
+                      <p id="scrape-description" className="text-sm text-muted-foreground">
+                        {t("partnerSearch.scrapeDescription")}
+                      </p>
+                      <div className="flex gap-2">
+                        <Button 
+                          onClick={scrapeWebsites} 
+                          disabled={loading}
+                          className="flex-1"
+                        >
+                          {loading ? t("partnerSearch.scraping") : t("partnerSearch.scrapeAction")}
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          onClick={() => setShowScrapeDialog(false)}
+                        >
+                          {t("partnerSearch.cancel")}
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Data Source Selector */}
         {showDataSourceSelector && (
-          <div className="mt-4">
-            <DataSourceSelector
-              selectedSources={selectedDataSources}
-              onSourcesChange={setSelectedDataSources}
-              locale="ja"
-            />
-          </div>
+          <Card className="mt-4 bg-card/80 border-border">
+            <CardContent className="p-6">
+              <DataSourceSelector
+                selectedSources={selectedDataSources}
+                onSourcesChange={setSelectedDataSources}
+                locale={localePrefix as "ja" | "en" | "th"}
+              />
+            </CardContent>
+          </Card>
         )}
 
         {/* Advanced Filters */}
         {showFilters && (
-          <Card className="mb-6">
+          <Card className="mb-6 bg-card/80 border-border">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Filter className="w-4 h-4" />
-                詳細フィルター
+                {t("partnerSearch.advancedFiltersTitle")}
               </CardTitle>
               <p className="text-sm text-muted-foreground">
-                業界やエリアを選択して検索結果を絞り込めます
+                {t("partnerSearch.advancedFiltersDescription")}
               </p>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
                 {/* Category Selection */}
                 <div>
-                  <label className="text-sm font-medium mb-2 block">業界カテゴリー</label>
+                  <label className="text-sm font-medium mb-2 block">{t("partnerSearch.industryLabel")}</label>
                   <Select 
                     value={filters.industry || "all"} 
                     onValueChange={(value) => setFilters(prev => ({ ...prev, industry: value }))}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="業界を選択" />
+                      <SelectValue placeholder={t("partnerSearch.industryPlaceholder")} />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">全ての業界</SelectItem>
-                      <SelectItem value="医療">🏥 医療・ヘルスケア</SelectItem>
-                      <SelectItem value="製造業">🏭 製造業</SelectItem>
-                      <SelectItem value="技術">💻 テクノロジー</SelectItem>
-                      <SelectItem value="物流">🚛 物流・運輸</SelectItem>
-                      <SelectItem value="貿易">📦 貿易・輸出入</SelectItem>
-                      <SelectItem value="金融">💰 金融・フィンテック</SelectItem>
-                      <SelectItem value="ファッション">👗 ファッション</SelectItem>
-                      <SelectItem value="自動車">🚗 自動車</SelectItem>
-                    </SelectContent>
+                      <SelectContent>
+                        <SelectItem value="all">{t("partnerSearch.industryAll")}</SelectItem>
+                        {industries.map((industry) => (
+                          <SelectItem key={industry.value} value={industry.value}>
+                            {industry.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
                   </Select>
                 </div>
 
                 {/* Region Selection */}
                 <div>
-                  <label className="text-sm font-medium mb-2 block">地域・エリア</label>
+                  <label className="text-sm font-medium mb-2 block">{t("partnerSearch.locationLabel")}</label>
                     <Select
                     value={filters.location || "all-regions"} 
                     onValueChange={(value) => setFilters(prev => ({ ...prev, location: value }))}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="地域を選択" />
+                        <SelectValue placeholder={t("partnerSearch.locationPlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all-regions">全ての地域</SelectItem>
-                      <SelectItem value="アジア">🌏 アジア</SelectItem>
-                      <SelectItem value="日本">🇯🇵 日本</SelectItem>
-                      <SelectItem value="中国">🇨🇳 中国</SelectItem>
-                      <SelectItem value="タイ">🇹🇭 タイ</SelectItem>
-                      <SelectItem value="ヨーロッパ">🇪🇺 ヨーロッパ</SelectItem>
-                      <SelectItem value="アメリカ">🇺🇸 アメリカ</SelectItem>
-                      <SelectItem value="北米">🌎 北米</SelectItem>
-                      <SelectItem value="南米">🌎 南米</SelectItem>
-                      <SelectItem value="アフリカ">🌍 アフリカ</SelectItem>
-                      <SelectItem value="オセアニア">🇦🇺 オセアニア</SelectItem>
+                      <SelectItem value="all-regions">{t("partnerSearch.locationAll")}</SelectItem>
+                      <SelectItem value="アジア">{t("partnerSearch.locations.asia")}</SelectItem>
+                      <SelectItem value="日本">{t("partnerSearch.locations.japan")}</SelectItem>
+                      <SelectItem value="中国">{t("partnerSearch.locations.china")}</SelectItem>
+                      <SelectItem value="タイ">{t("partnerSearch.locations.thailand")}</SelectItem>
+                      <SelectItem value="ヨーロッパ">{t("partnerSearch.locations.europe")}</SelectItem>
+                      <SelectItem value="アメリカ">{t("partnerSearch.locations.usa")}</SelectItem>
+                      <SelectItem value="北米">{t("partnerSearch.locations.northAmerica")}</SelectItem>
+                      <SelectItem value="南米">{t("partnerSearch.locations.southAmerica")}</SelectItem>
+                      <SelectItem value="アフリカ">{t("partnerSearch.locations.africa")}</SelectItem>
+                      <SelectItem value="オセアニア">{t("partnerSearch.locations.oceania")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium mb-2 block">企業規模</label>
+                    <label className="text-sm font-medium mb-2 block">{t("partnerSearch.companySizeLabel")}</label>
                     <Select 
                       value={filters.companySize || "all"} 
                       onValueChange={(value) => setFilters(prev => ({ ...prev, companySize: value }))}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="企業規模" />
+                        <SelectValue placeholder={t("partnerSearch.companySizePlaceholder")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">全ての規模</SelectItem>
+                        <SelectItem value="all">{t("partnerSearch.companySizeAll")}</SelectItem>
                         {companySizes.map((size) => (
                           <SelectItem key={size.value} value={size.value}>
                             {size.label}
@@ -549,7 +549,7 @@ const PartnerSearch = () => {
                     disabled={loading}
                   >
                     <Search className="w-4 h-4 mr-2" />
-                    フィルター適用
+                    {t("partnerSearch.applyFilters")}
                   </Button>
                   <Button 
                     variant="outline"
@@ -565,17 +565,17 @@ const PartnerSearch = () => {
                       setGoogleNextPageTokens({});
                     }}
                   >
-                    リセット
+                    {t("partnerSearch.reset")}
                   </Button>
                 </div>
                 
                 {/* Helpful Tips */}
                 <div className="bg-muted/50 p-3 rounded-lg">
-                  <h4 className="text-sm font-medium mb-1">💡 検索のヒント</h4>
+                  <h4 className="text-sm font-medium mb-1">{t("partnerSearch.tipsTitle")}</h4>
                   <ul className="text-xs text-muted-foreground space-y-1">
-                    <li>• 複数の条件を組み合わせて検索できます</li>
-                    <li>• 検索バーに「製造業 アジア」などと入力しても検索できます</li>
-                    <li>• 企業が見つからない場合は「企業追加」をお試しください</li>
+                    <li>{t("partnerSearch.tips.0")}</li>
+                    <li>{t("partnerSearch.tips.1")}</li>
+                    <li>{t("partnerSearch.tips.2")}</li>
                   </ul>
                 </div>
               </div>
@@ -584,30 +584,41 @@ const PartnerSearch = () => {
         )}
 
         {totalCount > 0 && (
-          <div className="mb-4 text-sm text-muted-foreground">
-            {companies.length}件の企業を表示中（全{totalCount}件）
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm text-muted-foreground">
+            <span>{t("partnerSearch.resultsSummary", { shown: companies.length, total: totalCount })}</span>
+            <div className="inline-flex items-center gap-2">
+              <Badge variant="outline" className="text-xs">
+                {t("partnerSearch.pageLabel", { current: page + 1, total: totalPages })}
+              </Badge>
+              {selectedDataSources.length > 0 && (
+                <Badge variant="secondary" className="text-xs">
+                  {t("partnerSearch.sourcesLabel", { count: selectedDataSources.length })}
+                </Badge>
+              )}
+            </div>
           </div>
         )}
 
         {companies.length === 0 && !loading && searchQuery && (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">
+          <Card className="bg-card/80 border-border">
+            <CardContent className="p-10 text-center">
+              <p className="text-muted-foreground text-base">
               {(() => {
-                const detectedCategory = searchQuery.includes('医療') ? '医療業界' :
-                  searchQuery.includes('製造業') ? '製造業' :
-                  searchQuery.includes('技術') ? '技術業界' :
-                  searchQuery.includes('物流') ? '物流業界' :
-                  searchQuery.includes('貿易') ? '貿易業界' :
-                  searchQuery.includes('金融') ? '金融業界' :
-                  searchQuery.includes('ファッション') ? 'ファッション業界' :
-                  searchQuery.includes('自動車') ? '自動車業界' : '';
+                const detectedCategory = searchQuery.includes('医療') ? t("partnerSearch.detectedCategories.medical") :
+                  searchQuery.includes('製造業') ? t("partnerSearch.detectedCategories.manufacturing") :
+                  searchQuery.includes('技術') ? t("partnerSearch.detectedCategories.technology") :
+                  searchQuery.includes('物流') ? t("partnerSearch.detectedCategories.logistics") :
+                  searchQuery.includes('貿易') ? t("partnerSearch.detectedCategories.trade") :
+                  searchQuery.includes('金融') ? t("partnerSearch.detectedCategories.finance") :
+                  searchQuery.includes('ファッション') ? t("partnerSearch.detectedCategories.fashion") :
+                  searchQuery.includes('自動車') ? t("partnerSearch.detectedCategories.automotive") : '';
                 
                 return detectedCategory 
-                  ? `${detectedCategory}の企業が見つかりませんでした。`
-                  : '検索条件に一致する企業が見つかりませんでした。';
+                  ? t("partnerSearch.noResultsCategory", { category: detectedCategory })
+                  : t("partnerSearch.noResultsDefault");
               })()}
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
               {(() => {
                 const hasCategory = searchQuery.includes('医療') || searchQuery.includes('製造業') || 
                   searchQuery.includes('技術') || searchQuery.includes('物流') || 
@@ -615,78 +626,87 @@ const PartnerSearch = () => {
                   searchQuery.includes('ファッション') || searchQuery.includes('自動車');
                 
                 return hasCategory
-                  ? '「企業追加」ボタンから関連企業のWebサイトを追加してください。'
-                  : '検索キーワードを変更するか、外部データソースから新しい企業を追加してみてください。';
+                  ? t("partnerSearch.noResultsTipScrape")
+                  : t("partnerSearch.noResultsTipChangeQuery");
               })()}
-            </p>
-          </div>
+              </p>
+            </CardContent>
+          </Card>
         )}
 
         {companies.length === 0 && !loading && !searchQuery && (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">
-              検索キーワードを入力して、パートナー企業を探してみましょう。
-            </p>
-          </div>
+          <Card className="bg-card/80 border-border">
+            <CardContent className="p-10 text-center">
+              <p className="text-muted-foreground">
+                {t("partnerSearch.emptyState")}
+              </p>
+            </CardContent>
+          </Card>
         )}
 
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {companies.map((company) => (
-            <Card key={company.id} className="hover:shadow-glow transition-all duration-300 h-full flex flex-col">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <CardTitle className="text-lg font-bold flex items-center gap-2">
-                    <Building className="h-5 w-5" />
-                    {getDisplayName(company)}
-                    {company.verified && (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    )}
-                  </CardTitle>
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <MapPin className="h-4 w-4" />
-                  <span className="text-sm">
-                    {company.location_city && `${company.location_city}, `}{company.location_country}
-                  </span>
+            <Card key={company.id} className="border-border bg-card/80 hover:shadow-soft transition-all duration-300 h-full flex flex-col">
+              <CardHeader className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                    <Building className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="min-w-0">
+                    <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <span className="truncate">{getDisplayName(company)}</span>
+                      {company.verified && (
+                        <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-full px-2 py-0.5">
+                          <CheckCircle className="h-3 w-3" />
+                          {t("partnerSearch.verifiedBadge")}
+                        </span>
+                      )}
+                    </CardTitle>
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                      <span className="inline-flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {company.location_city && `${company.location_city}, `}{company.location_country}
+                      </span>
+                      {company.company_size && (
+                        <span className="inline-flex items-center gap-1">
+                          <Users className="h-3 w-3" />
+                          {companySizes.find(s => s.value === company.company_size)?.label}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 {company.website_url && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <a 
+                    href={company.website_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary"
+                  >
                     <Globe className="w-3 h-3" />
-                    <a 
-                      href={company.website_url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="hover:underline flex items-center gap-1"
-                    >
-                      {company.website_url}
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
+                    <span className="truncate">{company.website_url.replace(/^https?:\/\//, '')}</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                 )}
               </CardHeader>
               
               <CardContent className="flex-1 flex flex-col">
                 <div className="flex-1">
-                  <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
+                  <p className="text-muted-foreground text-sm mb-4 line-clamp-3 leading-relaxed">
                     {company.description}
                   </p>
                   
                   <div className="space-y-3">
                     <div>
-                      <h4 className="font-semibold text-sm mb-1">業界</h4>
-                      <div className="flex flex-wrap gap-1">
+                      <h4 className="font-semibold text-xs uppercase tracking-wide text-muted-foreground mb-2">{t("partnerSearch.industryLabel")}</h4>
+                      <div className="flex flex-wrap gap-1.5">
                         {company.industry.slice(0, 3).map((ind, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
+                          <Badge key={index} variant="secondary" className="text-[11px] px-2 py-0.5">
                             {ind}
                           </Badge>
                         ))}
-                        {company.verified && (
-                          <Badge variant="default" className="text-xs">
-                            認証済み
-                          </Badge>
-                        )}
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-[11px] px-2 py-0.5">
                           {getDataSourceLabel(company.data_source)}
                         </Badge>
                       </div>
@@ -694,10 +714,10 @@ const PartnerSearch = () => {
                     
                     {company.specialties.length > 0 && (
                       <div>
-                        <h4 className="font-semibold text-sm mb-1">専門分野</h4>
-                        <div className="flex flex-wrap gap-1">
+                        <h4 className="font-semibold text-xs uppercase tracking-wide text-muted-foreground mb-2">{t("partnerSearch.specialtiesLabel")}</h4>
+                        <div className="flex flex-wrap gap-1.5">
                           {company.specialties.slice(0, 3).map((spec, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
+                            <Badge key={index} variant="outline" className="text-[11px] px-2 py-0.5">
                               {spec}
                             </Badge>
                           ))}
@@ -705,26 +725,21 @@ const PartnerSearch = () => {
                       </div>
                     )}
                     
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Users className="h-4 w-4" />
-                      <span>{companySizes.find(s => s.value === company.company_size)?.label}</span>
-                    </div>
-                    
                     {/* Contact Information - Show based on access control */}
                     {(company.contact_email || company.phone) && !company._contact_restricted && (
-                      <div className="space-y-2 pt-2 border-t border-muted/50">
-                        <h4 className="font-semibold text-sm">連絡先</h4>
+                      <div className="space-y-2 pt-3 border-t border-muted/50">
+                        <h4 className="font-semibold text-xs uppercase tracking-wide text-muted-foreground">{t("partnerSearch.contactLabel")}</h4>
                         {company.contact_email && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Mail className="h-4 w-4" />
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Mail className="h-3.5 w-3.5" />
                             <a href={`mailto:${company.contact_email}`} className="hover:text-primary">
                               {company.contact_email}
                             </a>
                           </div>
                         )}
                         {company.phone && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Phone className="h-4 w-4" />
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Phone className="h-3.5 w-3.5" />
                             <a href={`tel:${company.phone}`} className="hover:text-primary">
                               {company.phone}
                             </a>
@@ -746,31 +761,33 @@ const PartnerSearch = () => {
                           pricingSection.scrollIntoView({ behavior: 'smooth' });
                         } else {
                           // If pricing section not on current page, navigate to home page with pricing section
-                          window.location.href = '/ja#pricing';
-                        }
-                      }}
-                      onMakeInquiry={() => openInquiryDialog(company)}
-                    />
-                  )}
+                            window.location.href = `/${localePrefix}#pricing`;
+                          }
+                        }}
+                        onMakeInquiry={() => openInquiryDialog(company)}
+                      />
+                    )}
                 </div>
                 
-                <div className="flex gap-2 mt-auto pt-4">
+                <div className="flex flex-col sm:flex-row gap-2 mt-auto pt-4">
                   <Button
                     variant="outline"
                     size="sm"
                     className="flex-1"
                     onClick={() => openInquiryDialog(company)}
                   >
-                    お問い合わせ
+                    {t("partnerSearch.contactAction")}
                   </Button>
                   {company.website_url && (
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="sm:w-auto"
                       asChild
                     >
                       <a href={company.website_url} target="_blank" rel="noopener noreferrer">
-                        <Globe className="h-4 w-4" />
+                        <Globe className="h-4 w-4 mr-2" />
+                        {t("partnerSearch.websiteAction")}
                       </a>
                     </Button>
                   )}
@@ -782,14 +799,14 @@ const PartnerSearch = () => {
 
         {totalPages > 1 && (
           <div className="mt-8 flex justify-center">
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => handlePageChange(Math.max(0, page - 1))}
                 disabled={loading || page === 0}
               >
-                前へ
+                {t("partnerSearch.prev")}
               </Button>
               {getPageItems(page, totalPages).map((pageIndex, index, items) => {
                 const prevPage = index > 0 ? items[index - 1] : null;
@@ -814,48 +831,48 @@ const PartnerSearch = () => {
                 onClick={() => handlePageChange(Math.min(totalPages - 1, page + 1))}
                 disabled={loading || page >= totalPages - 1}
               >
-                次へ
+                {t("partnerSearch.next")}
               </Button>
             </div>
           </div>
         )}
-      </main>
+      </PageShell>
 
       {/* Partnership Inquiry Dialog */}
       <Dialog open={showInquiryDialog} onOpenChange={setShowInquiryDialog}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl">
-              {selectedCompany ? getDisplayName(selectedCompany) : ''} へのパートナーシップ問い合わせ
+              {t("partnerSearch.inquiryTitle", { company: selectedCompany ? getDisplayName(selectedCompany) : "" })}
             </DialogTitle>
             <p className="text-sm text-muted-foreground">
-              以下のメッセージが企業の連絡先に送信されます。内容を確認・編集してから送信してください。
+              {t("partnerSearch.inquirySubtitle")}
             </p>
           </DialogHeader>
           <div className="space-y-4">
             <div className="bg-muted/50 p-4 rounded-lg">
-              <h4 className="font-semibold text-sm mb-2">送信先企業情報</h4>
+              <h4 className="font-semibold text-xs uppercase tracking-wide text-muted-foreground mb-2">{t("partnerSearch.inquiryCompanyInfoTitle")}</h4>
               <div className="space-y-1 text-sm">
-                <p><strong>企業名:</strong> {selectedCompany ? getDisplayName(selectedCompany) : ''}</p>
-                <p><strong>業界:</strong> {selectedCompany?.industry.join(', ')}</p>
-                <p><strong>所在地:</strong> {selectedCompany?.location_city && `${selectedCompany.location_city}, `}{selectedCompany?.location_country}</p>
+                <p><strong>{t("partnerSearch.inquiryCompanyLabel")}</strong> {selectedCompany ? getDisplayName(selectedCompany) : ''}</p>
+                <p><strong>{t("partnerSearch.inquiryIndustryLabel")}</strong> {selectedCompany?.industry.join(', ')}</p>
+                <p><strong>{t("partnerSearch.inquiryLocationLabel")}</strong> {selectedCompany?.location_city && `${selectedCompany.location_city}, `}{selectedCompany?.location_country}</p>
               </div>
             </div>
             
             <div>
               <label htmlFor="inquiry-message" className="text-sm font-medium mb-2 block">
-                パートナーシップ問い合わせメッセージ
+                {t("partnerSearch.inquiryMessageLabel")}
               </label>
               <Textarea
                 id="inquiry-message"
-                placeholder="パートナーシップについてのメッセージを入力してください..."
+                placeholder={t("partnerSearch.inquiryPlaceholder")}
                 value={inquiryMessage}
                 onChange={(e) => setInquiryMessage(e.target.value)}
                 rows={12}
                 className="w-full"
               />
               <p className="text-xs text-muted-foreground mt-1">
-                このメッセージと共に、あなたの連絡先情報（名前、メールアドレス、会社名など）も送信されます。
+                {t("partnerSearch.inquiryNote")}
               </p>
             </div>
             
@@ -866,20 +883,19 @@ const PartnerSearch = () => {
                 className="flex-1"
               >
                 <Mail className="w-4 h-4 mr-2" />
-                問い合わせを送信
+                {t("partnerSearch.sendInquiry")}
               </Button>
               <Button 
                 variant="outline" 
                 onClick={() => setShowInquiryDialog(false)}
               >
-                キャンセル
+                {t("partnerSearch.cancel")}
               </Button>
             </div>
             
             <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
               <p className="text-xs text-blue-800">
-                <strong>📧 送信について:</strong> このメッセージは企業の登録メールアドレスに直接送信され、
-                企業からの返信はあなたのメールアドレスに届きます。
+                <strong>{t("partnerSearch.inquiryFooterTitle")}</strong> {t("partnerSearch.inquiryFooterNote")}
               </p>
             </div>
           </div>

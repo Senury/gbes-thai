@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Users, FileText, Package, TrendingUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Registration {
   id: string;
@@ -20,6 +21,9 @@ interface Registration {
 }
 
 export default function AdminPanel() {
+  const { t, i18n } = useTranslation();
+  const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
+  const dateLocale = localePrefix === "ja" ? "ja-JP" : localePrefix === "th" ? "th-TH" : "en-US";
   const { user } = useAuth();
   const { toast } = useToast();
   const [registrations, setRegistrations] = useState<Registration[]>([]);
@@ -47,8 +51,8 @@ export default function AdminPanel() {
           console.error('Error fetching registrations:', regError);
           toast({
             variant: "destructive",
-            title: "Error",
-            description: "Failed to load registrations data",
+            title: t("admin.toasts.errorTitle"),
+            description: t("admin.toasts.registrationsError"),
           });
         } else {
           setRegistrations(registrationsData || []);
@@ -70,8 +74,8 @@ export default function AdminPanel() {
         console.error('Error:', error);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Failed to load data",
+          title: t("admin.toasts.errorTitle"),
+          description: t("admin.toasts.dataError"),
         });
       } finally {
         setLoading(false);
@@ -83,21 +87,21 @@ export default function AdminPanel() {
 
   const getServiceDetails = (service: string) => {
     const services = {
-      'token-a': { name: 'Token A', price: '$9.99', color: 'bg-blue-100 text-blue-800' },
-      'token-b': { name: 'Token B', price: '$19.99', color: 'bg-green-100 text-green-800' },
-      'premium': { name: 'Premium', price: '$39.99', color: 'bg-purple-100 text-purple-800' }
+      'token-a': { name: t("admin.services.tokenA"), price: t("admin.services.tokenAPrice"), color: 'bg-blue-100 text-blue-800' },
+      'token-b': { name: t("admin.services.tokenB"), price: t("admin.services.tokenBPrice"), color: 'bg-green-100 text-green-800' },
+      'premium': { name: t("admin.services.premium"), price: t("admin.services.premiumPrice"), color: 'bg-purple-100 text-purple-800' }
     };
-    return services[service as keyof typeof services] || { name: service, price: 'N/A', color: 'bg-gray-100 text-gray-800' };
+    return services[service as keyof typeof services] || { name: service, price: t("admin.services.notAvailable"), color: 'bg-gray-100 text-gray-800' };
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout language={localePrefix}>
       <div className="space-y-6">
         {/* Header */}
         <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-6">
-          <h1 className="text-2xl font-bold mb-2">Admin Panel</h1>
+          <h1 className="text-2xl font-bold mb-2">{t("admin.title")}</h1>
           <p className="text-muted-foreground">
-            Manage users, registrations, and view analytics.
+            {t("admin.subtitle")}
           </p>
         </div>
 
@@ -105,7 +109,7 @@ export default function AdminPanel() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.stats.totalUsers")}</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -115,7 +119,7 @@ export default function AdminPanel() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Token A Plans</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.stats.tokenA")}</CardTitle>
               <Package className="h-4 w-4 text-blue-500" />
             </CardHeader>
             <CardContent>
@@ -125,7 +129,7 @@ export default function AdminPanel() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Token B Plans</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.stats.tokenB")}</CardTitle>
               <Package className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
@@ -135,7 +139,7 @@ export default function AdminPanel() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Premium Plans</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.stats.premium")}</CardTitle>
               <Package className="h-4 w-4 text-purple-500" />
             </CardHeader>
             <CardContent>
@@ -149,10 +153,10 @@ export default function AdminPanel() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5" />
-              All Registrations
+              {t("admin.table.title")}
             </CardTitle>
             <CardDescription>
-              Complete list of all user registrations
+              {t("admin.table.subtitle")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -160,11 +164,11 @@ export default function AdminPanel() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Company</TableHead>
-                    <TableHead>Service</TableHead>
-                    <TableHead>Registered</TableHead>
+                    <TableHead>{t("admin.table.headers.name")}</TableHead>
+                    <TableHead>{t("admin.table.headers.email")}</TableHead>
+                    <TableHead>{t("admin.table.headers.company")}</TableHead>
+                    <TableHead>{t("admin.table.headers.service")}</TableHead>
+                    <TableHead>{t("admin.table.headers.registered")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -174,14 +178,14 @@ export default function AdminPanel() {
                         {registration.first_name} {registration.last_name}
                       </TableCell>
                       <TableCell>{registration.email}</TableCell>
-                      <TableCell>{registration.company || 'N/A'}</TableCell>
+                      <TableCell>{registration.company || t("admin.table.notProvided")}</TableCell>
                       <TableCell>
                         <Badge className={getServiceDetails(registration.service).color}>
                           {getServiceDetails(registration.service).name}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {new Date(registration.created_at).toLocaleDateString()}
+                        {new Date(registration.created_at).toLocaleDateString(dateLocale)}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -190,7 +194,7 @@ export default function AdminPanel() {
             </div>
             {registrations.length === 0 && !loading && (
               <div className="text-center py-8 text-muted-foreground">
-                No registrations found
+                {t("admin.table.empty")}
               </div>
             )}
           </CardContent>

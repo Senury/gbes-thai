@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Calendar, Clock, X, Facebook, Instagram, Linkedin, Send, Zap } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import { useTranslation } from "react-i18next";
+import PageShell from "@/components/PageShell";
 
 interface SocialPost {
   id: string;
@@ -20,6 +23,8 @@ interface SocialPost {
 }
 
 const SocialMediaAutomation = () => {
+  const { t, i18n } = useTranslation();
+  const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
   const [postContent, setPostContent] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [scheduleType, setScheduleType] = useState("now");
@@ -63,8 +68,8 @@ const SocialMediaAutomation = () => {
       
       if (response.ok) {
         toast({
-          title: "成功",
-          description: "Xに投稿しました",
+          title: t("social.toasts.successTitle"),
+          description: t("social.toasts.twitterSuccess"),
         });
       } else {
         throw new Error('Twitter API error');
@@ -72,8 +77,8 @@ const SocialMediaAutomation = () => {
     } catch (error) {
       console.error('Twitter post error:', error);
       toast({
-        title: "エラー",
-        description: "X投稿に失敗しました（API未実装またはタイムアウト）",
+        title: t("social.toasts.errorTitle"),
+        description: t("social.toasts.twitterError"),
         variant: "destructive",
       });
     }
@@ -82,8 +87,8 @@ const SocialMediaAutomation = () => {
   const handleZapierTrigger = async () => {
     if (!zapierWebhook) {
       toast({
-        title: "エラー",
-        description: "ZapierのWebhook URLを入力してください",
+        title: t("social.toasts.errorTitle"),
+        description: t("social.toasts.webhookRequired"),
         variant: "destructive",
       });
       return;
@@ -110,16 +115,16 @@ const SocialMediaAutomation = () => {
       await Promise.race([fetchPromise, timeoutPromise]);
 
       toast({
-        title: "リクエスト送信完了",
-        description: "Zapierにリクエストをしました。Zapの履歴をご確認ください。",
+        title: t("social.toasts.zapierSentTitle"),
+        description: t("social.toasts.zapierSentDescription"),
       });
     } catch (error) {
       console.error("Zapier webhook error:", error);
       toast({
-        title: "エラー",
+        title: t("social.toasts.errorTitle"),
         description: error.message.includes('timeout') ? 
-          "Zapierリクエストがタイムアウトしました" : 
-          "Zapierとの連携に失敗しました",
+          t("social.toasts.zapierTimeout") : 
+          t("social.toasts.zapierError"),
         variant: "destructive",
       });
     }
@@ -128,8 +133,8 @@ const SocialMediaAutomation = () => {
   const handleSubmit = async () => {
     if (!postContent.trim()) {
       toast({
-        title: "エラー",
-        description: "投稿内容を入力してください",
+        title: t("social.toasts.errorTitle"),
+        description: t("social.toasts.contentRequired"),
         variant: "destructive",
       });
       return;
@@ -137,8 +142,8 @@ const SocialMediaAutomation = () => {
 
     if (selectedPlatforms.length === 0) {
       toast({
-        title: "エラー",
-        description: "投稿するプラットフォームを選択してください",
+        title: t("social.toasts.errorTitle"),
+        description: t("social.toasts.platformRequired"),
         variant: "destructive",
       });
       return;
@@ -174,14 +179,14 @@ const SocialMediaAutomation = () => {
       setSelectedPlatforms([]);
       
       toast({
-        title: "成功",
-        description: scheduleType === "now" ? "投稿しました" : "投稿をスケジュールしました",
+        title: t("social.toasts.successTitle"),
+        description: scheduleType === "now" ? t("social.toasts.posted") : t("social.toasts.scheduled"),
       });
     } catch (error) {
       console.error("Post submission error:", error);
       toast({
-        title: "エラー",
-        description: "投稿に失敗しました",
+        title: t("social.toasts.errorTitle"),
+        description: t("social.toasts.postError"),
         variant: "destructive",
       });
     } finally {
@@ -193,147 +198,174 @@ const SocialMediaAutomation = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="container mx-auto px-4 py-8 mt-16">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-4">
-              ソーシャルメディア自動化
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              企業情報を効率的に複数のソーシャルメディアに配信
-            </p>
-          </div>
+      <PageShell className="container mx-auto px-4 py-8 min-h-screen">
+        <div className="max-w-5xl mx-auto">
+          <section className="rounded-3xl border border-border bg-hero-surface px-6 py-10 md:px-10 md:py-12 mb-10">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-xs text-foreground mb-4">
+                  <Zap className="h-4 w-4 text-primary" />
+                  {t("social.heroBadge")}
+                </div>
+                <h1 className="text-4xl md:text-5xl font-semibold text-foreground mb-4">
+                  {t("social.title")}
+                </h1>
+                <p className="text-base md:text-lg text-muted-foreground">
+                  {t("social.subtitle")}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                <div className="rounded-2xl border border-border bg-background/80 px-4 py-3">
+                  <div className="text-xs">{t("social.selectedLabel")}</div>
+                  <div className="text-lg font-semibold text-foreground">{selectedPlatforms.length} {t("social.countUnit")}</div>
+                </div>
+                <div className="rounded-2xl border border-border bg-background/80 px-4 py-3">
+                  <div className="text-xs">{t("social.createdLabel")}</div>
+                  <div className="text-lg font-semibold text-foreground">{posts.length} {t("social.postsUnit")}</div>
+                </div>
+              </div>
+            </div>
+          </section>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8">
             {/* Post Creation */}
-            <Card>
+            <Card className="border-border bg-card/80">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Send className="h-5 w-5" />
-                  新規投稿作成
+                  {t("social.newPostTitle")}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-5">
                 <div>
-                  <Label htmlFor="content">投稿内容</Label>
+                  <Label htmlFor="content">{t("social.contentLabel")}</Label>
                   <Textarea
                     id="content"
-                    placeholder="投稿内容を入力してください..."
+                    placeholder={t("social.contentPlaceholder")}
                     value={postContent}
                     onChange={(e) => setPostContent(e.target.value)}
-                    rows={4}
-                    className="mt-1"
+                    rows={5}
+                    className="mt-2"
                   />
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {postContent.length}/280文字
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {t("social.characterCount", { count: postContent.length })}
                   </p>
                 </div>
 
                 <div>
-                  <Label>投稿プラットフォーム</Label>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
+                  <Label>{t("social.platformLabel")}</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                     {platforms.map((platform) => {
                       const Icon = platform.icon;
+                      const isSelected = selectedPlatforms.includes(platform.id);
                       return (
-                        <div key={platform.id} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={platform.id}
-                            checked={selectedPlatforms.includes(platform.id)}
-                            onCheckedChange={() => handlePlatformToggle(platform.id)}
-                          />
-                          <Label 
-                            htmlFor={platform.id}
-                            className="flex items-center gap-2 cursor-pointer"
-                          >
+                        <button
+                          key={platform.id}
+                          type="button"
+                          onClick={() => handlePlatformToggle(platform.id)}
+                          className={`flex items-center justify-between rounded-xl border px-3 py-2 text-sm transition-colors ${
+                            isSelected
+                              ? "border-primary bg-primary/10 text-foreground"
+                              : "border-border bg-background/70 text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
                             <Icon className={`h-4 w-4 ${platform.color}`} />
                             {platform.name}
-                          </Label>
-                        </div>
+                          </span>
+                          <Checkbox
+                            id={platform.id}
+                            checked={isSelected}
+                            onCheckedChange={() => handlePlatformToggle(platform.id)}
+                          />
+                        </button>
                       );
                     })}
                   </div>
                 </div>
 
-                <div>
-                  <Label>投稿タイミング</Label>
-                  <Select value={scheduleType} onValueChange={setScheduleType}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="now">今すぐ投稿</SelectItem>
-                      <SelectItem value="schedule">日時を指定</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <Label>{t("social.scheduleLabel")}</Label>
+                    <Select value={scheduleType} onValueChange={setScheduleType}>
+                      <SelectTrigger className="mt-2">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="now">{t("social.scheduleNow")}</SelectItem>
+                        <SelectItem value="schedule">{t("social.scheduleLater")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {scheduleType === "schedule" && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Label htmlFor="date">{t("social.dateLabel")}</Label>
+                        <Input
+                          id="date"
+                          type="date"
+                          value={scheduledDate}
+                          onChange={(e) => setScheduledDate(e.target.value)}
+                          className="mt-2"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="time">{t("social.timeLabel")}</Label>
+                        <Input
+                          id="time"
+                          type="time"
+                          value={scheduledTime}
+                          onChange={(e) => setScheduledTime(e.target.value)}
+                          className="mt-2"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {scheduleType === "schedule" && (
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <Label htmlFor="date">日付</Label>
-                      <Input
-                        id="date"
-                        type="date"
-                        value={scheduledDate}
-                        onChange={(e) => setScheduledDate(e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="time">時刻</Label>
-                      <Input
-                        id="time"
-                        type="time"
-                        value={scheduledTime}
-                        onChange={(e) => setScheduledTime(e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
-                )}
-
                 <Button 
+                  variant="cta"
                   onClick={handleSubmit} 
                   disabled={isLoading}
                   className="w-full"
                 >
-                  {isLoading ? "投稿中..." : scheduleType === "now" ? "投稿する" : "スケジュール"}
+                  {isLoading ? t("social.posting") : scheduleType === "now" ? t("social.postNow") : t("social.schedule")}
                 </Button>
               </CardContent>
             </Card>
 
             {/* Zapier Integration */}
-            <Card>
+            <Card className="border-border bg-card/80 h-fit">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Zap className="h-5 w-5" />
-                  Zapier連携設定
+                  {t("social.zapierTitle")}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-5">
                 <div>
-                  <Label htmlFor="webhook">Zapier Webhook URL</Label>
+                  <Label htmlFor="webhook">{t("social.zapierWebhookLabel")}</Label>
                   <Input
                     id="webhook"
                     placeholder="https://hooks.zapier.com/hooks/catch/..."
                     value={zapierWebhook}
                     onChange={(e) => setZapierWebhook(e.target.value)}
-                    className="mt-1"
+                    className="mt-2"
                   />
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Facebook、Instagram、LinkedInへの投稿にはZapier連携が必要です
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {t("social.zapierNote")}
                   </p>
                 </div>
 
-                <div className="bg-muted/50 p-4 rounded-lg">
-                  <h4 className="font-semibold mb-2">Zapier設定手順:</h4>
-                  <ol className="text-sm space-y-1 list-decimal list-inside">
-                    <li>Zapierアカウントを作成</li>
-                    <li>新しいZapを作成</li>
-                    <li>トリガーに「Webhooks by Zapier」を選択</li>
-                    <li>「Catch Hook」を選択</li>
-                    <li>提供されたWebhook URLをここに入力</li>
-                    <li>アクションで各SNSプラットフォームを設定</li>
+                <div className="bg-muted/40 p-4 rounded-xl border border-border">
+                  <h4 className="text-xs uppercase tracking-wide text-muted-foreground mb-2">{t("social.zapierStepsTitle")}</h4>
+                  <ol className="text-sm space-y-1 list-decimal list-inside text-muted-foreground">
+                    <li>{t("social.zapierSteps.0")}</li>
+                    <li>{t("social.zapierSteps.1")}</li>
+                    <li>{t("social.zapierSteps.2")}</li>
+                    <li>{t("social.zapierSteps.3")}</li>
+                    <li>{t("social.zapierSteps.4")}</li>
+                    <li>{t("social.zapierSteps.5")}</li>
                   </ol>
                 </div>
               </CardContent>
@@ -342,38 +374,38 @@ const SocialMediaAutomation = () => {
 
           {/* Posts History */}
           {posts.length > 0 && (
-            <Card className="mt-8">
+            <Card className="mt-8 border-border bg-card/80">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Calendar className="h-5 w-5" />
-                  投稿履歴
+                  {t("social.historyTitle")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {posts.map((post) => (
-                    <div key={post.id} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(post.createdAt).toLocaleString('ja-JP')}
+                    <div key={post.id} className="border border-border rounded-xl p-4 bg-background/70">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(post.createdAt).toLocaleString(localePrefix === "ja" ? "ja-JP" : localePrefix === "th" ? "th-TH" : "en-US")}
                         </p>
                         <span className={`px-2 py-1 rounded-full text-xs ${
                           post.status === 'published' ? 'bg-green-100 text-green-800' :
                           post.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
                           'bg-gray-100 text-gray-800'
                         }`}>
-                          {post.status === 'published' ? '投稿済み' :
-                           post.status === 'scheduled' ? 'スケジュール済み' : '下書き'}
+                          {post.status === 'published' ? t("social.status.published") :
+                           post.status === 'scheduled' ? t("social.status.scheduled") : t("social.status.draft")}
                         </span>
                       </div>
-                      <p className="mb-2">{post.content}</p>
-                      <div className="flex gap-2">
+                      <p className="mb-3 text-sm">{post.content}</p>
+                      <div className="flex flex-wrap gap-2">
                         {post.platforms.map((platformId) => {
                           const platform = platforms.find(p => p.id === platformId);
                           if (!platform) return null;
                           const Icon = platform.icon;
                           return (
-                            <div key={platformId} className="flex items-center gap-1 text-sm">
+                            <div key={platformId} className="flex items-center gap-1 text-xs text-muted-foreground">
                               <Icon className={`h-4 w-4 ${platform.color}`} />
                               {platform.name}
                             </div>
@@ -381,9 +413,9 @@ const SocialMediaAutomation = () => {
                         })}
                       </div>
                       {post.scheduledTime && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          <Clock className="h-4 w-4 inline mr-1" />
-                          予定: {post.scheduledTime}
+                        <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                          <Clock className="h-3.5 w-3.5" />
+                          {t("social.scheduledLabel", { time: post.scheduledTime })}
                         </p>
                       )}
                     </div>
@@ -393,7 +425,8 @@ const SocialMediaAutomation = () => {
             </Card>
           )}
         </div>
-      </main>
+      </PageShell>
+      <Footer />
     </div>
   );
 };

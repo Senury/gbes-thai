@@ -1,0 +1,686 @@
+{
+  "nav": {
+    "home": "หน้าแรก",
+    "mission": "พันธกิจ",
+    "services": "บริการ",
+    "partners": "ค้นหาพันธมิตร",
+    "pricing": "ราคา",
+    "more": "เพิ่มเติม",
+    "moreLabel": "เมนูเพิ่มเติม",
+    "contact": "ติดต่อ",
+    "social": "โซเชียล",
+    "languageJa": "日本語",
+    "languageEn": "English",
+    "languageTh": "ไทย",
+    "register": "ลงทะเบียน",
+    "login": "เข้าสู่ระบบ",
+    "signup": "สมัครสมาชิก",
+    "logout": "ออกจากระบบ"
+  },
+  "hero": {
+    "badge": "ความปลอดภัยและมาตรฐานระดับองค์กร",
+    "titlePrefix": "ระบบขยายธุรกิจ",
+    "titleHighlight": "สู่ต่างประเทศ",
+    "titleSuffix": "",
+    "description": "แพลตฟอร์ม AI สำหรับ SME ญี่ปุ่น ตั้งแต่การแปล การกระจายคอนเทนต์ ไปจนถึงการค้นหาพาร์ทเนอร์ ครบจบในเวิร์กโฟลว์เดียว",
+    "ctaPrimary": "สมัครและเชื่อมต่อทั่วโลก",
+    "ctaSecondary": "เรียนรู้เพิ่มเติม",
+    "stats": [
+      { "label": "พาร์ทเนอร์ที่ค้นหาได้", "value": "12,400+" },
+      { "label": "รองรับภาษา", "value": "24" },
+      { "label": "เริ่มใช้งานเฉลี่ย", "value": "2 สัปดาห์" }
+    ],
+    "live": "สด • 1,234 บริษัทออนไลน์",
+    "pillGlobal": "กระจายหลายช่องทาง",
+    "pillAi": "ผู้ช่วย AI",
+    "note": "กระจายคอนเทนต์ไปยังโซเชียลหลักและ Google Maps พร้อมการวิเคราะห์และคำแนะนำจาก AI"
+  },
+  "mission": {
+    "title": "พันธกิจของเรา",
+    "subtitle": "ทำให้การขยายธุรกิจสู่ต่างประเทศง่ายขึ้น",
+    "benefits": [
+      "เครื่องมือแปลสินค้าหลายภาษา",
+      "กระจายข้อมูลไปยังโซเชียลและ Google Maps แบบครบวงจร",
+      "เชื่อมต่อพาร์ทเนอร์ต่างประเทศที่เชื่อถือได้",
+      "รองรับการชำระเงิน"
+    ],
+    "cta": "ดูรายละเอียด",
+    "highlights": [
+      {
+        "title": "โซลูชันครบวงจร",
+        "description": "รวมทุกอย่างตั้งแต่การแปลถึงการตลาด"
+      },
+      {
+        "title": "ธุรกรรมที่ปลอดภัย",
+        "description": "มาตรฐาน ISO และการปฏิบัติตามข้อกำหนดสากล"
+      },
+      {
+        "title": "เครือข่ายระดับโลก",
+        "description": "สนับสนุนผ่าน JETRO หอการค้า และพันธมิตร Rotary Club"
+      }
+    ]
+  },
+  "features": {
+    "title": "ภาพรวมบริการ",
+    "subtitle": "ทุกสิ่งที่ SME ต้องการในแดชบอร์ดเดียว",
+    "items": [
+      {
+        "title": "เครื่องมือแปลหลายภาษา",
+        "description": "แปลข้อมูลสินค้าและบริษัทอัตโนมัติ เพื่อรองรับการขยายตลาดทั่วโลก"
+      },
+      {
+        "title": "กระจายข้อมูลหลายช่องทาง",
+        "description": "จัดการการเผยแพร่ไปยัง Instagram, Facebook, Google Maps, X และอื่นๆ"
+      },
+      {
+        "title": "จับคู่พาร์ทเนอร์",
+        "description": "เชื่อมต่อพาร์ทเนอร์ต่างประเทศที่เชื่อถือได้เพื่อการขยายธุรกิจอย่างมั่นใจ"
+      },
+      {
+        "title": "รองรับการชำระเงิน",
+        "description": "ลดต้นทุนและเวลาธุรกรรมด้วยระบบชำระเงินระหว่างประเทศที่ปลอดภัย"
+      },
+      {
+        "title": "การสนับสนุนด้วย AI",
+        "description": "ช่วยตอบคำถาม วิเคราะห์ตลาด และให้คำแนะนำทางธุรกิจ"
+      },
+      {
+        "title": "ตรวจสอบและจัดโครงสร้างข้อมูลบริษัท",
+        "description": "เพิ่มความน่าเชื่อถือและการนำเสนอด้วยการตรวจสอบข้อมูลเชิงโครงสร้าง"
+      }
+    ]
+  },
+  "pricing": {
+    "title": "ราคาแพ็กเกจ",
+    "subtitle": "เริ่มใช้ฟรี แล้วอัปเกรดเมื่อพร้อม",
+    "note": "ประสบการณ์ใช้งานที่ช่วยให้ปิดการขายได้ ยิ่งใช้ยิ่งคุ้มค่า",
+    "badges": {
+      "popular": "แนะนำ",
+      "free": "FREE"
+    },
+    "buttons": {
+      "currentPlan": "แผนปัจจุบัน",
+      "freeStart": "เริ่มใช้ฟรี",
+      "selectPlan": "เลือกแผน",
+      "contact": "ติดต่อเรา"
+    },
+    "toasts": {
+      "enterpriseTitle": "แผนองค์กร",
+      "enterpriseDescription": "ขอบคุณที่สนใจ ทีมงานจะติดต่อกลับโดยเร็ว",
+      "freeTitle": "ทดลองใช้แผนฟรี",
+      "freeDescription": "เริ่มใช้งานได้ทันทีโดยไม่มีค่าใช้จ่าย",
+      "loginTitle": "จำเป็นต้องเข้าสู่ระบบ",
+      "loginDescription": "โปรดเข้าสู่ระบบก่อนเลือกแผน"
+    },
+    "plans": [
+      {
+        "id": "free",
+        "name": "ฟรี",
+        "price": "¥0",
+        "period": "ทดลอง 1 สัปดาห์",
+        "description": "ทดลองใช้งาน 1 สัปดาห์ก่อน",
+        "features": [
+          "ค้นหาพาร์ทเนอร์ได้ 10 ครั้งภายใน 1 สัปดาห์",
+          "AI ขั้นพื้นฐาน (ไม่เกิน 3 ครั้งต่อวัน)",
+          "กระจายข้อมูล 1 ช่องทาง",
+          "ซัพพอร์ตจากชุมชน",
+          "ฟีเจอร์จำกัด"
+        ],
+        "isPopular": false,
+        "isFree": true
+      },
+      {
+        "id": "standard",
+        "name": "มาตรฐาน",
+        "price": "¥2,980",
+        "period": "ต่อเดือน",
+        "description": "เหมาะสำหรับการใช้งานจริงจัง",
+        "features": [
+          "ค้นหาพาร์ทเนอร์ไม่จำกัด",
+          "รองรับ AI แบบเต็มรูปแบบ",
+          "กระจายข้อมูลหลายช่องทาง",
+          "ซัพพอร์ตแบบพิเศษ",
+          "รายงานวิเคราะห์พื้นฐาน"
+        ],
+        "isPopular": true,
+        "isFree": false
+      },
+      {
+        "id": "business",
+        "name": "ธุรกิจ",
+        "price": "¥4,980",
+        "period": "ต่อเดือน",
+        "description": "เหมาะสำหรับทีมและองค์กร",
+        "features": [
+          "ครบทุกอย่างในแผนมาตรฐาน",
+          "AI ขั้นสูง",
+          "จับคู่พาร์ทเนอร์แบบเร่งด่วน",
+          "รายงานวิเคราะห์เชิงลึก",
+          "การจัดการทีม"
+        ],
+        "isPopular": false,
+        "isFree": false
+      },
+      {
+        "id": "enterprise",
+        "name": "องค์กร",
+        "price": "ติดต่อเรา",
+        "period": "",
+        "description": "โซลูชันปรับแต่งสำหรับองค์กรขนาดใหญ่",
+        "features": [
+          "ครบทุกฟีเจอร์",
+          "การสนับสนุนด้านการตลาดเฉพาะ",
+          "สิทธิ์เข้าร่วมอีเวนต์",
+          "ที่ปรึกษาเฉพาะ",
+          "การพัฒนาและเชื่อมต่อแบบปรับแต่ง"
+        ],
+        "isPopular": false,
+        "isFree": false,
+        "isEnterprise": true
+      }
+    ]
+  },
+  "partners": {
+    "title": "พันธมิตรและองค์กรสนับสนุน",
+    "subtitle": "ร่วมมือกับองค์กรที่เชื่อถือได้เพื่อสนับสนุนการขยายธุรกิจอย่างมั่นใจ",
+    "items": [
+      {
+        "name": "NEXI",
+        "fullName": "ประกันการส่งออกและการลงทุนของญี่ปุ่น",
+        "description": "บริการป้องกันความเสี่ยงและประกันภัยสำหรับธุรกรรมต่างประเทศที่ปลอดภัย"
+      },
+      {
+        "name": "หอการค้าและรัฐบาลท้องถิ่น",
+        "fullName": "เครือข่ายความร่วมมือระดับภูมิภาค",
+        "description": "สนับสนุน SME ผ่านหอการค้าและรัฐบาลท้องถิ่นทั่วประเทศ"
+      },
+      {
+        "name": "เครือข่ายผู้เชี่ยวชาญ",
+        "fullName": "ผู้เชี่ยวชาญด้านกฎหมายและโลจิสติกส์",
+        "description": "สนับสนุนครบวงจรจากผู้เชี่ยวชาญด้านกฎหมาย โลจิสติกส์ และภาษี"
+      }
+    ]
+  },
+  "about": {
+    "title": "ความปลอดภัยและความน่าเชื่อถือ",
+    "description": "GBES รักษามาตรฐานความปลอดภัยและความโปร่งใสสูงสุดเพื่อปกป้องข้อมูลธุรกิจและธุรกรรมของคุณตามมาตรฐานสากล",
+    "features": [
+      "เตรียมขอการรับรอง ISO (มาตรฐานความปลอดภัยข้อมูล)",
+      "ความโปร่งใสของข้อมูลและสัญญาที่ชัดเจน",
+      "ปฏิบัติตามกฎหมายและข้อกำหนดทั้งในและต่างประเทศ",
+      "การเข้ารหัสแบบ end-to-end เพื่อปกป้องข้อมูล",
+      "ตรวจสอบและอัปเดตความปลอดภัยอย่างสม่ำเสมอ"
+    ],
+    "cta": "รายละเอียดความปลอดภัย",
+    "cards": [
+      {
+        "title": "มาตรฐาน ISO",
+        "description": "ออกแบบระบบให้ปลอดภัยตามมาตรฐานสากล"
+      },
+      {
+        "title": "โปร่งใสครบถ้วน",
+        "description": "เปิดเผยธุรกรรมและเงื่อนไขอย่างชัดเจน"
+      },
+      {
+        "title": "การปฏิบัติตามกฎหมาย",
+        "description": "ปฏิบัติตามกฎหมายและข้อบังคับอย่างครบถ้วน"
+      }
+    ]
+  },
+  "contact": {
+    "title": "ติดต่อเรา",
+    "subtitle": "พร้อมเริ่มแล้วใช่ไหม? ติดต่อเราเพื่อสร้างสิ่งที่ยอดเยี่ยมร่วมกัน",
+    "note": "หมายเหตุ: ต้องเข้าสู่ระบบและลงทะเบียนก่อนใช้แบบฟอร์มติดต่อ",
+    "formTitle": "ส่งข้อความถึงเรา",
+    "responseTime": "ตอบกลับภายใน 24 ชั่วโมง",
+    "labels": {
+      "firstName": "ชื่อ",
+      "lastName": "นามสกุล",
+      "email": "อีเมล",
+      "message": "ข้อความ"
+    },
+    "placeholders": {
+      "firstName": "สมชาย",
+      "lastName": "ใจดี",
+      "email": "somchai@example.com",
+      "message": "บอกเราเกี่ยวกับโปรเจกต์ของคุณ..."
+    },
+    "submit": "ส่งข้อความ",
+    "cards": [
+      {
+        "title": "อีเมล",
+        "info": "hello@proto.com",
+        "description": "ตอบกลับภายใน 24 ชั่วโมงทำการ"
+      },
+      {
+        "title": "โทรศัพท์",
+        "info": "+81 (3) 1234-5678",
+        "description": "วันจันทร์-ศุกร์ 10:00 - 18:00"
+      },
+      {
+        "title": "สำนักงาน",
+        "info": "โตเกียว ประเทศญี่ปุ่น",
+        "description": "นัดหมายล่วงหน้าเท่านั้น"
+      }
+    ]
+  },
+  "footer": {
+    "description": "แพลตฟอร์ม AI ที่ช่วยให้ SME ญี่ปุ่นขยายธุรกิจสู่ต่างประเทศได้อย่างมั่นใจ",
+    "product": "ผลิตภัณฑ์",
+    "company": "บริษัท",
+    "support": "สนับสนุน",
+    "links": {
+      "services": "บริการ",
+      "pricing": "ราคา",
+      "partners": "พันธมิตร",
+      "api": "API",
+      "about": "เกี่ยวกับ",
+      "careers": "ร่วมงานกับเรา",
+      "press": "ข่าวสาร",
+      "news": "บล็อก",
+      "contact": "ติดต่อ",
+      "documentation": "เอกสาร",
+      "helpCenter": "ศูนย์ช่วยเหลือ",
+      "status": "สถานะระบบ",
+      "terms": "ข้อกำหนดการใช้งาน",
+      "privacy": "นโยบายความเป็นส่วนตัว"
+    },
+    "languageLabel": "ภาษา:",
+    "rights": "© 2024 GBES. All rights reserved.",
+    "madeBy": "เพื่อการขยายธุรกิจระดับโลก"
+  },
+  "floatingCta": {
+    "label": "สมัครสมาชิก"
+  },
+  "chat": {
+    "buttonLabel": "แชท",
+    "title": "แชทผู้เชี่ยวชาญด้านนำเข้า-ส่งออก",
+    "subtitle": "ถามทุกเรื่องเกี่ยวกับการนำเข้า-ส่งออกของญี่ปุ่น",
+    "emptyPrompt": "ถามคำถามเกี่ยวกับการนำเข้า-ส่งออกได้เลย!",
+    "example": "ตัวอย่าง: \"ขั้นตอนการส่งออกอาหารไปสหรัฐฯ คืออะไร?\"",
+    "placeholder": "พิมพ์คำถามของคุณ...",
+    "errorTitle": "ข้อผิดพลาด",
+    "errorDescription": "ส่งข้อความไม่สำเร็จ กรุณาลองใหม่อีกครั้ง"
+  },
+  "partnerSearch": {
+    "heroBadge": "ข้อมูลที่ผ่านการตรวจสอบจากเครือข่ายที่เชื่อถือได้",
+    "title": "ค้นหาพันธมิตร",
+    "subtitle": "ค้นหาพาร์ทเนอร์ธุรกิจที่เชื่อถือได้ทั่วโลกและสร้างโอกาสใหม่ ๆ",
+    "selectedSourcesLabel": "แหล่งข้อมูลที่เลือก",
+    "totalResultsLabel": "ผลลัพธ์",
+    "countUnit": "รายการ",
+    "searchPlaceholder": "ค้นหาด้วยชื่อบริษัท อุตสาหกรรม บริการ...",
+    "searching": "กำลังค้นหา...",
+    "search": "ค้นหา",
+    "filters": "ตัวกรอง",
+    "dataSourcesLabel": "แหล่งข้อมูล ({{count}})",
+    "addCompanies": "เพิ่มบริษัท",
+    "scrapeTitle": "ดึงข้อมูลบริษัทจากเว็บไซต์",
+    "scrapePlaceholder": "ใส่ URL เว็บไซต์ (หนึ่งบรรทัดต่อหนึ่งรายการ)\nตัวอย่าง:\nhttps://example.com\nhttps://company2.com",
+    "scrapeDescription": "ระบบจะดึงข้อมูลบริษัทจากเว็บไซต์ที่ระบุโดยอัตโนมัติ",
+    "scraping": "กำลังดึงข้อมูล...",
+    "scrapeAction": "ดึงข้อมูล",
+    "cancel": "ยกเลิก",
+    "advancedFiltersTitle": "ตัวกรองขั้นสูง",
+    "advancedFiltersDescription": "เลือกอุตสาหกรรมและภูมิภาคเพื่อกรองผลลัพธ์",
+    "industryLabel": "หมวดอุตสาหกรรม",
+    "industryPlaceholder": "เลือกอุตสาหกรรม",
+    "industryAll": "ทุกอุตสาหกรรม",
+    "locationLabel": "ภูมิภาค",
+    "locationPlaceholder": "เลือกภูมิภาค",
+    "locationAll": "ทุกภูมิภาค",
+    "locations": {
+      "asia": "เอเชีย",
+      "japan": "ญี่ปุ่น",
+      "china": "จีน",
+      "thailand": "ไทย",
+      "europe": "ยุโรป",
+      "usa": "สหรัฐอเมริกา",
+      "northAmerica": "อเมริกาเหนือ",
+      "southAmerica": "อเมริกาใต้",
+      "africa": "แอฟริกา",
+      "oceania": "โอเชียเนีย"
+    },
+    "companySizeLabel": "ขนาดบริษัท",
+    "companySizePlaceholder": "เลือกขนาดบริษัท",
+    "companySizeAll": "ทุกขนาด",
+    "applyFilters": "ใช้ตัวกรอง",
+    "reset": "รีเซ็ต",
+    "tipsTitle": "เคล็ดลับการค้นหา",
+    "tips": [
+      "• สามารถผสมเงื่อนไขหลายอย่างเพื่อผลลัพธ์ที่ดีขึ้น",
+      "• พิมพ์คำค้นเช่น \"Manufacturing Asia\" ได้เช่นกัน",
+      "• หากไม่พบบริษัท ให้ลอง \"เพิ่มบริษัท\""
+    ],
+    "resultsSummary": "กำลังแสดง {{shown}} บริษัท (ทั้งหมด {{total}})",
+    "pageLabel": "หน้า: {{current}} / {{total}}",
+    "sourcesLabel": "แหล่งข้อมูล: {{count}}",
+    "detectedCategories": {
+      "medical": "การแพทย์",
+      "manufacturing": "การผลิต",
+      "technology": "เทคโนโลยี",
+      "logistics": "โลจิสติกส์",
+      "trade": "การค้า",
+      "finance": "การเงิน",
+      "fashion": "แฟชั่น",
+      "automotive": "ยานยนต์"
+    },
+    "noResultsCategory": "ไม่พบบริษัทในหมวด {{category}}",
+    "noResultsDefault": "ไม่พบบริษัทที่ตรงกับเงื่อนไข",
+    "noResultsTipScrape": "ลองใช้ปุ่ม \"เพิ่มบริษัท\" เพื่อดึงข้อมูลจากเว็บไซต์ที่เกี่ยวข้อง",
+    "noResultsTipChangeQuery": "ลองเปลี่ยนคำค้นหรือเพิ่มบริษัทจากแหล่งข้อมูลภายนอก",
+    "emptyState": "พิมพ์คำค้นเพื่อค้นหาบริษัทพันธมิตร",
+    "verifiedBadge": "ยืนยันแล้ว",
+    "specialtiesLabel": "ความเชี่ยวชาญ",
+    "contactLabel": "ติดต่อ",
+    "contactAction": "ติดต่อ",
+    "websiteAction": "เว็บไซต์",
+    "prev": "ก่อนหน้า",
+    "next": "ถัดไป",
+    "inquiryTitle": "ส่งคำถามความร่วมมือถึง {{company}}",
+    "inquirySubtitle": "ข้อความด้านล่างจะถูกส่งไปยังอีเมลของบริษัท โปรดตรวจสอบก่อนส่ง",
+    "inquiryCompanyInfoTitle": "ข้อมูลบริษัท",
+    "inquiryCompanyLabel": "บริษัท:",
+    "inquiryIndustryLabel": "อุตสาหกรรม:",
+    "inquiryLocationLabel": "ที่ตั้ง:",
+    "inquiryMessageLabel": "ข้อความติดต่อความร่วมมือ",
+    "inquiryPlaceholder": "พิมพ์ข้อความความร่วมมือ...",
+    "inquiryNote": "ข้อมูลติดต่อของคุณ (ชื่อ อีเมล บริษัท ฯลฯ) จะถูกส่งไปพร้อมข้อความนี้",
+    "sendInquiry": "ส่งข้อความ",
+    "inquiryFooterTitle": "เกี่ยวกับการส่ง:",
+    "inquiryFooterNote": "ข้อความนี้จะส่งตรงไปยังอีเมลที่บริษัทลงทะเบียนไว้ และการตอบกลับจะมาที่อีเมลของคุณ",
+    "companyFallback": "บริษัท",
+    "industries": [
+      { "value": "医療", "label": "การแพทย์และสุขภาพ" },
+      { "value": "製造業", "label": "การผลิต" },
+      { "value": "技術", "label": "เทคโนโลยี" },
+      { "value": "物流", "label": "โลจิสติกส์และขนส่ง" },
+      { "value": "貿易", "label": "การค้าและนำเข้า-ส่งออก" },
+      { "value": "金融", "label": "การเงินและฟินเทค" },
+      { "value": "ファッション", "label": "แฟชั่น" },
+      { "value": "自動車", "label": "ยานยนต์" }
+    ],
+    "companySizes": [
+      { "value": "micro", "label": "ไมโคร (1-9 คน)" },
+      { "value": "small", "label": "เล็ก (10-49 คน)" },
+      { "value": "medium", "label": "กลาง (50-249 คน)" },
+      { "value": "large", "label": "ใหญ่ (250+ คน)" }
+    ],
+    "dataSources": {
+      "google_places": "Google Places",
+      "opencorporates": "OpenCorporates",
+      "web_scraping": "Web Scraping",
+      "sample": "ตัวอย่าง",
+      "manual": "กำหนดเอง",
+      "supabase": "Supabase"
+    },
+    "toasts": {
+      "searchCompleteTitle": "ค้นหาเสร็จสิ้น",
+      "searchCompleteDescription": "พบบริษัท {{count}} แห่ง ({{sources}} แหล่งข้อมูล)",
+      "searchErrorTitle": "ข้อผิดพลาดในการค้นหา",
+      "searchErrorDescription": "เกิดข้อผิดพลาดระหว่างการค้นหา",
+      "loginRequiredTitle": "จำเป็นต้องเข้าสู่ระบบ",
+      "loginRequiredDescription": "โปรดเข้าสู่ระบบเพื่อส่งคำถามความร่วมมือ",
+      "validationErrorTitle": "ข้อผิดพลาด",
+      "validationErrorDescription": "โปรดกรอกข้อความ",
+      "inquirySentTitle": "ส่งข้อความสำเร็จ",
+      "inquirySentDescription": "ส่งคำถามความร่วมมือเรียบร้อยแล้ว",
+      "sendErrorTitle": "ส่งไม่สำเร็จ",
+      "sendErrorDescription": "เกิดข้อผิดพลาดระหว่างการส่งข้อความ",
+      "websiteRequiredDescription": "โปรดระบุ URL เว็บไซต์",
+      "websiteInvalidDescription": "โปรดระบุ URL ที่ถูกต้อง",
+      "scrapeCompleteTitle": "ดึงข้อมูลสำเร็จ",
+      "scrapeCompleteDescription": "ดึงข้อมูลบริษัท {{count}} รายการแล้ว",
+      "scrapeErrorTitle": "ดึงข้อมูลไม่สำเร็จ",
+      "scrapeErrorDescription": "เกิดข้อผิดพลาดระหว่างการดึงข้อมูลจากเว็บไซต์"
+    },
+    "inquiryTemplate": "เรียน ทีมงาน {{company}}\n\nหวังว่าคุณสบายดี\n\nผม/ดิฉันต้องการติดต่อเพื่อสำรวจโอกาสความร่วมมือระหว่างองค์กรของเรา หลังจากดูโปรไฟล์ของบริษัทแล้วคิดว่าอาจมีความร่วมมือที่เป็นประโยชน์ต่อกัน\n\nสิ่งที่อยากพูดคุยเป็นพิเศษ:\n• รูปแบบและเงื่อนไขความร่วมมือ\n• ประโยชน์ร่วมกันจากการทำงานร่วมกัน\n• แนวทางการพัฒนาธุรกิจในอนาคต\n\nยินดีนัดหมายเพื่อพูดคุยเพิ่มเติม\n\nขอบคุณสำหรับเวลาและการพิจารณา\n\nด้วยความนับถือ"
+  },
+  "common": {
+    "loading": "กำลังโหลด..."
+  },
+  "auth": {
+    "common": {
+      "errorTitle": "ข้อผิดพลาด",
+      "unexpectedError": "เกิดข้อผิดพลาดที่ไม่คาดคิด",
+      "orContinueWith": "หรือดำเนินการต่อด้วย",
+      "continueWithGoogle": "ดำเนินการต่อด้วย Google"
+    },
+    "validation": {
+      "emailInvalid": "อีเมลไม่ถูกต้อง",
+      "passwordMin": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
+      "passwordMismatch": "รหัสผ่านไม่ตรงกัน"
+    },
+    "login": {
+      "title": "เข้าสู่ระบบ",
+      "emailLabel": "อีเมล",
+      "emailPlaceholder": "กรอกอีเมลของคุณ",
+      "passwordLabel": "รหัสผ่าน",
+      "passwordPlaceholder": "กรอกรหัสผ่าน",
+      "submit": "เข้าสู่ระบบ",
+      "toastSuccessTitle": "เข้าสู่ระบบสำเร็จ",
+      "toastSuccessDescription": "ยินดีต้อนรับกลับ!",
+      "toastErrorTitle": "เข้าสู่ระบบไม่สำเร็จ",
+      "googleErrorTitle": "เข้าสู่ระบบด้วย Google ไม่สำเร็จ"
+    },
+    "signup": {
+      "title": "สมัครสมาชิก",
+      "emailLabel": "อีเมล",
+      "emailPlaceholder": "กรอกอีเมลของคุณ",
+      "passwordLabel": "รหัสผ่าน",
+      "passwordPlaceholder": "กรอกรหัสผ่าน",
+      "confirmPasswordLabel": "ยืนยันรหัสผ่าน",
+      "confirmPasswordPlaceholder": "ยืนยันรหัสผ่าน",
+      "submit": "สมัครสมาชิก",
+      "toastSuccessTitle": "สมัครสำเร็จ!",
+      "toastSuccessDescription": "โปรดตรวจสอบอีเมลและคลิกลิงก์ยืนยัน เมื่อยืนยันแล้วระบบจะพาไปหน้าเข้าสู่ระบบ",
+      "toastErrorTitle": "สมัครไม่สำเร็จ",
+      "googleErrorTitle": "สมัครด้วย Google ไม่สำเร็จ",
+      "alreadyLoggedInTitle": "คุณเข้าสู่ระบบอยู่แล้ว",
+      "alreadyLoggedInDescription": "คุณเข้าสู่ระบบอยู่ โปรดออกจากระบบก่อนสมัครบัญชีใหม่",
+      "signOutToRegister": "ออกจากระบบเพื่อสมัครบัญชีใหม่",
+      "goToDashboard": "ไปที่แดชบอร์ด"
+    }
+  },
+  "register": {
+    "title": "ลงทะเบียนบริการ",
+    "subtitle": "เลือกแพ็กเกจที่เหมาะสมและเริ่มต้นได้ทันที",
+    "basicInfoTitle": "ข้อมูลพื้นฐาน",
+    "basicInfoDescription": "กรอกข้อมูลที่จำเป็นสำหรับสร้างบัญชี",
+    "serviceTitle": "เลือกบริการ",
+    "serviceDescription": "เลือกแพ็กเกจที่ต้องการใช้งาน",
+    "labels": {
+      "firstName": "ชื่อ",
+      "lastName": "นามสกุล",
+      "email": "อีเมล",
+      "company": "บริษัท",
+      "phone": "เบอร์โทรศัพท์"
+    },
+    "placeholders": {
+      "firstName": "สมชาย",
+      "lastName": "ใจดี",
+      "email": "example@company.com",
+      "company": "บริษัท จำกัด",
+      "phone": "03-1234-5678"
+    },
+    "submit": "ลงทะเบียน",
+    "submitting": "กำลังลงทะเบียน...",
+    "validation": {
+      "firstNameRequired": "กรุณากรอกชื่อ",
+      "lastNameRequired": "กรุณากรอกนามสกุล",
+      "emailInvalid": "กรุณากรอกอีเมลที่ถูกต้อง",
+      "companyRequired": "กรุณากรอกชื่อบริษัท",
+      "phoneRequired": "กรุณากรอกเบอร์โทรศัพท์",
+      "serviceRequired": "กรุณาเลือกบริการ"
+    },
+    "toasts": {
+      "successTitle": "ลงทะเบียนสำเร็จ!",
+      "successDescription": "ลงทะเบียนบริการเรียบร้อยแล้ว",
+      "errorTitle": "ลงทะเบียนไม่สำเร็จ",
+      "errorDescription": "เกิดข้อผิดพลาดของระบบ"
+    },
+    "services": [
+      {
+        "id": "token-a",
+        "name": "โทเคน A",
+        "price": "¥5,000/เดือน",
+        "description": "ค้นหาพาร์ทเนอร์ + ซัพพอร์ตแบบจำกัด",
+        "features": ["ค้นหาพาร์ทเนอร์", "AI พื้นฐาน", "กระจายหลายช่องทาง", "ซัพพอร์ตแบบจำกัด"]
+      },
+      {
+        "id": "token-b",
+        "name": "โทเคน B",
+        "price": "¥10,000/เดือน",
+        "description": "AI + ซัพพอร์ตมาตรฐาน",
+        "features": ["AI แบบเต็มรูปแบบ", "วิเคราะห์ขั้นสูง", "ซัพพอร์ตแบบพิเศษ", "เชื่อมต่อแบบปรับแต่ง"]
+      },
+      {
+        "id": "premium",
+        "name": "พรีเมียม",
+        "price": "¥20,000/เดือน",
+        "description": "เข้าถึงครบ + ซัพพอร์ตพรีเมียม",
+        "features": ["ครบทุกฟีเจอร์", "ซัพพอร์ต 24/7", "ผู้จัดการบัญชีเฉพาะ", "พัฒนาแบบกำหนดเอง"]
+      }
+    ]
+  },
+  "dashboard": {
+    "welcome": "ยินดีต้อนรับกลับ, {{email}}!",
+    "welcomeSubtitle": "นี่คือภาพรวมบัญชีและสถานะการลงทะเบียนของคุณ",
+    "accountStatusActive": "ใช้งานอยู่",
+    "accountStatusTitle": "สถานะบัญชี",
+    "registrationStatusTitle": "สถานะการลงทะเบียน",
+    "currentPlanTitle": "แผนปัจจุบัน",
+    "accountCreated": "บัญชีสร้างเมื่อ {{date}}",
+    "registrationCompleted": "เสร็จสมบูรณ์",
+    "registrationPending": "รอดำเนินการ",
+    "registrationCompletedNote": "ลงทะเบียนบริการเรียบร้อย",
+    "registrationPendingNote": "กรุณาลงทะเบียนบริการ",
+    "noPlan": "ไม่มี",
+    "noPlanDescription": "ไม่มีแผนที่ใช้งาน",
+    "registrationDetailsTitle": "รายละเอียดการลงทะเบียน",
+    "registrationDetailsSubtitle": "ข้อมูลการลงทะเบียนบริการของคุณ",
+    "labels": {
+      "name": "ชื่อ",
+      "email": "อีเมล",
+      "company": "บริษัท",
+      "phone": "โทรศัพท์",
+      "plan": "แผนบริการ:"
+    },
+    "notProvided": "ไม่ได้ระบุ",
+    "registeredOn": "ลงทะเบียนเมื่อ {{date}}",
+    "completeRegistrationTitle": "ลงทะเบียนให้เสร็จสมบูรณ์",
+    "completeRegistrationDescription": "คุณยังไม่ได้ลงทะเบียนบริการ",
+    "completeRegistrationCta": "ลงทะเบียนเลย",
+    "toasts": {
+      "errorTitle": "ข้อผิดพลาด",
+      "errorDescription": "ไม่สามารถโหลดข้อมูลการลงทะเบียนได้"
+    }
+  },
+  "admin": {
+    "title": "แผงผู้ดูแล",
+    "subtitle": "จัดการผู้ใช้ การลงทะเบียน และดูข้อมูลวิเคราะห์",
+    "stats": {
+      "totalUsers": "จำนวนผู้ใช้ทั้งหมด",
+      "tokenA": "แผน Token A",
+      "tokenB": "แผน Token B",
+      "premium": "แผนพรีเมียม"
+    },
+    "table": {
+      "title": "รายการลงทะเบียนทั้งหมด",
+      "subtitle": "รายการลงทะเบียนของผู้ใช้ทั้งหมด",
+      "headers": {
+        "name": "ชื่อ",
+        "email": "อีเมล",
+        "company": "บริษัท",
+        "service": "บริการ",
+        "registered": "ลงทะเบียนเมื่อ"
+      },
+      "notProvided": "ไม่ระบุ",
+      "empty": "ไม่พบการลงทะเบียน"
+    },
+    "services": {
+      "tokenA": "Token A",
+      "tokenAPrice": "$9.99",
+      "tokenB": "Token B",
+      "tokenBPrice": "$19.99",
+      "premium": "Premium",
+      "premiumPrice": "$39.99",
+      "notAvailable": "N/A"
+    },
+    "toasts": {
+      "errorTitle": "ข้อผิดพลาด",
+      "registrationsError": "ไม่สามารถโหลดข้อมูลการลงทะเบียนได้",
+      "dataError": "ไม่สามารถโหลดข้อมูลได้"
+    }
+  },
+  "profile": {
+    "title": "โปรไฟล์",
+    "subtitle": "จัดการข้อมูลส่วนตัวและการตั้งค่าของคุณ"
+  },
+  "social": {
+    "heroBadge": "ทำให้การเผยแพร่คอนเทนต์เป็นอัตโนมัติ",
+    "title": "ระบบอัตโนมัติสำหรับโซเชียลมีเดีย",
+    "subtitle": "เผยแพร่ข้อมูลบริษัทไปยังหลายแพลตฟอร์มเพื่อลดเวลาการดำเนินงาน",
+    "selectedLabel": "เลือกแล้ว",
+    "createdLabel": "สร้างแล้ว",
+    "countUnit": "รายการ",
+    "postsUnit": "โพสต์",
+    "newPostTitle": "สร้างโพสต์ใหม่",
+    "contentLabel": "เนื้อหาโพสต์",
+    "contentPlaceholder": "แชร์อัปเดตล่าสุดเกี่ยวกับการขยายธุรกิจและข้อมูลผลิตภัณฑ์...",
+    "characterCount": "{{count}}/280 ตัวอักษร",
+    "platformLabel": "แพลตฟอร์ม",
+    "scheduleLabel": "เวลาโพสต์",
+    "scheduleNow": "โพสต์ทันที",
+    "scheduleLater": "กำหนดเวลา",
+    "dateLabel": "วันที่",
+    "timeLabel": "เวลา",
+    "posting": "กำลังโพสต์...",
+    "postNow": "โพสต์",
+    "schedule": "กำหนดเวลา",
+    "zapierTitle": "การเชื่อมต่อ Zapier",
+    "zapierWebhookLabel": "Zapier Webhook URL",
+    "zapierNote": "ต้องใช้ Zapier เพื่อโพสต์ไปยัง Facebook, Instagram และ LinkedIn",
+    "zapierStepsTitle": "ขั้นตอนตั้งค่า Zapier",
+    "zapierSteps": [
+      "สร้างบัญชี Zapier",
+      "สร้าง Zap ใหม่",
+      "เลือก \"Webhooks by Zapier\" เป็นทริกเกอร์",
+      "เลือก \"Catch Hook\"",
+      "วาง URL Webhook ที่ได้รับไว้ที่นี่",
+      "ตั้งค่าแอ็กชันสำหรับแต่ละแพลตฟอร์ม"
+    ],
+    "historyTitle": "ประวัติการโพสต์",
+    "status": {
+      "published": "โพสต์แล้ว",
+      "scheduled": "กำหนดเวลาแล้ว",
+      "draft": "ร่าง"
+    },
+    "scheduledLabel": "กำหนดเวลา: {{time}}",
+    "toasts": {
+      "successTitle": "สำเร็จ",
+      "errorTitle": "ข้อผิดพลาด",
+      "twitterSuccess": "โพสต์ไปยัง X แล้ว",
+      "twitterError": "โพสต์ไปยัง X ไม่สำเร็จ (API ไม่พร้อมหรือหมดเวลา)",
+      "webhookRequired": "โปรดกรอก Zapier Webhook URL",
+      "zapierSentTitle": "ส่งคำขอแล้ว",
+      "zapierSentDescription": "ส่งคำขอไปยัง Zapier แล้ว โปรดตรวจสอบประวัติ Zap",
+      "zapierTimeout": "คำขอไปยัง Zapier หมดเวลา",
+      "zapierError": "เชื่อมต่อกับ Zapier ไม่สำเร็จ",
+      "contentRequired": "โปรดกรอกเนื้อหาโพสต์",
+      "platformRequired": "โปรดเลือกแพลตฟอร์ม",
+      "posted": "โพสต์สำเร็จ",
+      "scheduled": "ตั้งเวลาโพสต์แล้ว",
+      "postError": "โพสต์ไม่สำเร็จ"
+    }
+  },
+  "subscription": {
+    "errorTitle": "ข้อผิดพลาด",
+    "checkError": "ไม่สามารถตรวจสอบสถานะการสมัครได้",
+    "authRequiredTitle": "จำเป็นต้องยืนยันตัวตน",
+    "authRequiredDescription": "โปรดเข้าสู่ระบบเพื่อเริ่มสมัครสมาชิก",
+    "checkoutError": "ไม่สามารถสร้างการชำระเงินได้",
+    "manageAuthRequired": "โปรดเข้าสู่ระบบเพื่อจัดการการสมัครสมาชิก",
+    "portalError": "ไม่สามารถเปิดพอร์ทัลลูกค้าได้"
+  }
+}

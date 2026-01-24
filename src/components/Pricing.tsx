@@ -4,86 +4,33 @@ import { CheckCircle, Star } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
-const plans = [
-  {
-    id: "free",
-    name: "フリー",
-    price: "¥0",
-    period: "1週間限定",
-    description: "まずは1週間体験してみてください",
-    features: [
-      "1週間で10回までのパートナー検索",
-      "基本AI支援（1日3回まで）",
-      "1チャネル配信のみ",
-      "コミュニティサポート",
-      "機能体験（制限あり）"
-    ],
-    isPopular: false,
-    isFree: true
-  },
-  {
-    id: "standard",
-    name: "スタンダード",
-    price: "¥2,980",
-    period: "月額",
-    description: "本格的なビジネス活用に",
-    features: [
-      "無制限パートナー検索",
-      "AI支援機能フル活用",
-      "複数チャネル配信",
-      "優先サポート",
-      "基本分析レポート"
-    ],
-    isPopular: true,
-    isFree: false
-  },
-  {
-    id: "business",
-    name: "ビジネス", 
-    price: "¥4,980",
-    period: "月額",
-    description: "チーム・組織での本格運用",
-    features: [
-      "スタンダードの全機能",
-      "AI強化サポート",
-      "優先パートナーマッチング",
-      "詳細分析・レポート機能",
-      "チーム管理機能"
-    ],
-    isPopular: false,
-    isFree: false
-  },
-  {
-    id: "enterprise",
-    name: "エンタープライズ",
-    price: "お問い合わせ", 
-    period: "",
-    description: "大規模組織向けカスタムソリューション",
-    features: [
-      "全ての機能",
-      "専用マーケティング支援",
-      "イベント参加権",
-      "専属コンサルタント",
-      "カスタム統合・開発"
-    ],
-    isPopular: false,
-    isFree: false,
-    isEnterprise: true
-  }
-];
+interface Plan {
+  id: string;
+  name: string;
+  price: string;
+  period: string;
+  description: string;
+  features: string[];
+  isPopular?: boolean;
+  isFree?: boolean;
+  isEnterprise?: boolean;
+}
 
 const Pricing = () => {
   const { user } = useAuth();
   const { subscription, createCheckout } = useSubscription();
   const { toast } = useToast();
+  const { t } = useTranslation();
+  const plans = t("pricing.plans", { returnObjects: true }) as Plan[];
 
   const handlePlanSelect = async (planId: string, isEnterprise: boolean = false) => {
     if (isEnterprise) {
       // For enterprise plan, show contact info or redirect to contact page
       toast({
-        title: "エンタープライズプラン",
-        description: "お問い合わせありがとうございます。営業担当者よりご連絡いたします。",
+        title: t("pricing.toasts.enterpriseTitle"),
+        description: t("pricing.toasts.enterpriseDescription"),
       });
       return;
     }
@@ -91,16 +38,16 @@ const Pricing = () => {
     if (planId === "free") {
       // For free plan, just show a success message or redirect to signup
       toast({
-        title: "フリープランをご利用ください",
-        description: "今すぐ無料で機能をお試しいただけます。",
+        title: t("pricing.toasts.freeTitle"),
+        description: t("pricing.toasts.freeDescription"),
       });
       return;
     }
 
     if (!user) {
       toast({
-        title: "ログインが必要です",
-        description: "プランを選択するにはまずログインしてください",
+        title: t("pricing.toasts.loginTitle"),
+        description: t("pricing.toasts.loginDescription"),
         variant: "destructive",
       });
       return;
@@ -110,21 +57,21 @@ const Pricing = () => {
     await createCheckout(planId);
   };
 
-  const isCurrentPlan = (planName: string) => {
-    return subscription.subscribed && subscription.subscription_tier === planName;
+  const isCurrentPlan = (planId: string) => {
+    return subscription.subscribed && subscription.subscription_tier === planId;
   };
   return (
-    <section id="pricing" className="py-20 bg-background">
+    <section id="pricing" className="py-20 bg-section-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
-            料金プラン
+            {t("pricing.title")}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            まずは無料で体験、必要に応じてアップグレード
+            {t("pricing.subtitle")}
           </p>
           <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">
-            製品体験がそのまま営業ツール。使えば使うほど価値を実感していただけます
+            {t("pricing.note")}
           </p>
         </div>
 
@@ -132,62 +79,62 @@ const Pricing = () => {
           {plans.map((plan, index) => (
             <Card 
               key={index}
-              className={`relative overflow-hidden transition-all duration-300 hover:shadow-glow hover:scale-105 ${
-                plan.isPopular ? 'border-primary shadow-glow' : 'border-border'
+              className={`relative overflow-hidden transition-all duration-300 ${
+                plan.isPopular ? 'border-primary bg-card/90 ring-1 ring-primary/20' : 'border-border bg-card/80'
               } ${isCurrentPlan(plan.name) ? 'border-green-500 bg-green-50/10' : ''} ${
                 plan.isFree ? 'border-green-300' : ''
-              }`}
+              } hover:shadow-soft flex flex-col`}
             >
               {plan.isPopular && (
-                <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 text-sm font-semibold rounded-bl-lg">
+                <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 text-xs font-semibold rounded-full">
                   <Star className="inline h-4 w-4 mr-1" />
-                  おすすめ
+                  {t("pricing.badges.popular")}
                 </div>
               )}
 
               {plan.isFree && (
-                <div className="absolute top-0 right-0 bg-green-500 text-white px-3 py-1 text-sm font-semibold rounded-bl-lg">
-                  FREE
+                <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 text-xs font-semibold rounded-full">
+                  {t("pricing.badges.free")}
                 </div>
               )}
               
-              <CardHeader className="text-center pb-4">
-                <CardTitle className="text-lg font-bold text-foreground">{plan.name}</CardTitle>
-                <div className="mt-4">
-                  <span className={`text-3xl font-bold ${plan.isEnterprise ? 'text-2xl' : ''} bg-gradient-primary bg-clip-text text-transparent`}>
+              <CardHeader className="text-left pb-4">
+                <CardTitle className="text-lg font-semibold text-foreground">{plan.name}</CardTitle>
+                <div className="mt-4 flex items-end gap-2">
+                  <span className={`text-3xl font-semibold ${plan.isEnterprise ? 'text-2xl' : ''} text-foreground`}>
                     {plan.price}
                   </span>
                   {plan.period && (
-                    <span className="text-muted-foreground ml-2">/ {plan.period}</span>
+                    <span className="text-muted-foreground text-sm">/ {plan.period}</span>
                   )}
                 </div>
                 <p className="text-muted-foreground mt-2 text-sm">{plan.description}</p>
               </CardHeader>
               
-              <CardContent className="pt-0">
+              <CardContent className="pt-0 flex flex-col flex-1">
                 <ul className="space-y-2 mb-6">
                   {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center space-x-2">
+                    <li key={featureIndex} className="flex items-start space-x-2">
                       <CheckCircle className="h-3 w-3 text-primary flex-shrink-0" />
-                      <span className="text-foreground text-xs">{feature}</span>
+                      <span className="text-foreground text-xs leading-relaxed">{feature}</span>
                     </li>
                   ))}
                 </ul>
                 
                 <Button 
                   variant={
-                    isCurrentPlan(plan.name) ? "secondary" : 
+                    isCurrentPlan(plan.id) ? "secondary" : 
                     plan.isFree ? "outline" :
                     plan.isPopular ? "hero" : 
                     plan.isEnterprise ? "default" : "outline"
                   } 
-                  className="w-full"
+                  className="w-full mt-auto"
                   onClick={() => handlePlanSelect(plan.id, plan.isEnterprise)}
-                  disabled={isCurrentPlan(plan.name)}
+                  disabled={isCurrentPlan(plan.id)}
                 >
-                  {isCurrentPlan(plan.name) ? "現在のプラン" : 
-                   plan.isFree ? "無料で始める" :
-                   plan.isEnterprise ? "お問い合わせ" : "プランを選択"}
+                  {isCurrentPlan(plan.id) ? t("pricing.buttons.currentPlan") : 
+                   plan.isFree ? t("pricing.buttons.freeStart") :
+                   plan.isEnterprise ? t("pricing.buttons.contact") : t("pricing.buttons.selectPlan")}
                 </Button>
               </CardContent>
             </Card>

@@ -1,0 +1,686 @@
+{
+  "nav": {
+    "home": "ホーム",
+    "mission": "ミッション",
+    "services": "サービス",
+    "partners": "パートナー探し",
+    "pricing": "料金プラン",
+    "more": "その他",
+    "moreLabel": "その他メニュー",
+    "contact": "お問い合わせ",
+    "social": "SNS自動化",
+    "languageJa": "日本語",
+    "languageEn": "English",
+    "languageTh": "ไทย",
+    "register": "登録",
+    "login": "ログイン",
+    "signup": "新規登録",
+    "logout": "ログアウト"
+  },
+  "hero": {
+    "badge": "国際基準のセキュリティと信頼性",
+    "titlePrefix": "グローバル・ビジネス・",
+    "titleHighlight": "エクスパンション",
+    "titleSuffix": "・システム",
+    "description": "日本の中小企業の海外展開を支援する、AI搭載の統合プラットフォーム。翻訳、デジタル発信、パートナー発見までを一つのワークフローで実現します。",
+    "ctaPrimary": "今すぐ登録して世界とつながる",
+    "ctaSecondary": "サービス詳細",
+    "stats": [
+      { "label": "海外パートナー候補", "value": "12,400+" },
+      { "label": "多言語対応", "value": "24言語" },
+      { "label": "平均導入期間", "value": "2週間" }
+    ],
+    "live": "ライブ • 1,234 社がオンライン",
+    "pillGlobal": "グローバル配信",
+    "pillAi": "AI支援",
+    "note": "主要SNSとGoogleマップへ同時配信。市場分析から提案までAIが支援。"
+  },
+  "mission": {
+    "title": "私たちの目的",
+    "subtitle": "中小企業の国際進出をもっと簡単に",
+    "benefits": [
+      "多言語対応の製品翻訳ツール",
+      "SNSやGoogleマップなど複数チャネルへの情報一括配信",
+      "信頼できる海外パートナーとのマッチング",
+      "決済機能"
+    ],
+    "cta": "詳細を見る",
+    "highlights": [
+      {
+        "title": "一括ソリューション",
+        "description": "翻訳からマーケティングまで、すべてを統合"
+      },
+      {
+        "title": "安全な取引",
+        "description": "ISO認証と国際コンプライアンス準拠"
+      },
+      {
+        "title": "グローバルネットワーク",
+        "description": "JETRO、商工会議所、ロータリークラブとの連携により、信頼できるビジネス展開をサポート"
+      }
+    ]
+  },
+  "features": {
+    "title": "サービス概要",
+    "subtitle": "中小企業の国際進出に必要なすべてを一つのダッシュボードで提供します。",
+    "items": [
+      {
+        "title": "多言語翻訳ツール",
+        "description": "製品情報や企業紹介を複数言語に自動翻訳し、グローバル市場への展開をサポートします。"
+      },
+      {
+        "title": "複数チャネル一括配信",
+        "description": "Instagram、Facebook、Googleマップ、X（旧Twitter）など主要SNSへの情報配信を一括管理。"
+      },
+      {
+        "title": "パートナーマッチング",
+        "description": "信頼できる海外パートナーとのマッチング機能で、安全で効率的なビジネス展開を実現。"
+      },
+      {
+        "title": "決済対応",
+        "description": "安全で効率的な国際決済システムで、取引コストと時間を削減。"
+      },
+      {
+        "title": "AIサポート",
+        "description": "国際取引に関する質問対応や市場分析など、AI搭載のビジネスサポート機能。"
+      },
+      {
+        "title": "企業審査・構造化",
+        "description": "企業情報の構造化と審査機能で、海外展開における信頼性とプレゼンテーション力を向上。"
+      }
+    ]
+  },
+  "pricing": {
+    "title": "料金プラン",
+    "subtitle": "まずは無料で体験、必要に応じてアップグレード",
+    "note": "製品体験がそのまま営業ツール。使えば使うほど価値を実感していただけます",
+    "badges": {
+      "popular": "おすすめ",
+      "free": "FREE"
+    },
+    "buttons": {
+      "currentPlan": "現在のプラン",
+      "freeStart": "無料で始める",
+      "selectPlan": "プランを選択",
+      "contact": "お問い合わせ"
+    },
+    "toasts": {
+      "enterpriseTitle": "エンタープライズプラン",
+      "enterpriseDescription": "お問い合わせありがとうございます。営業担当者よりご連絡いたします。",
+      "freeTitle": "フリープランをご利用ください",
+      "freeDescription": "今すぐ無料で機能をお試しいただけます。",
+      "loginTitle": "ログインが必要です",
+      "loginDescription": "プランを選択するにはまずログインしてください"
+    },
+    "plans": [
+      {
+        "id": "free",
+        "name": "フリー",
+        "price": "¥0",
+        "period": "1週間限定",
+        "description": "まずは1週間体験してみてください",
+        "features": [
+          "1週間で10回までのパートナー検索",
+          "基本AI支援（1日3回まで）",
+          "1チャネル配信のみ",
+          "コミュニティサポート",
+          "機能体験（制限あり）"
+        ],
+        "isPopular": false,
+        "isFree": true
+      },
+      {
+        "id": "standard",
+        "name": "スタンダード",
+        "price": "¥2,980",
+        "period": "月額",
+        "description": "本格的なビジネス活用に",
+        "features": [
+          "無制限パートナー検索",
+          "AI支援機能フル活用",
+          "複数チャネル配信",
+          "優先サポート",
+          "基本分析レポート"
+        ],
+        "isPopular": true,
+        "isFree": false
+      },
+      {
+        "id": "business",
+        "name": "ビジネス",
+        "price": "¥4,980",
+        "period": "月額",
+        "description": "チーム・組織での本格運用",
+        "features": [
+          "スタンダードの全機能",
+          "AI強化サポート",
+          "優先パートナーマッチング",
+          "詳細分析・レポート機能",
+          "チーム管理機能"
+        ],
+        "isPopular": false,
+        "isFree": false
+      },
+      {
+        "id": "enterprise",
+        "name": "エンタープライズ",
+        "price": "お問い合わせ",
+        "period": "",
+        "description": "大規模組織向けカスタムソリューション",
+        "features": [
+          "全ての機能",
+          "専用マーケティング支援",
+          "イベント参加権",
+          "専属コンサルタント",
+          "カスタム統合・開発"
+        ],
+        "isPopular": false,
+        "isFree": false,
+        "isEnterprise": true
+      }
+    ]
+  },
+  "partners": {
+    "title": "パートナー＆支援団体",
+    "subtitle": "信頼できる専門機関との連携により、安全で確実な国際展開をサポートします",
+    "items": [
+      {
+        "name": "NEXI",
+        "fullName": "日本貿易保険",
+        "description": "海外取引のリスクヘッジと保険サービスで、安全な国際展開を保証"
+      },
+      {
+        "name": "商工会議所・地方自治体",
+        "fullName": "地域連携ネットワーク",
+        "description": "全国の商工会議所と地方自治体との連携により、地域企業の海外展開を支援"
+      },
+      {
+        "name": "専門家ネットワーク",
+        "fullName": "法律・物流専門家",
+        "description": "国際法務、物流、税務の専門家による実務レベルでの包括的サポート"
+      }
+    ]
+  },
+  "about": {
+    "title": "安全性と信頼",
+    "description": "GBESは最高レベルのセキュリティ基準と透明性を維持し、お客様のビジネス情報と取引を安全に保護します。国際基準に準拠した信頼できるプラットフォームを提供しています。",
+    "features": [
+      "ISO認証取得を予定（情報セキュリティ基準）",
+      "データの透明性と契約の明確化",
+      "国内外の法律とコンプライアンスに準拠",
+      "エンドツーエンド暗号化によるデータ保護",
+      "定期的なセキュリティ監査と更新"
+    ],
+    "cta": "セキュリティ詳細",
+    "cards": [
+      {
+        "title": "ISO認証準拠",
+        "description": "国際セキュリティ基準に基づく安全なシステム設計"
+      },
+      {
+        "title": "完全な透明性",
+        "description": "すべての取引と契約条件を明確に開示"
+      },
+      {
+        "title": "法的コンプライアンス",
+        "description": "国内外の法律と規制に完全準拠"
+      }
+    ]
+  },
+  "contact": {
+    "title": "お問い合わせ",
+    "subtitle": "始める準備はできましたか？今日お問い合わせいただき、一緒に素晴らしいものを構築しましょう。",
+    "note": "※ お問い合わせ機能をご利用いただくには、ログインしてアカウント登録が必要です。",
+    "formTitle": "メッセージを送信",
+    "responseTime": "24時間以内に返信",
+    "labels": {
+      "firstName": "姓",
+      "lastName": "名",
+      "email": "メールアドレス",
+      "message": "メッセージ"
+    },
+    "placeholders": {
+      "firstName": "田中",
+      "lastName": "太郎",
+      "email": "tanaka@example.com",
+      "message": "プロジェクトについて教えてください..."
+    },
+    "submit": "メッセージを送信",
+    "cards": [
+      {
+        "title": "メール",
+        "info": "hello@proto.com",
+        "description": "営業日 24時間以内にご返信"
+      },
+      {
+        "title": "電話",
+        "info": "+81 (3) 1234-5678",
+        "description": "平日 10:00 - 18:00"
+      },
+      {
+        "title": "オフィス",
+        "info": "東京, 日本",
+        "description": "対面相談は予約制"
+      }
+    ]
+  },
+  "footer": {
+    "description": "日本の中小企業のグローバル展開を支援するAI搭載プラットフォームです。",
+    "product": "プロダクト",
+    "company": "会社",
+    "support": "サポート",
+    "links": {
+      "services": "機能",
+      "pricing": "料金",
+      "partners": "パートナー",
+      "api": "API",
+      "about": "会社概要",
+      "careers": "採用情報",
+      "press": "プレス",
+      "news": "ニュース",
+      "contact": "お問い合わせ",
+      "documentation": "ドキュメント",
+      "helpCenter": "ヘルプセンター",
+      "status": "ステータス",
+      "terms": "利用規約",
+      "privacy": "プライバシー"
+    },
+    "languageLabel": "言語:",
+    "rights": "© 2024 GBES。すべての権利を保有しています。",
+    "madeBy": "GBESチームによって作られました"
+  },
+  "floatingCta": {
+    "label": "新規登録"
+  },
+  "chat": {
+    "buttonLabel": "チャット",
+    "title": "輸出入専門チャット",
+    "subtitle": "日本の輸出入業務について何でもお聞きください",
+    "emptyPrompt": "輸出入に関する質問をどうぞ！",
+    "example": "例：「アメリカへの食品輸出の手続きは？」",
+    "placeholder": "質問を入力してください...",
+    "errorTitle": "エラー",
+    "errorDescription": "メッセージの送信に失敗しました。しばらくしてからもう一度お試しください。"
+  },
+  "partnerSearch": {
+    "heroBadge": "審査済み・信頼ネットワークからのデータ",
+    "title": "パートナー検索",
+    "subtitle": "世界中の信頼できるビジネスパートナーを見つけて、新たな機会を創出しましょう。",
+    "selectedSourcesLabel": "選択中のソース",
+    "totalResultsLabel": "検索結果",
+    "countUnit": "件",
+    "searchPlaceholder": "企業名、業界、サービス等で検索...",
+    "searching": "検索中...",
+    "search": "検索",
+    "filters": "フィルター",
+    "dataSourcesLabel": "データソース ({{count}})",
+    "addCompanies": "企業追加",
+    "scrapeTitle": "Webサイトから企業データを取得",
+    "scrapePlaceholder": "WebサイトのURLを入力してください（1行に1つ）\n例：\nhttps://example.com\nhttps://company2.com",
+    "scrapeDescription": "入力されたWebサイトから企業情報を自動的に抽出します。",
+    "scraping": "取得中...",
+    "scrapeAction": "データ取得",
+    "cancel": "キャンセル",
+    "advancedFiltersTitle": "詳細フィルター",
+    "advancedFiltersDescription": "業界やエリアを選択して検索結果を絞り込めます",
+    "industryLabel": "業界カテゴリー",
+    "industryPlaceholder": "業界を選択",
+    "industryAll": "全ての業界",
+    "locationLabel": "地域・エリア",
+    "locationPlaceholder": "地域を選択",
+    "locationAll": "全ての地域",
+    "locations": {
+      "asia": "アジア",
+      "japan": "日本",
+      "china": "中国",
+      "thailand": "タイ",
+      "europe": "ヨーロッパ",
+      "usa": "アメリカ",
+      "northAmerica": "北米",
+      "southAmerica": "南米",
+      "africa": "アフリカ",
+      "oceania": "オセアニア"
+    },
+    "companySizeLabel": "企業規模",
+    "companySizePlaceholder": "企業規模",
+    "companySizeAll": "全ての規模",
+    "applyFilters": "フィルター適用",
+    "reset": "リセット",
+    "tipsTitle": "検索のヒント",
+    "tips": [
+      "• 複数の条件を組み合わせて検索できます",
+      "• 検索バーに「製造業 アジア」などと入力しても検索できます",
+      "• 企業が見つからない場合は「企業追加」をお試しください"
+    ],
+    "resultsSummary": "{{shown}}件の企業を表示中（全{{total}}件）",
+    "pageLabel": "表示: {{current}} / {{total}}",
+    "sourcesLabel": "ソース: {{count}}",
+    "detectedCategories": {
+      "medical": "医療業界",
+      "manufacturing": "製造業",
+      "technology": "技術業界",
+      "logistics": "物流業界",
+      "trade": "貿易業界",
+      "finance": "金融業界",
+      "fashion": "ファッション業界",
+      "automotive": "自動車業界"
+    },
+    "noResultsCategory": "{{category}}の企業が見つかりませんでした。",
+    "noResultsDefault": "検索条件に一致する企業が見つかりませんでした。",
+    "noResultsTipScrape": "「企業追加」ボタンから関連企業のWebサイトを追加してください。",
+    "noResultsTipChangeQuery": "検索キーワードを変更するか、外部データソースから新しい企業を追加してみてください。",
+    "emptyState": "検索キーワードを入力して、パートナー企業を探してみましょう。",
+    "verifiedBadge": "認証済み",
+    "specialtiesLabel": "専門分野",
+    "contactLabel": "連絡先",
+    "contactAction": "お問い合わせ",
+    "websiteAction": "Webサイト",
+    "prev": "前へ",
+    "next": "次へ",
+    "inquiryTitle": "{{company}} へのパートナーシップ問い合わせ",
+    "inquirySubtitle": "以下のメッセージが企業の連絡先に送信されます。内容を確認・編集してから送信してください。",
+    "inquiryCompanyInfoTitle": "送信先企業情報",
+    "inquiryCompanyLabel": "企業名:",
+    "inquiryIndustryLabel": "業界:",
+    "inquiryLocationLabel": "所在地:",
+    "inquiryMessageLabel": "パートナーシップ問い合わせメッセージ",
+    "inquiryPlaceholder": "パートナーシップについてのメッセージを入力してください...",
+    "inquiryNote": "このメッセージと共に、あなたの連絡先情報（名前、メールアドレス、会社名など）も送信されます。",
+    "sendInquiry": "問い合わせを送信",
+    "inquiryFooterTitle": "送信について:",
+    "inquiryFooterNote": "このメッセージは企業の登録メールアドレスに直接送信され、企業からの返信はあなたのメールアドレスに届きます。",
+    "companyFallback": "企業",
+    "industries": [
+      { "value": "医療", "label": "医療・ヘルスケア" },
+      { "value": "製造業", "label": "製造業" },
+      { "value": "技術", "label": "テクノロジー" },
+      { "value": "物流", "label": "物流・運輸" },
+      { "value": "貿易", "label": "貿易・輸出入" },
+      { "value": "金融", "label": "金融・フィンテック" },
+      { "value": "ファッション", "label": "ファッション" },
+      { "value": "自動車", "label": "自動車" }
+    ],
+    "companySizes": [
+      { "value": "micro", "label": "マイクロ企業 (1-9人)" },
+      { "value": "small", "label": "小企業 (10-49人)" },
+      { "value": "medium", "label": "中企業 (50-249人)" },
+      { "value": "large", "label": "大企業 (250人以上)" }
+    ],
+    "dataSources": {
+      "google_places": "Google Places",
+      "opencorporates": "OpenCorporates",
+      "web_scraping": "Webスクレイピング",
+      "sample": "サンプル",
+      "manual": "手動",
+      "supabase": "Supabase"
+    },
+    "toasts": {
+      "searchCompleteTitle": "検索完了",
+      "searchCompleteDescription": "全{{count}}件の企業が見つかりました（{{sources}}件のデータソース）。",
+      "searchErrorTitle": "検索エラー",
+      "searchErrorDescription": "検索中にエラーが発生しました。",
+      "loginRequiredTitle": "ログインが必要です",
+      "loginRequiredDescription": "お問い合わせにはログインが必要です",
+      "validationErrorTitle": "エラー",
+      "validationErrorDescription": "メッセージを入力してください",
+      "inquirySentTitle": "お問い合わせ送信完了",
+      "inquirySentDescription": "パートナー企業にお問い合わせを送信しました",
+      "sendErrorTitle": "送信エラー",
+      "sendErrorDescription": "お問い合わせの送信中にエラーが発生しました",
+      "websiteRequiredDescription": "WebサイトのURLを入力してください。",
+      "websiteInvalidDescription": "有効なURLを入力してください。",
+      "scrapeCompleteTitle": "スクレイピング完了",
+      "scrapeCompleteDescription": "{{count}}件の企業データを取得しました。",
+      "scrapeErrorTitle": "スクレイピングエラー",
+      "scrapeErrorDescription": "Webサイトからのデータ取得中にエラーが発生しました。"
+    },
+    "inquiryTemplate": "{{company}}様\n\nお世話になっております。\n\n貴社のサービス・事業内容について興味を持ち、パートナーシップの可能性について相談させていただきたくご連絡いたします。\n\n具体的には以下についてお聞かせいただけますでしょうか：\n・パートナーシップの形態や条件\n・協業における具体的なメリット\n・今後のビジネス展開について\n\nご検討のほど、よろしくお願いいたします。"
+  },
+  "common": {
+    "loading": "読み込み中..."
+  },
+  "auth": {
+    "common": {
+      "errorTitle": "エラー",
+      "unexpectedError": "予期しないエラーが発生しました",
+      "orContinueWith": "または",
+      "continueWithGoogle": "Googleで続行"
+    },
+    "validation": {
+      "emailInvalid": "無効なメールアドレスです",
+      "passwordMin": "パスワードは6文字以上である必要があります",
+      "passwordMismatch": "パスワードが一致しません"
+    },
+    "login": {
+      "title": "ログイン",
+      "emailLabel": "メールアドレス",
+      "emailPlaceholder": "メールアドレスを入力",
+      "passwordLabel": "パスワード",
+      "passwordPlaceholder": "パスワードを入力",
+      "submit": "ログイン",
+      "toastSuccessTitle": "ログイン成功",
+      "toastSuccessDescription": "おかえりなさい！",
+      "toastErrorTitle": "ログインに失敗しました",
+      "googleErrorTitle": "Googleログインに失敗しました"
+    },
+    "signup": {
+      "title": "新規登録",
+      "emailLabel": "メールアドレス",
+      "emailPlaceholder": "メールアドレスを入力",
+      "passwordLabel": "パスワード",
+      "passwordPlaceholder": "パスワードを入力",
+      "confirmPasswordLabel": "パスワード確認",
+      "confirmPasswordPlaceholder": "パスワードを再入力",
+      "submit": "新規登録",
+      "toastSuccessTitle": "登録成功！",
+      "toastSuccessDescription": "メールボックスを確認し、確認リンクをクリックしてください。確認後、ログインページにリダイレクトされます。",
+      "toastErrorTitle": "登録に失敗しました",
+      "googleErrorTitle": "Google登録に失敗しました",
+      "alreadyLoggedInTitle": "すでにログインしています",
+      "alreadyLoggedInDescription": "現在ログインしています。新しいアカウントを登録するには、まずサインアウトしてください。",
+      "signOutToRegister": "サインアウトして新しいアカウントを登録",
+      "goToDashboard": "ダッシュボードに移動"
+    }
+  },
+  "register": {
+    "title": "サービス登録",
+    "subtitle": "最適なプランを選択して、今すぐ始めましょう",
+    "basicInfoTitle": "基本情報",
+    "basicInfoDescription": "アカウント作成に必要な情報を入力してください",
+    "serviceTitle": "サービス選択",
+    "serviceDescription": "ご利用になりたいサービスプランを選択してください",
+    "labels": {
+      "firstName": "名前",
+      "lastName": "姓",
+      "email": "メールアドレス",
+      "company": "会社名",
+      "phone": "電話番号"
+    },
+    "placeholders": {
+      "firstName": "太郎",
+      "lastName": "田中",
+      "email": "example@company.com",
+      "company": "株式会社〇〇",
+      "phone": "03-1234-5678"
+    },
+    "submit": "登録する",
+    "submitting": "登録中...",
+    "validation": {
+      "firstNameRequired": "名前を入力してください",
+      "lastNameRequired": "姓を入力してください",
+      "emailInvalid": "有効なメールアドレスを入力してください",
+      "companyRequired": "会社名を入力してください",
+      "phoneRequired": "電話番号を入力してください",
+      "serviceRequired": "サービスを選択してください"
+    },
+    "toasts": {
+      "successTitle": "登録が完了しました！",
+      "successDescription": "サービスへの登録が正常に完了しました。",
+      "errorTitle": "登録に失敗しました",
+      "errorDescription": "システムエラーが発生しました。"
+    },
+    "services": [
+      {
+        "id": "token-a",
+        "name": "トークンA",
+        "price": "¥5,000/月",
+        "description": "パートナー検索 + 限定サポート",
+        "features": ["パートナー検索機能", "基本AI支援", "複数チャネル配信", "限定サポート"]
+      },
+      {
+        "id": "token-b",
+        "name": "トークンB",
+        "price": "¥10,000/月",
+        "description": "AI支援 + 標準サポート",
+        "features": ["AI支援機能", "高度な分析", "優先サポート", "カスタム統合"]
+      },
+      {
+        "id": "premium",
+        "name": "プレミアム",
+        "price": "¥20,000/月",
+        "description": "フルアクセス + プレミアムサポート",
+        "features": ["全機能利用可能", "24/7サポート", "専用アカウントマネージャー", "カスタム開発"]
+      }
+    ]
+  },
+  "dashboard": {
+    "welcome": "ようこそ、{{email}} さん",
+    "welcomeSubtitle": "アカウントと登録状況の概要をご確認ください。",
+    "accountStatusActive": "アクティブ",
+    "accountStatusTitle": "アカウント状況",
+    "registrationStatusTitle": "登録状況",
+    "currentPlanTitle": "現在のプラン",
+    "accountCreated": "作成日: {{date}}",
+    "registrationCompleted": "完了",
+    "registrationPending": "未完了",
+    "registrationCompletedNote": "サービス登録が完了しています",
+    "registrationPendingNote": "サービス登録を完了してください",
+    "noPlan": "なし",
+    "noPlanDescription": "アクティブなプランはありません",
+    "registrationDetailsTitle": "登録詳細",
+    "registrationDetailsSubtitle": "最新のサービス登録情報",
+    "labels": {
+      "name": "氏名",
+      "email": "メールアドレス",
+      "company": "会社名",
+      "phone": "電話番号",
+      "plan": "契約プラン:"
+    },
+    "notProvided": "未入力",
+    "registeredOn": "登録日: {{date}}",
+    "completeRegistrationTitle": "登録を完了してください",
+    "completeRegistrationDescription": "サービス登録がまだ完了していません。",
+    "completeRegistrationCta": "登録を完了する",
+    "toasts": {
+      "errorTitle": "エラー",
+      "errorDescription": "登録データの取得に失敗しました。"
+    }
+  },
+  "admin": {
+    "title": "管理パネル",
+    "subtitle": "ユーザー、登録、分析を管理します。",
+    "stats": {
+      "totalUsers": "総ユーザー数",
+      "tokenA": "トークンAプラン",
+      "tokenB": "トークンBプラン",
+      "premium": "プレミアムプラン"
+    },
+    "table": {
+      "title": "登録一覧",
+      "subtitle": "全ユーザー登録の一覧",
+      "headers": {
+        "name": "氏名",
+        "email": "メール",
+        "company": "会社",
+        "service": "サービス",
+        "registered": "登録日"
+      },
+      "notProvided": "未入力",
+      "empty": "登録が見つかりません"
+    },
+    "services": {
+      "tokenA": "トークンA",
+      "tokenAPrice": "$9.99",
+      "tokenB": "トークンB",
+      "tokenBPrice": "$19.99",
+      "premium": "プレミアム",
+      "premiumPrice": "$39.99",
+      "notAvailable": "N/A"
+    },
+    "toasts": {
+      "errorTitle": "エラー",
+      "registrationsError": "登録データの取得に失敗しました",
+      "dataError": "データの読み込みに失敗しました"
+    }
+  },
+  "profile": {
+    "title": "プロフィール",
+    "subtitle": "個人情報と設定を管理してください"
+  },
+  "social": {
+    "heroBadge": "コンテンツ配信を自動化",
+    "title": "ソーシャルメディア自動化",
+    "subtitle": "企業情報を複数のプラットフォームへ一括配信し、運用時間を大幅に削減します。",
+    "selectedLabel": "選択済み",
+    "createdLabel": "作成済み",
+    "countUnit": "件",
+    "postsUnit": "投稿",
+    "newPostTitle": "新規投稿作成",
+    "contentLabel": "投稿内容",
+    "contentPlaceholder": "海外展開に関する最新の取り組みや製品情報を共有しましょう...",
+    "characterCount": "{{count}}/280文字",
+    "platformLabel": "投稿プラットフォーム",
+    "scheduleLabel": "投稿タイミング",
+    "scheduleNow": "今すぐ投稿",
+    "scheduleLater": "日時を指定",
+    "dateLabel": "日付",
+    "timeLabel": "時刻",
+    "posting": "投稿中...",
+    "postNow": "投稿する",
+    "schedule": "スケジュール",
+    "zapierTitle": "Zapier連携設定",
+    "zapierWebhookLabel": "Zapier Webhook URL",
+    "zapierNote": "Facebook、Instagram、LinkedInへの投稿にはZapier連携が必要です。",
+    "zapierStepsTitle": "Zapier設定手順",
+    "zapierSteps": [
+      "Zapierアカウントを作成",
+      "新しいZapを作成",
+      "トリガーに「Webhooks by Zapier」を選択",
+      "「Catch Hook」を選択",
+      "提供されたWebhook URLをここに入力",
+      "アクションで各SNSプラットフォームを設定"
+    ],
+    "historyTitle": "投稿履歴",
+    "status": {
+      "published": "投稿済み",
+      "scheduled": "スケジュール済み",
+      "draft": "下書き"
+    },
+    "scheduledLabel": "予定: {{time}}",
+    "toasts": {
+      "successTitle": "成功",
+      "errorTitle": "エラー",
+      "twitterSuccess": "Xに投稿しました",
+      "twitterError": "X投稿に失敗しました（API未実装またはタイムアウト）",
+      "webhookRequired": "ZapierのWebhook URLを入力してください",
+      "zapierSentTitle": "リクエスト送信完了",
+      "zapierSentDescription": "Zapierにリクエストをしました。Zapの履歴をご確認ください。",
+      "zapierTimeout": "Zapierリクエストがタイムアウトしました",
+      "zapierError": "Zapierとの連携に失敗しました",
+      "contentRequired": "投稿内容を入力してください",
+      "platformRequired": "投稿するプラットフォームを選択してください",
+      "posted": "投稿しました",
+      "scheduled": "投稿をスケジュールしました",
+      "postError": "投稿に失敗しました"
+    }
+  },
+  "subscription": {
+    "errorTitle": "エラー",
+    "checkError": "サブスクリプション状況の確認に失敗しました",
+    "authRequiredTitle": "認証が必要です",
+    "authRequiredDescription": "サブスクリプションを開始するにはログインが必要です",
+    "checkoutError": "チェックアウトの作成に失敗しました",
+    "manageAuthRequired": "サブスクリプション管理にはログインが必要です",
+    "portalError": "カスタマーポータルの開設に失敗しました"
+  }
+}

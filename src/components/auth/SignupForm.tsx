@@ -11,28 +11,29 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Loader2 } from "lucide-react";
-
-const signupSchema = z.object({
-  email: z.string().email("無効なメールアドレスです"),
-  password: z.string().min(6, "パスワードは6文字以上である必要があります"),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "パスワードが一致しません",
-  path: ["confirmPassword"],
-});
-
-type SignupForm = z.infer<typeof signupSchema>;
+import { useTranslation } from "react-i18next";
 
 interface SignupFormProps {
   onSuccess?: () => void;
-  isEnglish?: boolean;
 }
 
-export default function SignupForm({ onSuccess, isEnglish = false }: SignupFormProps) {
+export default function SignupForm({ onSuccess }: SignupFormProps) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const { signUp, signInWithGoogle } = useAuth();
   const { toast } = useToast();
+
+  const signupSchema = z.object({
+    email: z.string().email(t("auth.validation.emailInvalid")),
+    password: z.string().min(6, t("auth.validation.passwordMin")),
+    confirmPassword: z.string(),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t("auth.validation.passwordMismatch"),
+    path: ["confirmPassword"],
+  });
+
+  type SignupForm = z.infer<typeof signupSchema>;
 
   const {
     register,
@@ -49,24 +50,22 @@ export default function SignupForm({ onSuccess, isEnglish = false }: SignupFormP
       
       if (error) {
         toast({
-          title: isEnglish ? "Signup Failed" : "登録に失敗しました",
+          title: t("auth.signup.toastErrorTitle"),
           description: error.message,
           variant: "destructive",
         });
       } else {
         toast({
-          title: isEnglish ? "Registration Successful!" : "登録成功！",
-          description: isEnglish 
-            ? "Please check your email and click the confirmation link. Once confirmed, you'll be redirected to the login page to access your account." 
-            : "メールボックスを確認し、確認リンクをクリックしてください。確認後、ログインページにリダイレクトされます。",
+          title: t("auth.signup.toastSuccessTitle"),
+          description: t("auth.signup.toastSuccessDescription"),
           duration: 8000,
         });
         onSuccess?.();
       }
     } catch (error) {
       toast({
-        title: isEnglish ? "Error" : "エラー",
-        description: isEnglish ? "An unexpected error occurred" : "予期しないエラーが発生しました",
+        title: t("auth.common.errorTitle"),
+        description: t("auth.common.unexpectedError"),
         variant: "destructive",
       });
     } finally {
@@ -81,7 +80,7 @@ export default function SignupForm({ onSuccess, isEnglish = false }: SignupFormP
       
       if (error) {
         toast({
-          title: isEnglish ? "Google Signup Failed" : "Google登録に失敗しました",
+          title: t("auth.signup.googleErrorTitle"),
           description: error.message,
           variant: "destructive",
         });
@@ -89,8 +88,8 @@ export default function SignupForm({ onSuccess, isEnglish = false }: SignupFormP
       // Success will be handled by the auth state change listener
     } catch (error) {
       toast({
-        title: isEnglish ? "Error" : "エラー",
-        description: isEnglish ? "An unexpected error occurred" : "予期しないエラーが発生しました",
+        title: t("auth.common.errorTitle"),
+        description: t("auth.common.unexpectedError"),
         variant: "destructive",
       });
     } finally {
@@ -101,19 +100,19 @@ export default function SignupForm({ onSuccess, isEnglish = false }: SignupFormP
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>{isEnglish ? "Sign Up" : "新規登録"}</CardTitle>
+        <CardTitle>{t("auth.signup.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">
-              {isEnglish ? "Email" : "メールアドレス"}
+              {t("auth.signup.emailLabel")}
             </Label>
             <Input
               id="email"
               type="email"
               {...register("email")}
-              placeholder={isEnglish ? "Enter your email" : "メールアドレスを入力"}
+              placeholder={t("auth.signup.emailPlaceholder")}
             />
             {errors.email && (
               <p className="text-sm text-destructive">{errors.email.message}</p>
@@ -122,13 +121,13 @@ export default function SignupForm({ onSuccess, isEnglish = false }: SignupFormP
 
           <div className="space-y-2">
             <Label htmlFor="password">
-              {isEnglish ? "Password" : "パスワード"}
+              {t("auth.signup.passwordLabel")}
             </Label>
             <Input
               id="password"
               type="password"
               {...register("password")}
-              placeholder={isEnglish ? "Enter your password" : "パスワードを入力"}
+              placeholder={t("auth.signup.passwordPlaceholder")}
             />
             {errors.password && (
               <p className="text-sm text-destructive">{errors.password.message}</p>
@@ -137,13 +136,13 @@ export default function SignupForm({ onSuccess, isEnglish = false }: SignupFormP
 
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">
-              {isEnglish ? "Confirm Password" : "パスワード確認"}
+              {t("auth.signup.confirmPasswordLabel")}
             </Label>
             <Input
               id="confirmPassword"
               type="password"
               {...register("confirmPassword")}
-              placeholder={isEnglish ? "Confirm your password" : "パスワードを再入力"}
+              placeholder={t("auth.signup.confirmPasswordPlaceholder")}
             />
             {errors.confirmPassword && (
               <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
@@ -152,7 +151,7 @@ export default function SignupForm({ onSuccess, isEnglish = false }: SignupFormP
 
           <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isEnglish ? "Sign Up" : "新規登録"}
+            {t("auth.signup.submit")}
           </Button>
 
           <div className="relative">
@@ -161,7 +160,7 @@ export default function SignupForm({ onSuccess, isEnglish = false }: SignupFormP
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                {isEnglish ? "Or continue with" : "または"}
+                {t("auth.common.orContinueWith")}
               </span>
             </div>
           </div>
@@ -192,7 +191,7 @@ export default function SignupForm({ onSuccess, isEnglish = false }: SignupFormP
                 d="M12 1c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            {isEnglish ? "Continue with Google" : "Googleで続行"}
+            {t("auth.common.continueWithGoogle")}
           </Button>
         </form>
       </CardContent>

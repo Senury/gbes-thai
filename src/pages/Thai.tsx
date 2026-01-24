@@ -1,16 +1,19 @@
 import { useEffect } from "react";
-import Navigation from "@/components/th/Navigation";
-import Hero from "@/components/th/Hero";
-import Mission from "@/components/th/Mission";
-import Features from "@/components/th/Features";
-import Pricing from "@/components/th/Pricing";
-import Partners from "@/components/th/Partners";
-import About from "@/components/th/About";
-import Contact from "@/components/th/Contact";
-import Footer from "@/components/th/Footer";
-import ExportImportChat from "@/components/th/ExportImportChat";
+import { useTranslation } from "react-i18next";
+import Navigation from "@/components/Navigation";
+import Hero from "@/components/Hero";
+import Mission from "@/components/Mission";
+import Features from "@/components/Features";
+import Pricing from "@/components/Pricing";
+import Partners from "@/components/Partners";
+import About from "@/components/About";
+import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
+import ExportImportChat from "@/components/ExportImportChat";
 
 const Thai = () => {
+  const { i18n } = useTranslation();
+
   // Handle URL hash scrolling on page load
   useEffect(() => {
     const handleHashScroll = () => {
@@ -35,6 +38,10 @@ const Thai = () => {
       window.removeEventListener('hashchange', handleHashScroll);
     };
   }, []);
+
+  useEffect(() => {
+    i18n.changeLanguage("th");
+  }, [i18n]);
 
   return (
     <div className="min-h-screen bg-background">

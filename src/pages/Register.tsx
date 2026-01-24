@@ -14,45 +14,31 @@ import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-
-const registerSchema = z.object({
-  firstName: z.string().min(1, "名前を入力してください"),
-  lastName: z.string().min(1, "姓を入力してください"),
-  email: z.string().email("有効なメールアドレスを入力してください"),
-  company: z.string().min(1, "会社名を入力してください"),
-  phone: z.string().min(1, "電話番号を入力してください"),
-  service: z.enum(["token-a", "token-b", "premium"]).refine((val) => val !== undefined, {
-    message: "サービスを選択してください"
-  })
-});
-
-type RegisterForm = z.infer<typeof registerSchema>;
-
-const services = [
-  {
-    id: "token-a",
-    name: "トークンA",
-    price: "¥5,000/月",
-    description: "パートナー検索 + 限定サポート",
-    features: ["パートナー検索機能", "基本AI支援", "複数チャネル配信", "限定サポート"]
-  },
-  {
-    id: "token-b",
-    name: "トークンB", 
-    price: "¥10,000/月",
-    description: "AI支援 + 標準サポート",
-    features: ["AI支援機能", "高度な分析", "優先サポート", "カスタム統合"]
-  },
-  {
-    id: "premium",
-    name: "プレミアム",
-    price: "¥20,000/月",
-    description: "フルアクセス + プレミアムサポート", 
-    features: ["全機能利用可能", "24/7サポート", "専用アカウントマネージャー", "カスタム開発"]
-  }
-];
+import { useTranslation } from "react-i18next";
+import PageShell from "@/components/PageShell";
 
 const Register = () => {
+  const { t, i18n } = useTranslation();
+  const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
+  const registerSchema = z.object({
+    firstName: z.string().min(1, t("register.validation.firstNameRequired")),
+    lastName: z.string().min(1, t("register.validation.lastNameRequired")),
+    email: z.string().email(t("register.validation.emailInvalid")),
+    company: z.string().min(1, t("register.validation.companyRequired")),
+    phone: z.string().min(1, t("register.validation.phoneRequired")),
+    service: z.enum(["token-a", "token-b", "premium"]).refine((val) => val !== undefined, {
+      message: t("register.validation.serviceRequired"),
+    }),
+  });
+  type RegisterForm = z.infer<typeof registerSchema>;
+  const services = t("register.services", { returnObjects: true }) as Array<{
+    id: "token-a" | "token-b" | "premium";
+    name: string;
+    price: string;
+    description: string;
+    features: string[];
+  }>;
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { user, loading } = useAuth();
@@ -60,9 +46,9 @@ const Register = () => {
 
   useEffect(() => {
     if (!loading && !user) {
-      navigate("/ja/login");
+      navigate(`/${localePrefix}/login`);
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, localePrefix]);
 
   const form = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
@@ -96,7 +82,7 @@ const Register = () => {
       if (error) {
         toast({
           variant: "destructive",
-          title: "登録に失敗しました",
+          title: t("register.toasts.errorTitle"),
           description: error.message,
         });
       } else {
@@ -108,7 +94,7 @@ const Register = () => {
               firstName: data.firstName,
               lastName: data.lastName,
               service: data.service,
-              language: 'ja'
+              language: localePrefix
             }
           });
         } catch (emailError) {
@@ -116,18 +102,18 @@ const Register = () => {
         }
 
         toast({
-          title: "登録が完了しました！",
-          description: "サービスへの登録が正常に完了しました。",
+          title: t("register.toasts.successTitle"),
+          description: t("register.toasts.successDescription"),
         });
         form.reset();
-        navigate("/ja/dashboard");
+        navigate(`/${localePrefix}/dashboard`);
       }
     } catch (error) {
       console.error('Registration error:', error);
       toast({
         variant: "destructive",
-        title: "登録に失敗しました",
-        description: "システムエラーが発生しました。",
+        title: t("register.toasts.errorTitle"),
+        description: t("register.toasts.errorDescription"),
       });
     } finally {
       setIsSubmitting(false);
@@ -135,7 +121,7 @@ const Register = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-background flex items-center justify-center">読み込み中...</div>;
+    return <div className="min-h-screen bg-background flex items-center justify-center">{t("common.loading")}</div>;
   }
 
   if (!user) {
@@ -146,15 +132,15 @@ const Register = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="pt-20 pb-16">
+      <PageShell className="pt-20 pb-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h1 className="text-4xl font-bold text-foreground mb-4">
-                サービス登録
+                {t("register.title")}
               </h1>
               <p className="text-xl text-muted-foreground">
-                最適なプランを選択して、今すぐ始めましょう
+                {t("register.subtitle")}
               </p>
             </div>
 
@@ -162,9 +148,9 @@ const Register = () => {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <Card>
                   <CardHeader>
-                    <CardTitle>基本情報</CardTitle>
+                    <CardTitle>{t("register.basicInfoTitle")}</CardTitle>
                     <CardDescription>
-                      アカウント作成に必要な情報を入力してください
+                      {t("register.basicInfoDescription")}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
@@ -174,9 +160,9 @@ const Register = () => {
                         name="firstName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>名前</FormLabel>
+                            <FormLabel>{t("register.labels.firstName")}</FormLabel>
                             <FormControl>
-                              <Input placeholder="太郎" {...field} />
+                              <Input placeholder={t("register.placeholders.firstName")} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -187,9 +173,9 @@ const Register = () => {
                         name="lastName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>姓</FormLabel>
+                            <FormLabel>{t("register.labels.lastName")}</FormLabel>
                             <FormControl>
-                              <Input placeholder="田中" {...field} />
+                              <Input placeholder={t("register.placeholders.lastName")} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -202,9 +188,9 @@ const Register = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>メールアドレス</FormLabel>
+                          <FormLabel>{t("register.labels.email")}</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="example@company.com" {...field} />
+                            <Input type="email" placeholder={t("register.placeholders.email")} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -217,9 +203,9 @@ const Register = () => {
                         name="company"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>会社名</FormLabel>
+                            <FormLabel>{t("register.labels.company")}</FormLabel>
                             <FormControl>
-                              <Input placeholder="株式会社〇〇" {...field} />
+                              <Input placeholder={t("register.placeholders.company")} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -230,9 +216,9 @@ const Register = () => {
                         name="phone"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>電話番号</FormLabel>
+                            <FormLabel>{t("register.labels.phone")}</FormLabel>
                             <FormControl>
-                              <Input placeholder="03-1234-5678" {...field} />
+                              <Input placeholder={t("register.placeholders.phone")} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -244,9 +230,9 @@ const Register = () => {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>サービス選択</CardTitle>
+                    <CardTitle>{t("register.serviceTitle")}</CardTitle>
                     <CardDescription>
-                      ご利用になりたいサービスプランを選択してください
+                      {t("register.serviceDescription")}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -307,14 +293,14 @@ const Register = () => {
                     disabled={isSubmitting}
                     className="px-8"
                   >
-                    {isSubmitting ? "登録中..." : "登録する"}
+                    {isSubmitting ? t("register.submitting") : t("register.submit")}
                   </Button>
                 </div>
               </form>
             </Form>
           </div>
         </div>
-      </main>
+      </PageShell>
 
       <Footer />
     </div>

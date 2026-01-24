@@ -4,10 +4,14 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import SignupForm from "@/components/auth/SignupForm";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
+import PageShell from "@/components/PageShell";
 
 export default function Signup() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
 
   const handleSignOut = async () => {
     await signOut();
@@ -17,24 +21,24 @@ export default function Signup() {
   // If user is already logged in, show option to sign out and register new account
   if (user) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <main className="container mx-auto px-4 py-20">
+        <div className="min-h-screen bg-background">
+          <Navigation />
+        <PageShell className="container mx-auto px-4 py-20">
           <div className="flex justify-center">
             <div className="w-full max-w-md mx-auto text-center space-y-4">
-              <h2 className="text-2xl font-bold">すでにログインしています</h2>
+              <h2 className="text-2xl font-bold">{t("auth.signup.alreadyLoggedInTitle")}</h2>
               <p className="text-muted-foreground">
-                現在ログインしています。新しいアカウントを登録するには、まずサインアウトしてください。
+                {t("auth.signup.alreadyLoggedInDescription")}
               </p>
               <Button onClick={handleSignOut} variant="outline">
-                サインアウトして新しいアカウントを登録
+                {t("auth.signup.signOutToRegister")}
               </Button>
-              <Button onClick={() => navigate("/ja")} variant="default">
-                ダッシュボードに移動
+              <Button onClick={() => navigate(`/${localePrefix}`)} variant="default">
+                {t("auth.signup.goToDashboard")}
               </Button>
             </div>
           </div>
-        </main>
+        </PageShell>
         <Footer />
       </div>
     );
@@ -43,11 +47,11 @@ export default function Signup() {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <main className="container mx-auto px-4 py-20">
+      <PageShell className="container mx-auto px-4 py-20">
         <div className="flex justify-center">
-          <SignupForm onSuccess={() => navigate("/ja/login")} />
+          <SignupForm onSuccess={() => navigate(`/${localePrefix}/login`)} />
         </div>
-      </main>
+      </PageShell>
       <Footer />
     </div>
   );

@@ -1,0 +1,686 @@
+{
+  "nav": {
+    "home": "Home",
+    "mission": "Mission",
+    "services": "Services",
+    "partners": "Partners",
+    "pricing": "Pricing",
+    "more": "More",
+    "moreLabel": "More links",
+    "contact": "Contact",
+    "social": "Social",
+    "languageJa": "日本語",
+    "languageEn": "English",
+    "languageTh": "ไทย",
+    "register": "Register",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout"
+  },
+  "hero": {
+    "badge": "Enterprise-grade security & compliance",
+    "titlePrefix": "Global Business",
+    "titleHighlight": "Expansion",
+    "titleSuffix": "System",
+    "description": "An AI-powered platform for Japanese SMEs. From translation and digital distribution to partner discovery, everything runs in a single workflow.",
+    "ctaPrimary": "Register and connect globally",
+    "ctaSecondary": "Learn More",
+    "stats": [
+      { "label": "Partner candidates", "value": "12,400+" },
+      { "label": "Languages supported", "value": "24" },
+      { "label": "Avg. onboarding", "value": "2 weeks" }
+    ],
+    "live": "Live • 1,234 companies online",
+    "pillGlobal": "Global distribution",
+    "pillAi": "AI assistance",
+    "note": "Publish to major social platforms and Google Maps. AI supports analysis and recommendations."
+  },
+  "mission": {
+    "title": "Our Mission",
+    "subtitle": "Make global expansion easier for SMEs",
+    "benefits": [
+      "Multilingual product translation tools",
+      "Unified distribution across social media and Google Maps",
+      "Match with trusted overseas partners",
+      "Payment support"
+    ],
+    "cta": "View Details",
+    "highlights": [
+      {
+        "title": "All-in-one solution",
+        "description": "Integrated from translation to marketing"
+      },
+      {
+        "title": "Secure transactions",
+        "description": "ISO-aligned and compliant with international standards"
+      },
+      {
+        "title": "Global network",
+        "description": "Support through JETRO, chambers of commerce, and Rotary Club partnerships"
+      }
+    ]
+  },
+  "features": {
+    "title": "Service Overview",
+    "subtitle": "Everything SMEs need in one dashboard",
+    "items": [
+      {
+        "title": "Multilingual translation tools",
+        "description": "Automatically translate product and company information to support global expansion."
+      },
+      {
+        "title": "Multi-channel distribution",
+        "description": "Manage publishing to Instagram, Facebook, Google Maps, X, and more."
+      },
+      {
+        "title": "Partner matching",
+        "description": "Match with trusted overseas partners for safe, efficient expansion."
+      },
+      {
+        "title": "Payment support",
+        "description": "Reduce transaction costs and time with secure international payments."
+      },
+      {
+        "title": "AI support",
+        "description": "AI-assisted answers, market analysis, and business guidance."
+      },
+      {
+        "title": "Company verification & structuring",
+        "description": "Improve credibility and presentation with structured company review."
+      }
+    ]
+  },
+  "pricing": {
+    "title": "Pricing Plans",
+    "subtitle": "Start free, upgrade when you are ready",
+    "note": "A product experience that doubles as a sales tool. The more you use it, the more value you unlock.",
+    "badges": {
+      "popular": "Popular",
+      "free": "FREE"
+    },
+    "buttons": {
+      "currentPlan": "Current Plan",
+      "freeStart": "Start Free",
+      "selectPlan": "Select Plan",
+      "contact": "Contact Us"
+    },
+    "toasts": {
+      "enterpriseTitle": "Enterprise Plan",
+      "enterpriseDescription": "Thanks for your interest. Our team will contact you shortly.",
+      "freeTitle": "Try the free plan",
+      "freeDescription": "You can start using the product at no cost right away.",
+      "loginTitle": "Login required",
+      "loginDescription": "Please log in to select a plan"
+    },
+    "plans": [
+      {
+        "id": "free",
+        "name": "Free",
+        "price": "¥0",
+        "period": "1-week trial",
+        "description": "Try it out for a week",
+        "features": [
+          "Up to 10 partner searches in 1 week",
+          "Basic AI support (up to 3 per day)",
+          "Single-channel distribution",
+          "Community support",
+          "Limited feature access"
+        ],
+        "isPopular": false,
+        "isFree": true
+      },
+      {
+        "id": "standard",
+        "name": "Standard",
+        "price": "¥2,980",
+        "period": "per month",
+        "description": "For serious business usage",
+        "features": [
+          "Unlimited partner searches",
+          "Full AI support",
+          "Multi-channel distribution",
+          "Priority support",
+          "Basic analytics reports"
+        ],
+        "isPopular": true,
+        "isFree": false
+      },
+      {
+        "id": "business",
+        "name": "Business",
+        "price": "¥4,980",
+        "period": "per month",
+        "description": "Built for teams and organizations",
+        "features": [
+          "Everything in Standard",
+          "Advanced AI support",
+          "Priority partner matching",
+          "Detailed analytics & reporting",
+          "Team management"
+        ],
+        "isPopular": false,
+        "isFree": false
+      },
+      {
+        "id": "enterprise",
+        "name": "Enterprise",
+        "price": "Contact us",
+        "period": "",
+        "description": "Custom solutions for large organizations",
+        "features": [
+          "All features",
+          "Dedicated marketing support",
+          "Event access",
+          "Dedicated consultant",
+          "Custom integrations and development"
+        ],
+        "isPopular": false,
+        "isFree": false,
+        "isEnterprise": true
+      }
+    ]
+  },
+  "partners": {
+    "title": "Partners & Support Organizations",
+    "subtitle": "We collaborate with trusted institutions to help you expand globally with confidence.",
+    "items": [
+      {
+        "name": "NEXI",
+        "fullName": "Nippon Export and Investment Insurance",
+        "description": "Risk mitigation and insurance services for safe overseas transactions."
+      },
+      {
+        "name": "Chambers of Commerce & Local Government",
+        "fullName": "Regional partnership network",
+        "description": "Support regional SMEs through nationwide chambers and local government partnerships."
+      },
+      {
+        "name": "Expert Network",
+        "fullName": "Legal and logistics professionals",
+        "description": "Comprehensive support from experts in international law, logistics, and taxation."
+      }
+    ]
+  },
+  "about": {
+    "title": "Security & Trust",
+    "description": "GBES maintains the highest security standards and transparency to protect your business data and transactions with international compliance.",
+    "features": [
+      "ISO certification planned (information security standards)",
+      "Transparent data handling and clear contracts",
+      "Compliance with domestic and international regulations",
+      "End-to-end encryption for data protection",
+      "Regular security audits and updates"
+    ],
+    "cta": "Security Details",
+    "cards": [
+      {
+        "title": "ISO-aligned security",
+        "description": "Secure system design based on international security standards."
+      },
+      {
+        "title": "Full transparency",
+        "description": "Clear disclosure of all transactions and contract terms."
+      },
+      {
+        "title": "Legal compliance",
+        "description": "Fully compliant with domestic and international regulations."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Ready to get started? Reach out today and build something great together.",
+    "note": "Note: Please log in and create an account to use the contact form.",
+    "formTitle": "Send us a message",
+    "responseTime": "Reply within 24 hours",
+    "labels": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "message": "Message"
+    },
+    "placeholders": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john@example.com",
+      "message": "Tell us about your project..."
+    },
+    "submit": "Send message",
+    "cards": [
+      {
+        "title": "Email",
+        "info": "hello@proto.com",
+        "description": "Replies within 24 business hours"
+      },
+      {
+        "title": "Phone",
+        "info": "+81 (3) 1234-5678",
+        "description": "Weekdays 10:00 - 18:00"
+      },
+      {
+        "title": "Office",
+        "info": "Tokyo, Japan",
+        "description": "In-person meetings by appointment"
+      }
+    ]
+  },
+  "footer": {
+    "description": "Empowering Japanese SMEs to expand globally with AI-powered solutions.",
+    "product": "Product",
+    "company": "Company",
+    "support": "Support",
+    "links": {
+      "services": "Services",
+      "pricing": "Pricing",
+      "partners": "Partners",
+      "api": "API",
+      "about": "About",
+      "careers": "Careers",
+      "press": "Press",
+      "news": "News",
+      "contact": "Contact",
+      "documentation": "Documentation",
+      "helpCenter": "Help Center",
+      "status": "Status",
+      "terms": "Terms",
+      "privacy": "Privacy Policy"
+    },
+    "languageLabel": "Language:",
+    "rights": "© 2024 GBES. All rights reserved.",
+    "madeBy": "Made for global business expansion"
+  },
+  "floatingCta": {
+    "label": "Sign Up"
+  },
+  "chat": {
+    "buttonLabel": "Chat",
+    "title": "Export & Import Expert Chat",
+    "subtitle": "Ask us anything about Japanese export/import operations",
+    "emptyPrompt": "Ask questions about export/import!",
+    "example": "Example: \"What are the procedures for exporting food to the US?\"",
+    "placeholder": "Type your question...",
+    "errorTitle": "Error",
+    "errorDescription": "Failed to send your message. Please try again later."
+  },
+  "partnerSearch": {
+    "heroBadge": "Verified data from trusted networks",
+    "title": "Partner Search",
+    "subtitle": "Discover trusted business partners worldwide and create new opportunities for growth.",
+    "selectedSourcesLabel": "Selected sources",
+    "totalResultsLabel": "Results",
+    "countUnit": "items",
+    "searchPlaceholder": "Search by company name, industry, services...",
+    "searching": "Searching...",
+    "search": "Search",
+    "filters": "Filters",
+    "dataSourcesLabel": "Data sources ({{count}})",
+    "addCompanies": "Add Companies",
+    "scrapeTitle": "Scrape company data from websites",
+    "scrapePlaceholder": "Enter website URLs (one per line)\nExample:\nhttps://example.com\nhttps://company2.com",
+    "scrapeDescription": "Company information will be automatically extracted from the provided websites.",
+    "scraping": "Scraping...",
+    "scrapeAction": "Scrape Data",
+    "cancel": "Cancel",
+    "advancedFiltersTitle": "Advanced Filters",
+    "advancedFiltersDescription": "Select industry categories and regions to refine your search results.",
+    "industryLabel": "Industry",
+    "industryPlaceholder": "Select an industry",
+    "industryAll": "All industries",
+    "locationLabel": "Region",
+    "locationPlaceholder": "Select a region",
+    "locationAll": "All regions",
+    "locations": {
+      "asia": "Asia",
+      "japan": "Japan",
+      "china": "China",
+      "thailand": "Thailand",
+      "europe": "Europe",
+      "usa": "United States",
+      "northAmerica": "North America",
+      "southAmerica": "South America",
+      "africa": "Africa",
+      "oceania": "Oceania"
+    },
+    "companySizeLabel": "Company size",
+    "companySizePlaceholder": "Select company size",
+    "companySizeAll": "All sizes",
+    "applyFilters": "Apply filters",
+    "reset": "Reset",
+    "tipsTitle": "Search tips",
+    "tips": [
+      "• Combine multiple conditions for better results",
+      "• You can also search with keywords like \"Manufacturing Asia\"",
+      "• If no companies are found, try \"Add Companies\""
+    ],
+    "resultsSummary": "Showing {{shown}} companies (total {{total}})",
+    "pageLabel": "Page: {{current}} / {{total}}",
+    "sourcesLabel": "Sources: {{count}}",
+    "detectedCategories": {
+      "medical": "Healthcare",
+      "manufacturing": "Manufacturing",
+      "technology": "Technology",
+      "logistics": "Logistics",
+      "trade": "Trade",
+      "finance": "Finance",
+      "fashion": "Fashion",
+      "automotive": "Automotive"
+    },
+    "noResultsCategory": "No companies found in {{category}}.",
+    "noResultsDefault": "No companies matched your search criteria.",
+    "noResultsTipScrape": "Try using the \"Add Companies\" button to scrape relevant company websites.",
+    "noResultsTipChangeQuery": "Try changing your search terms or add new companies from external data sources.",
+    "emptyState": "Enter a search keyword to find partner companies.",
+    "verifiedBadge": "Verified",
+    "specialtiesLabel": "Specialties",
+    "contactLabel": "Contact",
+    "contactAction": "Contact",
+    "websiteAction": "Website",
+    "prev": "Prev",
+    "next": "Next",
+    "inquiryTitle": "Partnership inquiry to {{company}}",
+    "inquirySubtitle": "The message below will be sent to the company's contact email. Please review and edit before sending.",
+    "inquiryCompanyInfoTitle": "Company information",
+    "inquiryCompanyLabel": "Company:",
+    "inquiryIndustryLabel": "Industry:",
+    "inquiryLocationLabel": "Location:",
+    "inquiryMessageLabel": "Partnership inquiry message",
+    "inquiryPlaceholder": "Enter your partnership inquiry message...",
+    "inquiryNote": "Your contact information (name, email, company, etc.) will be included with this message.",
+    "sendInquiry": "Send inquiry",
+    "inquiryFooterTitle": "About sending:",
+    "inquiryFooterNote": "This message will be sent directly to the company's registered email address, and their reply will be delivered to your email address.",
+    "companyFallback": "Company",
+    "industries": [
+      { "value": "医療", "label": "Medical & Healthcare" },
+      { "value": "製造業", "label": "Manufacturing" },
+      { "value": "技術", "label": "Technology" },
+      { "value": "物流", "label": "Logistics" },
+      { "value": "貿易", "label": "Trade & Import/Export" },
+      { "value": "金融", "label": "Finance & Fintech" },
+      { "value": "ファッション", "label": "Fashion" },
+      { "value": "自動車", "label": "Automotive" }
+    ],
+    "companySizes": [
+      { "value": "micro", "label": "Micro (1-9 employees)" },
+      { "value": "small", "label": "Small (10-49 employees)" },
+      { "value": "medium", "label": "Medium (50-249 employees)" },
+      { "value": "large", "label": "Large (250+ employees)" }
+    ],
+    "dataSources": {
+      "google_places": "Google Places",
+      "opencorporates": "OpenCorporates",
+      "web_scraping": "Web Scraping",
+      "sample": "Sample",
+      "manual": "Manual",
+      "supabase": "Supabase"
+    },
+    "toasts": {
+      "searchCompleteTitle": "Search Complete",
+      "searchCompleteDescription": "Found {{count}} companies ({{sources}} data sources).",
+      "searchErrorTitle": "Search Error",
+      "searchErrorDescription": "An error occurred while searching.",
+      "loginRequiredTitle": "Login Required",
+      "loginRequiredDescription": "Please log in to send partnership inquiries",
+      "validationErrorTitle": "Error",
+      "validationErrorDescription": "Please enter a message",
+      "inquirySentTitle": "Inquiry Sent",
+      "inquirySentDescription": "Your partnership inquiry has been sent successfully",
+      "sendErrorTitle": "Send Error",
+      "sendErrorDescription": "An error occurred while sending your inquiry",
+      "websiteRequiredDescription": "Please enter website URLs.",
+      "websiteInvalidDescription": "Please enter valid URLs.",
+      "scrapeCompleteTitle": "Scraping Complete",
+      "scrapeCompleteDescription": "Retrieved {{count}} company records.",
+      "scrapeErrorTitle": "Scraping Error",
+      "scrapeErrorDescription": "An error occurred while scraping website data."
+    },
+    "inquiryTemplate": "Dear {{company}} Team,\n\nI hope this message finds you well.\n\nI am reaching out to explore potential partnership opportunities between our organizations. After reviewing your company profile, I believe there may be synergies that could benefit both parties.\n\nI would be particularly interested in discussing:\n• Partnership structures and terms\n• Mutual benefits of collaboration\n• Future business development opportunities\n\nI would welcome the opportunity to schedule a call or meeting to discuss this further.\n\nThank you for your time and consideration.\n\nBest regards"
+  },
+  "common": {
+    "loading": "Loading..."
+  },
+  "auth": {
+    "common": {
+      "errorTitle": "Error",
+      "unexpectedError": "An unexpected error occurred",
+      "orContinueWith": "Or continue with",
+      "continueWithGoogle": "Continue with Google"
+    },
+    "validation": {
+      "emailInvalid": "Invalid email address",
+      "passwordMin": "Password must be at least 6 characters",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "login": {
+      "title": "Login",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "submit": "Login",
+      "toastSuccessTitle": "Login Successful",
+      "toastSuccessDescription": "Welcome back!",
+      "toastErrorTitle": "Login Failed",
+      "googleErrorTitle": "Google Login Failed"
+    },
+    "signup": {
+      "title": "Sign Up",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "submit": "Sign Up",
+      "toastSuccessTitle": "Registration Successful!",
+      "toastSuccessDescription": "Please check your email and click the confirmation link. Once confirmed, you'll be redirected to the login page to access your account.",
+      "toastErrorTitle": "Signup Failed",
+      "googleErrorTitle": "Google Signup Failed",
+      "alreadyLoggedInTitle": "You are already logged in",
+      "alreadyLoggedInDescription": "You are currently logged in. Please sign out first to register a new account.",
+      "signOutToRegister": "Sign out and register a new account",
+      "goToDashboard": "Go to dashboard"
+    }
+  },
+  "register": {
+    "title": "Service Registration",
+    "subtitle": "Choose the best plan and get started now",
+    "basicInfoTitle": "Basic Information",
+    "basicInfoDescription": "Enter the information needed to create your account",
+    "serviceTitle": "Service Selection",
+    "serviceDescription": "Select the service plan you want to use",
+    "labels": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "company": "Company",
+      "phone": "Phone number"
+    },
+    "placeholders": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "example@company.com",
+      "company": "Company Inc.",
+      "phone": "03-1234-5678"
+    },
+    "submit": "Register",
+    "submitting": "Registering...",
+    "validation": {
+      "firstNameRequired": "Please enter your first name",
+      "lastNameRequired": "Please enter your last name",
+      "emailInvalid": "Please enter a valid email address",
+      "companyRequired": "Please enter your company name",
+      "phoneRequired": "Please enter your phone number",
+      "serviceRequired": "Please select a service"
+    },
+    "toasts": {
+      "successTitle": "Registration complete!",
+      "successDescription": "Your service registration has been completed successfully.",
+      "errorTitle": "Registration failed",
+      "errorDescription": "A system error occurred."
+    },
+    "services": [
+      {
+        "id": "token-a",
+        "name": "Token A",
+        "price": "¥5,000/month",
+        "description": "Partner search + limited support",
+        "features": ["Partner search", "Basic AI support", "Multi-channel distribution", "Limited support"]
+      },
+      {
+        "id": "token-b",
+        "name": "Token B",
+        "price": "¥10,000/month",
+        "description": "AI support + standard support",
+        "features": ["AI support", "Advanced analytics", "Priority support", "Custom integrations"]
+      },
+      {
+        "id": "premium",
+        "name": "Premium",
+        "price": "¥20,000/month",
+        "description": "Full access + premium support",
+        "features": ["All features", "24/7 support", "Dedicated account manager", "Custom development"]
+      }
+    ]
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {{email}}!",
+    "welcomeSubtitle": "Here's an overview of your account and registration status.",
+    "accountStatusActive": "Active",
+    "accountStatusTitle": "Account Status",
+    "registrationStatusTitle": "Registration Status",
+    "currentPlanTitle": "Current Plan",
+    "accountCreated": "Account created {{date}}",
+    "registrationCompleted": "Completed",
+    "registrationPending": "Pending",
+    "registrationCompletedNote": "Service registration complete",
+    "registrationPendingNote": "Complete your service registration",
+    "noPlan": "None",
+    "noPlanDescription": "No active plan",
+    "registrationDetailsTitle": "Registration Details",
+    "registrationDetailsSubtitle": "Your service registration information",
+    "labels": {
+      "name": "Name",
+      "email": "Email",
+      "company": "Company",
+      "phone": "Phone",
+      "plan": "Service Plan:"
+    },
+    "notProvided": "Not provided",
+    "registeredOn": "Registered on {{date}}",
+    "completeRegistrationTitle": "Complete Your Registration",
+    "completeRegistrationDescription": "You haven't completed your service registration yet.",
+    "completeRegistrationCta": "Complete Registration",
+    "toasts": {
+      "errorTitle": "Error",
+      "errorDescription": "Failed to load registration data"
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "subtitle": "Manage users, registrations, and view analytics.",
+    "stats": {
+      "totalUsers": "Total Users",
+      "tokenA": "Token A Plans",
+      "tokenB": "Token B Plans",
+      "premium": "Premium Plans"
+    },
+    "table": {
+      "title": "All Registrations",
+      "subtitle": "Complete list of all user registrations",
+      "headers": {
+        "name": "Name",
+        "email": "Email",
+        "company": "Company",
+        "service": "Service",
+        "registered": "Registered"
+      },
+      "notProvided": "N/A",
+      "empty": "No registrations found"
+    },
+    "services": {
+      "tokenA": "Token A",
+      "tokenAPrice": "$9.99",
+      "tokenB": "Token B",
+      "tokenBPrice": "$19.99",
+      "premium": "Premium",
+      "premiumPrice": "$39.99",
+      "notAvailable": "N/A"
+    },
+    "toasts": {
+      "errorTitle": "Error",
+      "registrationsError": "Failed to load registrations data",
+      "dataError": "Failed to load data"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Manage your personal information and preferences"
+  },
+  "social": {
+    "heroBadge": "Automate content distribution",
+    "title": "Social Media Automation",
+    "subtitle": "Distribute company information across platforms and reduce operational time.",
+    "selectedLabel": "Selected",
+    "createdLabel": "Created",
+    "countUnit": "items",
+    "postsUnit": "posts",
+    "newPostTitle": "Create New Post",
+    "contentLabel": "Post content",
+    "contentPlaceholder": "Share the latest initiatives and product updates for global expansion...",
+    "characterCount": "{{count}}/280 characters",
+    "platformLabel": "Platforms",
+    "scheduleLabel": "Timing",
+    "scheduleNow": "Post now",
+    "scheduleLater": "Schedule",
+    "dateLabel": "Date",
+    "timeLabel": "Time",
+    "posting": "Posting...",
+    "postNow": "Post",
+    "schedule": "Schedule",
+    "zapierTitle": "Zapier Integration",
+    "zapierWebhookLabel": "Zapier Webhook URL",
+    "zapierNote": "Zapier is required for posting to Facebook, Instagram, and LinkedIn.",
+    "zapierStepsTitle": "Zapier setup steps",
+    "zapierSteps": [
+      "Create a Zapier account",
+      "Create a new Zap",
+      "Choose \"Webhooks by Zapier\" as the trigger",
+      "Select \"Catch Hook\"",
+      "Paste the provided Webhook URL here",
+      "Configure actions for each platform"
+    ],
+    "historyTitle": "Post History",
+    "status": {
+      "published": "Published",
+      "scheduled": "Scheduled",
+      "draft": "Draft"
+    },
+    "scheduledLabel": "Scheduled: {{time}}",
+    "toasts": {
+      "successTitle": "Success",
+      "errorTitle": "Error",
+      "twitterSuccess": "Posted to X",
+      "twitterError": "Failed to post to X (API not implemented or timeout)",
+      "webhookRequired": "Please enter a Zapier Webhook URL",
+      "zapierSentTitle": "Request sent",
+      "zapierSentDescription": "Zapier request sent. Check your Zap history.",
+      "zapierTimeout": "Zapier request timed out",
+      "zapierError": "Failed to connect to Zapier",
+      "contentRequired": "Please enter post content",
+      "platformRequired": "Please select platforms",
+      "posted": "Post published",
+      "scheduled": "Post scheduled",
+      "postError": "Failed to post"
+    }
+  },
+  "subscription": {
+    "errorTitle": "Error",
+    "checkError": "Failed to check subscription status",
+    "authRequiredTitle": "Authentication required",
+    "authRequiredDescription": "Please log in to start a subscription",
+    "checkoutError": "Failed to create checkout",
+    "manageAuthRequired": "Please log in to manage your subscription",
+    "portalError": "Failed to open customer portal"
+  }
+}

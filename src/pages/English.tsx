@@ -1,16 +1,19 @@
 import { useEffect } from "react";
-import Navigation from "@/components/en/Navigation";
-import Hero from "@/components/en/Hero";
-import Mission from "@/components/en/Mission";
-import Features from "@/components/en/Features";
-import Pricing from "@/components/en/Pricing";
-import Partners from "@/components/en/Partners";
-import About from "@/components/en/About";
-import Contact from "@/components/en/Contact";
-import Footer from "@/components/en/Footer";
-import ExportImportChat from "@/components/en/ExportImportChat";
+import { useTranslation } from "react-i18next";
+import Navigation from "@/components/Navigation";
+import Hero from "@/components/Hero";
+import Mission from "@/components/Mission";
+import Features from "@/components/Features";
+import Pricing from "@/components/Pricing";
+import Partners from "@/components/Partners";
+import About from "@/components/About";
+import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
+import ExportImportChat from "@/components/ExportImportChat";
 
 const English = () => {
+  const { i18n } = useTranslation();
+
   // Handle URL hash scrolling on page load
   useEffect(() => {
     const handleHashScroll = () => {
@@ -35,6 +38,10 @@ const English = () => {
       window.removeEventListener('hashchange', handleHashScroll);
     };
   }, []);
+
+  useEffect(() => {
+    i18n.changeLanguage("en");
+  }, [i18n]);
 
   return (
     <div className="min-h-screen bg-background">

@@ -1,18 +1,22 @@
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { ProfileForm } from '@/components/ProfileForm';
+import { useTranslation } from "react-i18next";
 
 export default function Profile() {
+  const { t, i18n } = useTranslation();
+  const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
+
   return (
-    <DashboardLayout language="ja">
+    <DashboardLayout language={localePrefix}>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">プロフィール</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t("profile.title")}</h1>
           <p className="text-muted-foreground">
-            個人情報と設定を管理してください
+            {t("profile.subtitle")}
           </p>
         </div>
         
-        <ProfileForm language="ja" />
+        <ProfileForm language={localePrefix} />
       </div>
     </DashboardLayout>
   );

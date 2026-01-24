@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import PageShell from "@/components/PageShell";
 
 const SimpleEmailTest = () => {
   const { toast } = useToast();
@@ -44,7 +45,7 @@ const SimpleEmailTest = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="pt-20 pb-16">
+      <PageShell className="pt-20 pb-16">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-8">
             <h1 className="text-4xl font-bold text-foreground">
@@ -65,7 +66,7 @@ const SimpleEmailTest = () => {
             </div>
           </div>
         </div>
-      </main>
+      </PageShell>
 
       <Footer />
     </div>
