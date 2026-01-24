@@ -10,6 +10,8 @@ const corsHeaders = {
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const googlePlacesApiKey = Deno.env.get('GOOGLE_PLACES_API_KEY');
+const openCorporatesApiKey = Deno.env.get('OPENCORPORATES_API_KEY');
+const companiesHouseApiKey = Deno.env.get('COMPANIES_HOUSE_API_KEY');
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -35,7 +37,7 @@ interface OpenCorporatesResult {
 
 interface DataSourceHandler {
   name: string;
-  search: (query: string, location?: string, industry?: string, maxResults?: number, options?: { locationPlaceId?: string }) => Promise<any[]>;
+  search: (query: string, location?: string, industry?: string, maxResults?: number, options?: { locationPlaceId?: string; pageToken?: string }) => Promise<any[]>;
   testConnection: () => Promise<boolean>;
 }
 
@@ -45,8 +47,8 @@ serve(async (req) => {
   }
 
   try {
-    const { query, location, industry, dataSources, maxResults = 20, testConnection = false, filters } = await req.json();
-    console.log('Search request:', { query, location, industry, dataSources, testConnection, filters });
+    const { query, location, industry, dataSources, maxResults = 20, testConnection = false, filters, pageTokens } = await req.json();
+    console.log('Search request:', { query, location, industry, dataSources, testConnection, filters, pageTokens });
 
     // Extract industry and location from filters if not provided directly
     const finalIndustry = industry || filters?.industry;
@@ -75,13 +77,13 @@ serve(async (req) => {
       }
     }
 
-    const companies = await searchCompaniesFromMultipleSources(
+    const { companies, nextPageTokens } = await searchCompaniesFromMultipleSources(
       query || '', 
       finalLocation, 
       finalIndustry, 
       dataSources || ['google_places', 'opencorporates', 'crunchbase', 'yellow_pages', 'companies_house'],
       maxResults,
-      { locationPlaceId: filters?.locationPlaceId }
+      { locationPlaceId: filters?.locationPlaceId, pageToken: pageTokens?.google_places }
     );
     
     // Store found companies in database
@@ -89,7 +91,7 @@ serve(async (req) => {
       await storeCompanyInDB(company);
     }
 
-    return new Response(JSON.stringify({ companies, count: companies.length }), {
+    return new Response(JSON.stringify({ companies, count: companies.length, nextPageTokens }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
@@ -113,7 +115,13 @@ function getDataSourceHandler(sourceName: string): DataSourceHandler | null {
       search: searchOpenCorporates,
       testConnection: async () => {
         try {
-          const response = await fetch('https://api.opencorporates.com/v0.4/companies/search?q=test&per_page=1');
+          const url = new URL('https://api.opencorporates.com/v0.4/companies/search');
+          url.searchParams.set('q', 'test');
+          url.searchParams.set('per_page', '1');
+          if (openCorporatesApiKey) {
+            url.searchParams.set('api_token', openCorporatesApiKey);
+          }
+          const response = await fetch(url.toString());
           return response.ok;
         } catch {
           return false;
@@ -135,7 +143,14 @@ function getDataSourceHandler(sourceName: string): DataSourceHandler | null {
       search: searchCompaniesHouse,
       testConnection: async () => {
         try {
-          const response = await fetch('https://api.company-information.service.gov.uk/search/companies?q=test&items_per_page=1');
+          if (!companiesHouseApiKey) {
+            return false;
+          }
+          const response = await fetch('https://api.company-information.service.gov.uk/search/companies?q=test&items_per_page=1', {
+            headers: {
+              Authorization: `Basic ${btoa(`${companiesHouseApiKey}:`)}`,
+            },
+          });
           return response.ok;
         } catch {
           return false;
@@ -153,9 +168,10 @@ async function searchCompaniesFromMultipleSources(
   industry?: string, 
   dataSources?: string[],
   maxResults: number = 20,
-  options?: { locationPlaceId?: string }
+  options?: { locationPlaceId?: string; pageToken?: string }
 ) {
   const companies = [];
+  const nextPageTokens: Record<string, string | undefined> = {};
   const sources = dataSources || ['google_places', 'opencorporates'];
   const resultsPerSource = Math.ceil(maxResults / sources.length);
   
@@ -167,15 +183,22 @@ async function searchCompaniesFromMultipleSources(
     }
 
     try {
-      const results = await handler.search(query, location, industry, resultsPerSource, options);
-      companies.push(...results);
-      console.log(`Found ${results.length} companies from ${sourceName}`);
+      if (sourceName === 'google_places') {
+        const googleResults = await searchGooglePlacesWithToken(query, location, industry, resultsPerSource, options);
+        companies.push(...googleResults.results);
+        nextPageTokens.google_places = googleResults.nextPageToken;
+        console.log(`Found ${googleResults.results.length} companies from ${sourceName}`);
+      } else {
+        const results = await handler.search(query, location, industry, resultsPerSource, options);
+        companies.push(...results);
+        console.log(`Found ${results.length} companies from ${sourceName}`);
+      }
     } catch (error) {
       console.error(`${sourceName} search error:`, error);
     }
   }
 
-  return companies.slice(0, maxResults);
+  return { companies: companies.slice(0, maxResults), nextPageTokens };
 }
 
 async function searchGooglePlaces(
@@ -183,7 +206,7 @@ async function searchGooglePlaces(
   location?: string,
   industry?: string,
   maxResults: number = 20,
-  options?: { locationPlaceId?: string }
+  options?: { locationPlaceId?: string; pageToken?: string }
 ): Promise<any[]> {
   if (!googlePlacesApiKey) {
     console.warn('Google Places API key not configured');
@@ -258,6 +281,96 @@ async function searchGooglePlaces(
     verified: false,
     company_size: 'small',
   }));
+}
+
+async function searchGooglePlacesWithToken(
+  query: string,
+  location?: string,
+  industry?: string,
+  maxResults: number = 20,
+  options?: { locationPlaceId?: string; pageToken?: string }
+): Promise<{ results: any[]; nextPageToken?: string }> {
+  if (!googlePlacesApiKey) {
+    return { results: [] };
+  }
+
+  if (options?.pageToken) {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+
+  let locationContext = '';
+  if (options?.locationPlaceId && !options?.pageToken) {
+    try {
+      const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${options.locationPlaceId}&fields=geometry&key=${googlePlacesApiKey}`;
+      const detailsResponse = await fetch(detailsUrl);
+      const detailsData = await detailsResponse.json();
+      if (detailsData?.result?.geometry?.location) {
+        const { lat, lng } = detailsData.result.geometry.location;
+        locationContext = `&location=${lat},${lng}&radius=50000`;
+      }
+    } catch (error) {
+      console.warn('Failed to load place details for locationPlaceId', error);
+    }
+  }
+
+  let url = '';
+  if (options?.pageToken) {
+    url = `https://maps.googleapis.com/maps/api/place/textsearch/json?pagetoken=${options.pageToken}&key=${googlePlacesApiKey}`;
+  } else {
+    let searchQuery = '';
+
+    if (query && query.trim()) {
+      searchQuery = `${query} company business`;
+    } else if (industry) {
+      const industrySearchTerms = {
+        'fashion': 'fashion clothing apparel textile garment company',
+        'technology': 'technology software tech company',
+        'manufacturing': 'manufacturing factory production company',
+        'automotive': 'automotive car auto company',
+        'healthcare': 'healthcare medical health company',
+        'finance': 'finance financial fintech company'
+      };
+      searchQuery = industrySearchTerms[industry] || `${industry} company business`;
+    } else {
+      searchQuery = 'company business';
+    }
+
+    if (location) {
+      searchQuery += ` in ${location}`;
+    }
+    if (industry) {
+      searchQuery += ` ${industry}`;
+    }
+
+    url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(
+      searchQuery,
+    )}&key=${googlePlacesApiKey}&type=establishment&language=en${locationContext}`;
+  }
+
+  const response = await fetch(url);
+  const data = await response.json();
+
+  if (data.status !== 'OK') {
+    console.error('Google Places API error:', data.status, data.error_message);
+    return { results: [] };
+  }
+
+  return {
+    results: data.results.slice(0, maxResults).map((place: GooglePlacesResult) => ({
+      name: place.name,
+      description: `Business found via Google Places${place.rating ? ` (Rating: ${place.rating})` : ''}`,
+      location_country: extractCountryFromAddress(place.formatted_address),
+      location_city: extractCityFromAddress(place.formatted_address),
+      website_url: place.website,
+      phone: place.formatted_phone_number,
+      industry: inferIndustryFromTypes(place.types),
+      specialties: place.types.filter(type => !['establishment', 'point_of_interest'].includes(type)),
+      data_source: 'google_places',
+      verified: false,
+      company_size: 'small',
+    })),
+    nextPageToken: data.next_page_token,
+  };
 }
 
 async function searchOpenCorporates(query: string, location?: string, industry?: string, maxResults: number = 10): Promise<any[]> {

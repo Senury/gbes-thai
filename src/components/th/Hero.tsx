@@ -1,7 +1,15 @@
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-bg.jpg";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
+  const handleScrollToServices = () => {
+    const servicesSection = document.getElementById("services");
+    if (servicesSection) {
+      servicesSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div
@@ -26,10 +34,22 @@ const Hero = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button variant="cta" size="xl" className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300">
-            ลงทะเบียนเลยและเชื่อมต่อกับโลก
+          <Button
+            variant="cta"
+            size="xl"
+            className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300"
+            asChild
+          >
+            <Link to="/th/signup" className="inline-flex items-center">
+              ลงทะเบียนเลยและเชื่อมต่อกับโลก
+            </Link>
           </Button>
-          <Button variant="outline" size="lg" className="text-lg px-8 py-6">
+          <Button
+            variant="outline"
+            size="lg"
+            className="text-lg px-8 py-6"
+            onClick={handleScrollToServices}
+          >
             เรียนรู้เพิ่มเติม
           </Button>
         </div>

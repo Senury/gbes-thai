@@ -7,6 +7,9 @@ export interface CompanySearchFilters {
   verified?: boolean;
   dataSources?: string[];
   locationPlaceId?: string;
+  externalPageTokens?: {
+    google_places?: string;
+  };
 }
 
 export interface DataSourceConfig {
@@ -20,6 +23,7 @@ export interface SearchResults {
   companies: any[];
   count: number;
   hasMore: boolean;
+  externalNextPageToken?: string;
 }
 
 export class CompanySearchService {
@@ -211,11 +215,17 @@ export class CompanySearchService {
     pageSize: number = 20
   ): Promise<SearchResults> {
     try {
+      const selectedSources = filters.dataSources || this.getEnabledDataSources();
+      const externalSources = selectedSources.filter(source => source !== 'supabase');
+      const googlePageToken = filters.externalPageTokens?.google_places;
+      let externalNextPageToken: string | undefined;
+
       // First search existing companies in database
       const dbResults = await this.searchExistingCompanies(query, filters, page, pageSize);
+      const sourceFilteredResults = this.filterResultsByDataSources(dbResults, selectedSources);
       
       // Filter sensitive contact information based on user access
-      const filteredResults = await this.filterContactInformation(dbResults);
+      const filteredResults = await this.filterContactInformation(sourceFilteredResults);
       
       // If we have fewer results than requested, try to fetch more from external sources
       if (filteredResults.companies.length < pageSize && page === 0) {
@@ -225,21 +235,29 @@ export class CompanySearchService {
           Boolean(filters.location && filters.location !== 'all-regions') ||
           Boolean(filters.companySize && filters.companySize !== 'all');
 
-        if (hasSearchQuery || hasFilterCriteria) {
+        if ((hasSearchQuery || hasFilterCriteria) && externalSources.length > 0) {
           console.log('Searching external sources for more companies...');
-          const enabledSources = filters.dataSources || this.getEnabledDataSources();
-          await this.searchMultipleExternalSources(query, filters, enabledSources);
+          const externalMeta = await this.searchMultipleExternalSources(query, filters, externalSources, pageSize);
+          externalNextPageToken = externalMeta.googleNextPageToken;
           
           // Search again after populating with external data
           const updatedResults = await this.searchExistingCompanies(query, filters, page, pageSize);
-          const finalResults = await this.filterContactInformation(updatedResults);
-          return finalResults;
+          const updatedSourceFiltered = this.filterResultsByDataSources(updatedResults, selectedSources);
+          const finalResults = await this.filterContactInformation(updatedSourceFiltered);
+          return { ...finalResults, externalNextPageToken };
         } else {
-          console.log('Skipping external search: no keyword or filter criteria provided.');
+          console.log('Skipping external search: no keyword/filter criteria or external sources selected.');
         }
+      } else if (page > 0 && googlePageToken && externalSources.includes('google_places')) {
+        const externalMeta = await this.searchMultipleExternalSources(query, filters, ['google_places'], pageSize);
+        externalNextPageToken = externalMeta.googleNextPageToken;
+        const updatedResults = await this.searchExistingCompanies(query, filters, page, pageSize);
+        const updatedSourceFiltered = this.filterResultsByDataSources(updatedResults, selectedSources);
+        const finalResults = await this.filterContactInformation(updatedSourceFiltered);
+        return { ...finalResults, externalNextPageToken };
       }
       
-      return filteredResults;
+      return { ...filteredResults, externalNextPageToken };
     } catch (error) {
       console.error('Error in company search:', error);
       throw error;
@@ -305,6 +323,47 @@ export class CompanySearchService {
     return {
       ...results,
       companies: filteredCompanies,
+    };
+  }
+
+  private static filterResultsByDataSources(
+    results: SearchResults,
+    selectedSources: string[]
+  ): SearchResults {
+    if (!selectedSources.length) {
+      return { ...results, companies: [], count: 0, hasMore: false };
+    }
+
+    if (selectedSources.length === 1 && selectedSources[0] === 'supabase') {
+      return results;
+    }
+
+    const includeSupabase = selectedSources.includes('supabase');
+    const allowedSources = new Set(selectedSources);
+    if (includeSupabase) {
+      return {
+        ...results,
+        companies: results.companies,
+        count: typeof results.count === 'number' ? results.count : results.companies.length,
+        hasMore: results.hasMore,
+      };
+    }
+
+    const filteredCompanies = results.companies.filter(company => {
+      const source = company.data_source || null;
+      if (source === null || source === 'supabase' || source === 'sample') {
+        return false;
+      }
+      return allowedSources.has(source);
+    });
+
+    const totalCount = typeof results.count === 'number' ? results.count : filteredCompanies.length;
+
+    return {
+      ...results,
+      companies: filteredCompanies,
+      count: totalCount,
+      hasMore: results.hasMore && filteredCompanies.length > 0,
     };
   }
 
@@ -648,8 +707,9 @@ export class CompanySearchService {
   static async searchMultipleExternalSources(
     query: string,
     filters: CompanySearchFilters,
-    dataSources: string[]
-  ): Promise<void> {
+    dataSources: string[],
+    maxResults: number = 20
+  ): Promise<{ googleNextPageToken?: string }> {
     try {
       console.log('Searching external sources:', dataSources);
       
@@ -657,7 +717,9 @@ export class CompanySearchService {
         body: {
           query,
           dataSources,
-          filters
+          filters,
+          maxResults,
+          pageTokens: filters.externalPageTokens
         }
       });
 
@@ -667,6 +729,9 @@ export class CompanySearchService {
       }
 
       console.log('External search completed:', data);
+      return {
+        googleNextPageToken: data?.nextPageTokens?.google_places,
+      };
     } catch (error) {
       console.error('Failed to search external sources:', error);
       throw error;
@@ -683,7 +748,7 @@ export class CompanySearchService {
         body: {
           query: 'test',
           dataSources: [sourceName],
-          test: true
+          testConnection: true
         }
       });
 
@@ -692,7 +757,7 @@ export class CompanySearchService {
         return false;
       }
 
-      return data?.success || false;
+      return data?.connectionTest || false;
     } catch (error) {
       console.error(`Connection test failed for ${sourceName}:`, error);
       return false;

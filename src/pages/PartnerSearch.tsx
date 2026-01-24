@@ -15,7 +15,6 @@ import { CompanySearchService, CompanySearchFilters } from "@/utils/CompanySearc
 import { DataSourceSelector } from "@/components/DataSourceSelector";
 import { ContactAccessPrompt } from "@/components/ContactAccessPrompt";
 import { useUserRole } from "@/hooks/useUserRole";
-import { supabase } from "@/integrations/supabase/client";
 
 interface Company {
   id: string;
@@ -44,24 +43,46 @@ const PartnerSearch = () => {
     industry: 'all',
     location: 'all-regions',
     companySize: 'all',
-    locationPlaceId: undefined,
   });
   const [isSearching, setIsSearching] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [websiteUrls, setWebsiteUrls] = useState('');
   const [showScrapeDialog, setShowScrapeDialog] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedDataSources, setSelectedDataSources] = useState<string[]>(['google_places', 'opencorporates']);
+  const [selectedDataSources, setSelectedDataSources] = useState<string[]>(['supabase', 'google_places', 'opencorporates']);
   const [showDataSourceSelector, setShowDataSourceSelector] = useState(false);
   const [showInquiryDialog, setShowInquiryDialog] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [inquiryMessage, setInquiryMessage] = useState("");
-  const [locationQuery, setLocationQuery] = useState("");
-  const [locationSuggestions, setLocationSuggestions] = useState<any[]>([]);
-  const [isLocationLoading, setIsLocationLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
   const { isPremium, isAdmin } = useUserRole();
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 12;
+  const [googleNextPageTokens, setGoogleNextPageTokens] = useState<Record<number, string>>({});
+
+  const sortByQueryRelevance = (items: Company[], query: string) => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return items;
+
+    const getScore = (company: Company) => {
+      const name = company.name?.toLowerCase() || "";
+      if (!name) return 0;
+      if (name === normalizedQuery) return 400;
+      if (name.startsWith(normalizedQuery)) return 300;
+      const index = name.indexOf(normalizedQuery);
+      if (index >= 0) return 200 - Math.min(index, 50);
+      return 0;
+    };
+
+    return [...items].sort((a, b) => {
+      const scoreDiff = getScore(b) - getScore(a);
+      if (scoreDiff !== 0) return scoreDiff;
+      if (a.verified !== b.verified) return a.verified ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+  };
 
   const industries = [
     "製造業", "技術", "物流", "貿易", "金融", "ファッション", "テキスタイル", "自動車", "ソフトウェア"
@@ -86,60 +107,11 @@ const PartnerSearch = () => {
         industry: 'all',
         location: 'all-regions',
         companySize: 'all',
-        locationPlaceId: undefined,
       });
     }
   }, []);
 
-  useEffect(() => {
-    if (!locationQuery || locationQuery.trim().length < 2) {
-      setLocationSuggestions([]);
-      return;
-    }
-
-    const handler = setTimeout(async () => {
-      try {
-        setIsLocationLoading(true);
-        const { data, error } = await supabase.functions.invoke('google-places-autocomplete', {
-          body: {
-            input: locationQuery,
-            language: 'ja'
-          }
-        });
-        if (!error && data?.predictions) {
-          setLocationSuggestions(data.predictions);
-        }
-      } catch (error) {
-        console.error('Location autocomplete error:', error);
-      } finally {
-        setIsLocationLoading(false);
-      }
-    }, 300);
-
-    return () => clearTimeout(handler);
-  }, [locationQuery]);
-
-  const handleSelectLocation = (prediction: any) => {
-    setFilters(prev => ({
-      ...prev,
-      location: prediction.description,
-      locationPlaceId: prediction.place_id,
-    }));
-    setLocationQuery(prediction.description);
-    setLocationSuggestions([]);
-  };
-
-  const clearSelectedLocation = () => {
-    setFilters(prev => ({
-      ...prev,
-      location: 'all-regions',
-      locationPlaceId: undefined,
-    }));
-    setLocationQuery("");
-    setLocationSuggestions([]);
-  };
-
-  const searchCompanies = async () => {
+  const searchCompanies = async (nextPage: number = 0, showToast = true) => {
     // Allow search with just filters, no keyword required
     setIsSearching(true);
     setLoading(true);
@@ -152,25 +124,39 @@ const PartnerSearch = () => {
         location: filters.location === "all-regions" ? undefined : filters.location || undefined,
         companySize: filters.companySize === "all" ? undefined : filters.companySize || undefined,
         dataSources: selectedDataSources,
-        locationPlaceId: filters.locationPlaceId,
+        externalPageTokens: googleNextPageTokens[nextPage]
+          ? { google_places: googleNextPageTokens[nextPage] }
+          : undefined,
       };
       
       console.log('Processed filters:', searchFilters);
       
       const results = await CompanySearchService.searchCompanies(
         searchQuery || "", // Allow empty search query
-        searchFilters
+        searchFilters,
+        nextPage,
+        pageSize
       );
 
       console.log('Search results:', results.companies);
       console.log('First company:', results.companies[0]);
       console.log('About to set companies. Current filters:', filters);
-      setCompanies(results.companies);
+      const sortedCompanies = sortByQueryRelevance(results.companies, searchQuery);
+      setCompanies(sortedCompanies);
       setTotalCount(results.count);
-      toast({
-        title: "検索完了",
-        description: `${results.companies.length}件の企業が見つかりました（${selectedDataSources.length}データソース使用）。${results.count > results.companies.length ? `（全${results.count}件中）` : ''}`,
-      });
+      setPage(nextPage);
+      let computedTotalPages = Math.max(1, Math.ceil(results.count / pageSize));
+      if (results.externalNextPageToken) {
+        setGoogleNextPageTokens(prev => ({ ...prev, [nextPage + 1]: results.externalNextPageToken! }));
+        computedTotalPages = Math.max(computedTotalPages, nextPage + 2);
+      }
+      setTotalPages(computedTotalPages);
+      if (showToast) {
+        toast({
+          title: "検索完了",
+          description: `全${results.count}件の企業が見つかりました（${selectedDataSources.length}件のデータソース）。`,
+        });
+      }
     } catch (error: any) {
       console.error('Search error:', error);
       toast({
@@ -184,6 +170,32 @@ const PartnerSearch = () => {
       setShowFilters(false);
       setShowDataSourceSelector(false);
     }
+  };
+
+  const handlePageChange = async (nextPage: number) => {
+    if (loading) return;
+    if (nextPage === page) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    await searchCompanies(nextPage, false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const getPageItems = (currentPage: number, pageCount: number) => {
+    if (pageCount <= 5) {
+      return Array.from({ length: pageCount }, (_, index) => index);
+    }
+
+    const lastPage = pageCount - 1;
+    if (currentPage <= 2) {
+      return [0, 1, 2, 3, lastPage];
+    }
+    if (currentPage >= lastPage - 2) {
+      return [0, lastPage - 3, lastPage - 2, lastPage - 1, lastPage];
+    }
+
+    return [0, currentPage - 1, currentPage, currentPage + 1, lastPage];
   };
 
   const openInquiryDialog = (company: Company) => {
@@ -362,13 +374,16 @@ const PartnerSearch = () => {
             />
           </div>
           <div className="flex flex-wrap lg:flex-nowrap gap-2 w-full lg:flex-[2] lg:justify-end">
-            <Button onClick={searchCompanies} disabled={loading} className="w-full sm:w-auto">
+            <Button onClick={() => searchCompanies(0, true)} disabled={loading} className="w-full sm:w-auto">
               <Search className="w-4 h-4 mr-2" />
               {isSearching ? "検索中..." : "検索"}
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => setShowFilters(!showFilters)}
+              onClick={() => {
+                setShowFilters(prev => !prev);
+                setShowDataSourceSelector(false);
+              }}
               className="w-full sm:w-auto"
             >
               <Filter className="w-4 h-4 mr-2" />
@@ -376,7 +391,10 @@ const PartnerSearch = () => {
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => setShowDataSourceSelector(!showDataSourceSelector)}
+              onClick={() => {
+                setShowDataSourceSelector(prev => !prev);
+                setShowFilters(false);
+              }}
               className="w-full sm:w-auto"
             >
               <Globe className="w-4 h-4 mr-2" />
@@ -478,8 +496,8 @@ const PartnerSearch = () => {
                 <div>
                   <label className="text-sm font-medium mb-2 block">地域・エリア</label>
                     <Select
-                      value={filters.location || "all-regions"} 
-                      onValueChange={(value) => setFilters(prev => ({ ...prev, location: value, locationPlaceId: undefined }))}
+                    value={filters.location || "all-regions"} 
+                    onValueChange={(value) => setFilters(prev => ({ ...prev, location: value }))}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="地域を選択" />
@@ -519,47 +537,6 @@ const PartnerSearch = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                    <div className="space-y-2 mt-4">
-                      <label className="text-sm font-medium text-muted-foreground flex justify-between items-center">
-                        Googleロケーション検索
-                        {filters.locationPlaceId && (
-                          <button
-                            type="button"
-                            onClick={clearSelectedLocation}
-                            className="text-xs text-primary hover:underline"
-                          >
-                            クリア
-                          </button>
-                        )}
-                      </label>
-                      <div className="relative">
-                        <Input
-                          placeholder="都市やランドマークを検索"
-                          value={locationQuery}
-                          onChange={(e) => {
-                            setLocationQuery(e.target.value);
-                            setFilters(prev => ({ ...prev, locationPlaceId: undefined }));
-                          }}
-                        />
-                        {locationSuggestions.length > 0 && (
-                          <div className="absolute z-20 mt-1 w-full rounded-md border bg-background shadow">
-                            {locationSuggestions.map((prediction) => (
-                              <button
-                                type="button"
-                                key={prediction.place_id}
-                                className="w-full text-left px-3 py-2 hover:bg-muted text-sm"
-                                onClick={() => handleSelectLocation(prediction)}
-                              >
-                                {prediction.description}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                        {isLocationLoading && (
-                          <p className="text-xs text-muted-foreground mt-1">候補を取得しています...</p>
-                        )}
-                      </div>
-                    </div>
                   </div>
 
                 </div>
@@ -567,7 +544,7 @@ const PartnerSearch = () => {
                 {/* Filter Actions */}
                 <div className="flex gap-2 pt-4 border-t">
                   <Button 
-                    onClick={searchCompanies} 
+                    onClick={() => searchCompanies(0, true)} 
                     className="flex-1"
                     disabled={loading}
                   >
@@ -581,11 +558,11 @@ const PartnerSearch = () => {
                         industry: 'all', 
                         location: 'all-regions', 
                         companySize: 'all',
-                        locationPlaceId: undefined,
                       });
                       setSearchQuery('');
-                      setLocationQuery('');
-                      setLocationSuggestions([]);
+                      setPage(0);
+                      setTotalPages(1);
+                      setGoogleNextPageTokens({});
                     }}
                   >
                     リセット
@@ -654,9 +631,9 @@ const PartnerSearch = () => {
         )}
 
         {/* Results */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {companies.map((company) => (
-            <Card key={company.id} className="hover:shadow-glow transition-all duration-300">
+            <Card key={company.id} className="hover:shadow-glow transition-all duration-300 h-full flex flex-col">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <CardTitle className="text-lg font-bold flex items-center gap-2">
@@ -689,93 +666,95 @@ const PartnerSearch = () => {
                 )}
               </CardHeader>
               
-              <CardContent>
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                  {company.description}
-                </p>
-                
-                <div className="space-y-3">
-                  <div>
-                    <h4 className="font-semibold text-sm mb-1">業界</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {company.industry.slice(0, 3).map((ind, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {ind}
-                        </Badge>
-                      ))}
-                      {company.verified && (
-                        <Badge variant="default" className="text-xs">
-                          認証済み
-                        </Badge>
-                      )}
-                      <Badge variant="outline" className="text-xs">
-                        {getDataSourceLabel(company.data_source)}
-                      </Badge>
-                    </div>
-                  </div>
+              <CardContent className="flex-1 flex flex-col">
+                <div className="flex-1">
+                  <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
+                    {company.description}
+                  </p>
                   
-                  {company.specialties.length > 0 && (
+                  <div className="space-y-3">
                     <div>
-                      <h4 className="font-semibold text-sm mb-1">専門分野</h4>
+                      <h4 className="font-semibold text-sm mb-1">業界</h4>
                       <div className="flex flex-wrap gap-1">
-                        {company.specialties.slice(0, 3).map((spec, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {spec}
+                        {company.industry.slice(0, 3).map((ind, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {ind}
                           </Badge>
                         ))}
+                        {company.verified && (
+                          <Badge variant="default" className="text-xs">
+                            認証済み
+                          </Badge>
+                        )}
+                        <Badge variant="outline" className="text-xs">
+                          {getDataSourceLabel(company.data_source)}
+                        </Badge>
                       </div>
                     </div>
-                  )}
-                  
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    <span>{companySizes.find(s => s.value === company.company_size)?.label}</span>
+                    
+                    {company.specialties.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-sm mb-1">専門分野</h4>
+                        <div className="flex flex-wrap gap-1">
+                          {company.specialties.slice(0, 3).map((spec, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {spec}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Users className="h-4 w-4" />
+                      <span>{companySizes.find(s => s.value === company.company_size)?.label}</span>
+                    </div>
+                    
+                    {/* Contact Information - Show based on access control */}
+                    {(company.contact_email || company.phone) && !company._contact_restricted && (
+                      <div className="space-y-2 pt-2 border-t border-muted/50">
+                        <h4 className="font-semibold text-sm">連絡先</h4>
+                        {company.contact_email && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Mail className="h-4 w-4" />
+                            <a href={`mailto:${company.contact_email}`} className="hover:text-primary">
+                              {company.contact_email}
+                            </a>
+                          </div>
+                        )}
+                        {company.phone && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Phone className="h-4 w-4" />
+                            <a href={`tel:${company.phone}`} className="hover:text-primary">
+                              {company.phone}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                   
-                  {/* Contact Information - Show based on access control */}
-                  {(company.contact_email || company.phone) && !company._contact_restricted && (
-                    <div className="space-y-2 pt-2 border-t border-muted/50">
-                      <h4 className="font-semibold text-sm">連絡先</h4>
-                      {company.contact_email && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Mail className="h-4 w-4" />
-                          <a href={`mailto:${company.contact_email}`} className="hover:text-primary">
-                            {company.contact_email}
-                          </a>
-                        </div>
-                      )}
-                      {company.phone && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Phone className="h-4 w-4" />
-                          <a href={`tel:${company.phone}`} className="hover:text-primary">
-                            {company.phone}
-                          </a>
-                        </div>
-                      )}
-                    </div>
+                  {/* Show access prompt if contact info is restricted */}
+                  {company._contact_restricted && (
+                    <ContactAccessPrompt 
+                      companyName={getDisplayName(company)}
+                      companyId={company.id}
+                      onUpgrade={() => {
+                        // Navigate to pricing section
+                        const pricingSection = document.getElementById('pricing');
+                        if (pricingSection) {
+                          pricingSection.scrollIntoView({ behavior: 'smooth' });
+                        } else {
+                          // If pricing section not on current page, navigate to home page with pricing section
+                          window.location.href = '/ja#pricing';
+                        }
+                      }}
+                      onMakeInquiry={() => openInquiryDialog(company)}
+                    />
                   )}
                 </div>
                 
-                {/* Show access prompt if contact info is restricted */}
-                {company._contact_restricted && (
-                  <ContactAccessPrompt 
-                    companyName={getDisplayName(company)}
-                    companyId={company.id}
-                    onUpgrade={() => {
-                      // Navigate to pricing section
-                      const pricingSection = document.getElementById('pricing');
-                      if (pricingSection) {
-                        pricingSection.scrollIntoView({ behavior: 'smooth' });
-                      } else {
-                        // If pricing section not on current page, navigate to home page with pricing section
-                        window.location.href = '/ja#pricing';
-                      }
-                    }}
-                    onMakeInquiry={() => openInquiryDialog(company)}
-                  />
-                )}
-                
-                <div className="flex gap-2 mt-4">
+                <div className="flex gap-2 mt-auto pt-4">
                   <Button
                     variant="outline"
                     size="sm"
@@ -800,6 +779,46 @@ const PartnerSearch = () => {
             </Card>
           ))}
         </div>
+
+        {totalPages > 1 && (
+          <div className="mt-8 flex justify-center">
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(Math.max(0, page - 1))}
+                disabled={loading || page === 0}
+              >
+                前へ
+              </Button>
+              {getPageItems(page, totalPages).map((pageIndex, index, items) => {
+                const prevPage = index > 0 ? items[index - 1] : null;
+                const showEllipsis = prevPage !== null && pageIndex - prevPage > 1;
+                return (
+                  <div key={`page-${pageIndex}`} className="flex items-center gap-2">
+                    {showEllipsis && <span className="px-1 text-muted-foreground">…</span>}
+                    <Button
+                      variant={page === pageIndex ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handlePageChange(pageIndex)}
+                      disabled={loading}
+                    >
+                      {pageIndex + 1}
+                    </Button>
+                  </div>
+                );
+              })}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(Math.min(totalPages - 1, page + 1))}
+                disabled={loading || page >= totalPages - 1}
+              >
+                次へ
+              </Button>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Partnership Inquiry Dialog */}

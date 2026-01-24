@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,6 @@ import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/th/Navigation";
 import Footer from "@/components/th/Footer";
 import { CompanySearchService, CompanySearchFilters } from "@/utils/CompanySearchService";
-import { supabase } from "@/integrations/supabase/client";
 import { DataSourceSelector } from "@/components/DataSourceSelector";
 
 interface Company {
@@ -37,20 +36,42 @@ const PartnerSearch = () => {
     industry: 'all',
     location: 'all-regions',
     companySize: 'all',
-    locationPlaceId: undefined,
   });
   const [isSearching, setIsSearching] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [websiteUrls, setWebsiteUrls] = useState('');
   const [showScrapeDialog, setShowScrapeDialog] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedDataSources, setSelectedDataSources] = useState<string[]>(['google_places', 'opencorporates']);
+  const [selectedDataSources, setSelectedDataSources] = useState<string[]>(['supabase', 'google_places', 'opencorporates']);
   const [showDataSourceSelector, setShowDataSourceSelector] = useState(false);
-  const [locationQuery, setLocationQuery] = useState("");
-  const [locationSuggestions, setLocationSuggestions] = useState<any[]>([]);
-  const [isLocationLoading, setIsLocationLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 12;
+  const [googleNextPageTokens, setGoogleNextPageTokens] = useState<Record<number, string>>({});
+
+  const sortByQueryRelevance = (items: Company[], query: string) => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return items;
+
+    const getScore = (company: Company) => {
+      const name = company.name?.toLowerCase() || "";
+      if (!name) return 0;
+      if (name === normalizedQuery) return 400;
+      if (name.startsWith(normalizedQuery)) return 300;
+      const index = name.indexOf(normalizedQuery);
+      if (index >= 0) return 200 - Math.min(index, 50);
+      return 0;
+    };
+
+    return [...items].sort((a, b) => {
+      const scoreDiff = getScore(b) - getScore(a);
+      if (scoreDiff !== 0) return scoreDiff;
+      if (a.verified !== b.verified) return a.verified ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+  };
 
   const companySizes = [
     { value: "micro", label: "ไมโคร (1-9 พนักงาน)" },
@@ -59,55 +80,8 @@ const PartnerSearch = () => {
     { value: "large", label: "ใหญ่ (250+ พนักงาน)" }
   ];
 
-  useEffect(() => {
-    if (!locationQuery || locationQuery.trim().length < 2) {
-      setLocationSuggestions([]);
-      return;
-    }
 
-    const handler = setTimeout(async () => {
-      try {
-        setIsLocationLoading(true);
-        const { data, error } = await supabase.functions.invoke('google-places-autocomplete', {
-          body: {
-            input: locationQuery,
-            language: 'th'
-          }
-        });
-        if (!error && data?.predictions) {
-          setLocationSuggestions(data.predictions);
-        }
-      } catch (error) {
-        console.error('Location autocomplete error:', error);
-      } finally {
-        setIsLocationLoading(false);
-      }
-    }, 300);
-
-    return () => clearTimeout(handler);
-  }, [locationQuery]);
-
-  const handleSelectLocation = (prediction: any) => {
-    setFilters(prev => ({
-      ...prev,
-      location: prediction.description,
-      locationPlaceId: prediction.place_id,
-    }));
-    setLocationQuery(prediction.description);
-    setLocationSuggestions([]);
-  };
-
-  const clearSelectedLocation = () => {
-    setFilters(prev => ({
-      ...prev,
-      location: 'all-regions',
-      locationPlaceId: undefined,
-    }));
-    setLocationQuery("");
-    setLocationSuggestions([]);
-  };
-
-  const searchCompanies = async () => {
+  const searchCompanies = async (nextPage: number = 0, showToast = true) => {
     setIsSearching(true);
     setLoading(true);
     try {
@@ -116,17 +90,34 @@ const PartnerSearch = () => {
         location: filters.location && filters.location !== 'all-regions' ? filters.location : undefined,
         companySize: filters.companySize && filters.companySize !== 'all' ? filters.companySize : undefined,
         dataSources: selectedDataSources,
-        locationPlaceId: filters.locationPlaceId,
+        externalPageTokens: googleNextPageTokens[nextPage]
+          ? { google_places: googleNextPageTokens[nextPage] }
+          : undefined,
       };
       
-      const results = await CompanySearchService.searchCompanies(searchQuery || "", searchFilters);
+      const results = await CompanySearchService.searchCompanies(
+        searchQuery || "",
+        searchFilters,
+        nextPage,
+        pageSize
+      );
 
-      setCompanies(results.companies);
+      const sortedCompanies = sortByQueryRelevance(results.companies, searchQuery);
+      setCompanies(sortedCompanies);
       setTotalCount(results.count);
-      toast({
-        title: "ค้นหาเสร็จสิ้น",
-        description: `พบ ${results.companies.length} บริษัทจาก ${selectedDataSources.length} แหล่งข้อมูล`,
-      });
+      setPage(nextPage);
+      let computedTotalPages = Math.max(1, Math.ceil(results.count / pageSize));
+      if (results.externalNextPageToken) {
+        setGoogleNextPageTokens(prev => ({ ...prev, [nextPage + 1]: results.externalNextPageToken! }));
+        computedTotalPages = Math.max(computedTotalPages, nextPage + 2);
+      }
+      setTotalPages(computedTotalPages);
+      if (showToast) {
+        toast({
+          title: "ค้นหาเสร็จสิ้น",
+          description: `พบทั้งหมด ${results.count} บริษัท (${selectedDataSources.length} แหล่งข้อมูล)`,
+        });
+      }
     } catch (error: any) {
       console.error('Search error:', error);
       toast({
@@ -140,6 +131,32 @@ const PartnerSearch = () => {
       setShowFilters(false);
       setShowDataSourceSelector(false);
     }
+  };
+
+  const handlePageChange = async (nextPage: number) => {
+    if (loading) return;
+    if (nextPage === page) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    await searchCompanies(nextPage, false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const getPageItems = (currentPage: number, pageCount: number) => {
+    if (pageCount <= 5) {
+      return Array.from({ length: pageCount }, (_, index) => index);
+    }
+
+    const lastPage = pageCount - 1;
+    if (currentPage <= 2) {
+      return [0, 1, 2, 3, lastPage];
+    }
+    if (currentPage >= lastPage - 2) {
+      return [0, lastPage - 3, lastPage - 2, lastPage - 1, lastPage];
+    }
+
+    return [0, currentPage - 1, currentPage, currentPage + 1, lastPage];
   };
 
   const getDisplayName = (company: Company) => {
@@ -190,13 +207,16 @@ const PartnerSearch = () => {
             />
           </div>
           <div className="flex flex-wrap lg:flex-nowrap gap-2 w-full lg:flex-[2] lg:justify-end">
-            <Button onClick={searchCompanies} disabled={loading} className="w-full sm:w-auto">
+            <Button onClick={() => searchCompanies(0, true)} disabled={loading} className="w-full sm:w-auto">
               <Search className="w-4 h-4 mr-2" />
               {isSearching ? "กำลังค้นหา..." : "ค้นหา"}
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => setShowFilters(!showFilters)}
+              onClick={() => {
+                setShowFilters(prev => !prev);
+                setShowDataSourceSelector(false);
+              }}
               className="w-full sm:w-auto"
             >
               <Filter className="w-4 h-4 mr-2" />
@@ -204,7 +224,10 @@ const PartnerSearch = () => {
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => setShowDataSourceSelector(!showDataSourceSelector)}
+              onClick={() => {
+                setShowDataSourceSelector(prev => !prev);
+                setShowFilters(false);
+              }}
               className="w-full sm:w-auto"
             >
               <Globe className="w-4 h-4 mr-2" />
@@ -286,7 +309,7 @@ const PartnerSearch = () => {
                   <label className="text-sm font-medium mb-2 block">ภูมิภาค</label>
                   <Select 
                     value={filters.location || "all-regions"} 
-                    onValueChange={(value) => setFilters(prev => ({ ...prev, location: value, locationPlaceId: undefined }))}
+                    onValueChange={(value) => setFilters(prev => ({ ...prev, location: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="เลือกภูมิภาค" />
@@ -301,47 +324,6 @@ const PartnerSearch = () => {
                       <SelectItem value="usa">🇺🇸 สหรัฐอเมริกา</SelectItem>
                     </SelectContent>
                   </Select>
-                  <div className="space-y-2 mt-4">
-                    <label className="text-sm font-medium text-muted-foreground flex justify-between items-center">
-                      ค้นหาตำแหน่งด้วย Google
-                      {filters.locationPlaceId && (
-                        <button
-                          type="button"
-                          className="text-xs text-primary hover:underline"
-                          onClick={clearSelectedLocation}
-                        >
-                          เคลียร์
-                        </button>
-                      )}
-                    </label>
-                    <div className="relative">
-                      <Input
-                        placeholder="ค้นหาเมืองหรือแลนด์มาร์ก"
-                        value={locationQuery}
-                        onChange={(e) => {
-                          setLocationQuery(e.target.value);
-                          setFilters(prev => ({ ...prev, locationPlaceId: undefined }));
-                        }}
-                      />
-                      {locationSuggestions.length > 0 && (
-                        <div className="absolute z-20 mt-1 w-full rounded-md border bg-background shadow">
-                          {locationSuggestions.map((prediction) => (
-                            <button
-                              type="button"
-                              key={prediction.place_id}
-                              className="w-full text-left px-3 py-2 hover:bg-muted text-sm"
-                              onClick={() => handleSelectLocation(prediction)}
-                            >
-                              {prediction.description}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                      {isLocationLoading && (
-                        <p className="text-xs text-muted-foreground mt-1">กำลังดึงคำแนะนำ...</p>
-                      )}
-                    </div>
-                  </div>
                 </div>
 
                 <div>
@@ -366,15 +348,16 @@ const PartnerSearch = () => {
               </div>
 
               <div className="flex gap-2 pt-4 border-t mt-4">
-                <Button onClick={searchCompanies} disabled={loading}>
+                <Button onClick={() => searchCompanies(0, true)} disabled={loading}>
                   ใช้ตัวกรอง
                 </Button>
                 <Button 
                   variant="outline"
                   onClick={() => {
-                    setFilters({ industry: 'all', location: 'all-regions', companySize: 'all', locationPlaceId: undefined });
-                    setLocationQuery("");
-                    setLocationSuggestions([]);
+                    setFilters({ industry: 'all', location: 'all-regions', companySize: 'all' });
+                    setPage(0);
+                    setTotalPages(1);
+                    setGoogleNextPageTokens({});
                   }}
                 >
                   ล้างตัวกรอง
@@ -393,9 +376,9 @@ const PartnerSearch = () => {
           </div>
         )}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {companies.map((company) => (
-            <Card key={company.id} className="hover:shadow-lg transition-shadow">
+            <Card key={company.id} className="hover:shadow-lg transition-shadow h-full flex flex-col">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-lg">{getDisplayName(company)}</CardTitle>
@@ -408,7 +391,8 @@ const PartnerSearch = () => {
                   {company.location_city}, {company.location_country}
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-1 flex flex-col">
+                <div className="flex-1">
                 <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
                   {company.description}
                 </p>
@@ -419,7 +403,8 @@ const PartnerSearch = () => {
                     </Badge>
                   ))}
                 </div>
-                <div className="flex items-center justify-between">
+                </div>
+                <div className="flex items-center justify-between mt-auto pt-4">
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
                     <Building className="h-4 w-4" />
                     {company.company_size}
@@ -440,6 +425,46 @@ const PartnerSearch = () => {
             </Card>
           ))}
         </div>
+
+        {totalPages > 1 && (
+          <div className="mt-8 flex justify-center">
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(Math.max(0, page - 1))}
+                disabled={loading || page === 0}
+              >
+                ก่อนหน้า
+              </Button>
+              {getPageItems(page, totalPages).map((pageIndex, index, items) => {
+                const prevPage = index > 0 ? items[index - 1] : null;
+                const showEllipsis = prevPage !== null && pageIndex - prevPage > 1;
+                return (
+                  <div key={`page-${pageIndex}`} className="flex items-center gap-2">
+                    {showEllipsis && <span className="px-1 text-muted-foreground">…</span>}
+                    <Button
+                      variant={page === pageIndex ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handlePageChange(pageIndex)}
+                      disabled={loading}
+                    >
+                      {pageIndex + 1}
+                    </Button>
+                  </div>
+                );
+              })}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(Math.min(totalPages - 1, page + 1))}
+                disabled={loading || page >= totalPages - 1}
+              >
+                ถัดไป
+              </Button>
+            </div>
+          </div>
+        )}
 
         {companies.length === 0 && !loading && (
           <div className="text-center py-12">

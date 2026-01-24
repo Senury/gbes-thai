@@ -112,6 +112,103 @@ Working document that tracks the functional problems surfaced so far plus the ag
 - **Fix Implemented**: Shifted the desktop navigation to start at `lg` so the mobile menu takes over earlier, preventing overflow in all locales (`src/components/Navigation.tsx`, `src/components/en/Navigation.tsx`, `src/components/th/Navigation.tsx`).
 - **Status**: ✅ done.
 
+## 21. Hero CTA Buttons Did Nothing
+- **Symptom**: The primary/secondary hero buttons in JA/EN/TH were styled but lacked navigation, so “Register/ลงทะเบียน/今すぐ登録” and “Learn More/サービス詳細/เรียนรู้เพิ่มเติม” had no effect.
+- **Fix Implemented**: Wired the primary CTA to each locale’s signup route and the secondary CTA to smooth-scroll to the `#services` section (`src/components/Hero.tsx`, `src/components/en/Hero.tsx`, `src/components/th/Hero.tsx`).
+- **Status**: ✅ done.
+
+## 22. Filter + Data Source Panels Overlapped
+- **Symptom**: Opening the filter panel and data source selector stacked them on top of each other instead of switching, obscuring controls.
+- **Fix Implemented**: Toggled the panels to be mutually exclusive so opening one closes the other in all locales (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
+## 23. Supabase-Only Search Returned No Results
+- **Symptom**: Selecting only the Supabase data source and running an empty search (to list all saved companies) returned nothing because data-source filtering excluded records tagged with external origins stored in the same database.
+- **Fix Implemented**: When Supabase is the sole selected source, the data-source filter now returns all database results instead of filtering by `data_source` (`src/utils/CompanySearchService.ts`).
+- **Status**: ✅ done.
+
+## 24. Data Source Test Button Always Failed
+- **Symptom**: The data source panel’s “Test” button always reported failure because the client sent `test: true` and expected `data.success`, while the Edge function expects `testConnection` and returns `{ connectionTest: boolean }`.
+- **Fix Implemented**: Updated the client to send `testConnection: true` and read `data.connectionTest` (`src/utils/CompanySearchService.ts`).
+- **Status**: ✅ done.
+
+## 25. EN Partner Search Filters Syntax Error
+- **Symptom**: The English Partner Search page failed to compile due to a stray wrapper `<div>` left behind after removing Google location search, causing a JSX parsing error.
+- **Fix Implemented**: Removed the empty `<div>` so the filter panel markup is valid again (`src/pages/en/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
+## 26. Partner Search Pagination Limited to First 20 Results
+- **Symptom**: Partner Search only displayed the first page of results with no way to navigate through pages.
+- **Fix Implemented**: Added numbered pagination controls (Prev/Next + page numbers) that fetch the requested page in JA/EN/TH (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
+## 27. Google Places Results Stopped After First Page
+- **Symptom**: Only the first 20 Google Places results were fetched; later pages only paged through database records.
+- **Fix Implemented**: Added Google Places `next_page_token` support in the Edge function and client so page 2/3 can fetch additional Google results before paging the database (`supabase/functions/search-companies/index.ts`, `src/utils/CompanySearchService.ts`, `src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
+## 28. Pagination UI Hidden When Only External Pages Available
+- **Symptom**: Numbered pagination stayed hidden when only Google Places had more pages because total count was based on current DB results.
+- **Fix Implemented**: When Google Places returns a `next_page_token`, the UI now advertises the next page even if the DB count is still at 20, so page buttons appear for external pagination (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
+## 29. Partner Search Page Size Too Small
+- **Symptom**: Searches only pulled 20 results per page, so pagination wouldn’t appear unless there were many DB rows.
+- **Fix Implemented**: Increased page size to 40 and passed that limit through to external search requests so each page loads more companies consistently (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`, `src/utils/CompanySearchService.ts`).
+- **Status**: ✅ done (reverted to 20 per client request for clearer pagination).
+
+## 30. Pagination Hidden When Count Was Overwritten
+- **Symptom**: Pagination buttons never appeared because data-source filtering overwrote the total count with only the current page length.
+- **Fix Implemented**: Preserve the database count when filtering by data source so pagination can show page numbers (`src/utils/CompanySearchService.ts`).
+- **Status**: ✅ done.
+
+## 31. Pagination Triggered Toasts and Didn’t Reset Scroll
+- **Symptom**: Switching pages fired the “search complete” toast every time and left the user scrolled mid-page, making pagination feel noisy.
+- **Fix Implemented**: Suppressed toasts on page changes and scroll to top on pagination in JA/EN/TH (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
+## 32. Partner Search Results Not Sorted by Query Similarity
+- **Symptom**: Searches did not prioritize companies whose names start with the query, making short queries like "to" feel unordered.
+- **Fix Implemented**: Added a relevance sort that prioritizes exact matches, then prefix matches, then substring matches (plus verified/name tiebreakers) across all locales (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
+
+
+## 33. Pagination Scroll/Ellipsis Improvements
+- **Symptom**: Clicking the current page number didn’t scroll back to the top, and large page counts showed every button instead of using ellipses.
+- **Fix Implemented**: Always scroll to top on pagination clicks and added condensed page buttons with `…` when there are more than five pages in JA/EN/TH (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
+## 34. Card Content Alignment
+- **Symptom**: Card content heights varied, causing misaligned footers and inconsistent horizontal alignment between cards.
+- **Fix Implemented**: Made cards full-height with flex layouts and pushed footer actions to the bottom so card contents align consistently across JA/EN/TH (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
+## 35. Region Filter Returned Zero Results
+- **Symptom**: Region filtering returned no results because the default data sources excluded Supabase, so only external APIs (which can be empty/unavailable) were queried.
+- **Fix Implemented**: Included Supabase in the default selected data sources across locales so region filters return existing DB records (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
+## 36. Supabase Results Missing When Combined With Other Sources
+- **Symptom**: Selecting Supabase alongside other data sources only showed external results because Supabase filtering excluded records tagged with external `data_source` values that are still stored in the DB.
+- **Fix Implemented**: Treat Supabase selection as “show all DB rows,” so combining it with other sources no longer hides stored records (`src/utils/CompanySearchService.ts`).
+- **Status**: ✅ done.
+
+## 37. Data Source Test Buttons Failed for OpenCorporates/Companies House
+- **Symptom**: The “Test” button failed for OpenCorporates and Companies House due to missing auth handling (Companies House requires Basic auth, and OpenCorporates can use an API token).
+- **Fix Implemented**: Added optional `OPENCORPORATES_API_KEY` and `COMPANIES_HOUSE_API_KEY` handling and proper auth for Companies House during connection tests (`supabase/functions/search-companies/index.ts`).
+- **Status**: ✅ done.
+
+## 38. Partner Search Page Size Set to 12
+- **Symptom**: The client requested fewer cards per page for easier scanning.
+- **Fix Implemented**: Updated Partner Search pagination to display 12 results per page across JA/EN/TH (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
+## 39. Pagination Ellipsis Layout Refined
+- **Symptom**: Ellipsis-based pagination looked awkward with uneven spacing.
+- **Fix Implemented**: Switched to a fixed 5-slot pagination model (first, last, and neighbors of current) so ellipses render predictably (`src/pages/PartnerSearch.tsx`, `src/pages/en/PartnerSearch.tsx`, `src/pages/th/PartnerSearch.tsx`).
+- **Status**: ✅ done.
+
 ## Notes on Scope / Next Steps
 - This doc can expand as we knock out the client’s requested fixes + small features. Each entry should capture the symptom, impacted files, decision on approach, and validation steps so progress is easy to share back.
 - Partner Search deep-dive findings (pending action):
