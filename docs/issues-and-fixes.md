@@ -239,7 +239,7 @@ Working document that tracks the functional problems surfaced so far plus the ag
   - ✅ Role-gated contact info works by masking `contact_email/phone` per company via `CompanySearchService.filterContactInformation` and showing `ContactAccessPrompt`.
   - ⚠️ `ContactAccessPrompt`’s “Upgrade” button always scrolls to `/ja#pricing`, even from `/en` or `/th`, so non-Japanese users get bounced to the wrong locale.
   - ⚠️ “Search” allows empty keywords, but `search-companies` Edge function rejects blank queries without filters, leading to confusing “Search Error” toasts.
-  - ⚠️ `DataSourceSelector` test button never succeeds because client/server disagree on the test flag and response shape.
+  - ✅ DataSourceSelector test button now succeeds by aligning the test flag and response payload.
   - ⚠️ `CompanySearchService.searchMultipleExternalSources` doesn’t enforce a minimum keyword; calling it with `''` still triggers remote APIs that may reject the request or return irrelevant data.
-  - ⚠️ `CompanySearchService.scrapeCompanyWebsites` allows non-logged-in users to attempt scrapes; consider gating behind auth to prevent anonymous abuse.
+  - ✅ Scrape requests now require auth on both client and edge function to prevent anonymous abuse.
 - Google Places autocomplete: `google-places-autocomplete` returns `REQUEST_DENIED` until billing is enabled on the Google Cloud project tied to `GOOGLE_PLACES_API_KEY`, so location suggestions won’t appear without billing.

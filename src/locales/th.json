@@ -446,6 +446,8 @@
       "searchErrorDescription": "เกิดข้อผิดพลาดระหว่างการค้นหา",
       "loginRequiredTitle": "จำเป็นต้องเข้าสู่ระบบ",
       "loginRequiredDescription": "โปรดเข้าสู่ระบบเพื่อส่งคำถามความร่วมมือ",
+      "scrapeLoginRequiredTitle": "จำเป็นต้องเข้าสู่ระบบ",
+      "scrapeLoginRequiredDescription": "โปรดเข้าสู่ระบบเพื่อดึงข้อมูลบริษัทจากเว็บไซต์",
       "validationErrorTitle": "ข้อผิดพลาด",
       "validationErrorDescription": "โปรดกรอกข้อความ",
       "inquirySentTitle": "ส่งข้อความสำเร็จ",

@@ -774,6 +774,13 @@ export class CompanySearchService {
     }
   ): Promise<any> {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        const error = new Error('Authentication required');
+        console.error('Website scraping error:', error);
+        throw error;
+      }
+
       const { data, error } = await supabase.functions.invoke('scrape-company-data', {
         body: {
           urls,

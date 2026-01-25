@@ -299,6 +299,14 @@ const PartnerSearch = () => {
       setShowScrapeDialog(false);
     } catch (error: any) {
       console.error('Scraping error:', error);
+      if (error?.message === 'Authentication required') {
+        toast({
+          title: t("partnerSearch.toasts.scrapeLoginRequiredTitle"),
+          description: t("partnerSearch.toasts.scrapeLoginRequiredDescription"),
+          variant: "destructive",
+        });
+        return;
+      }
       toast({
         title: t("partnerSearch.toasts.scrapeErrorTitle"),
         description: t("partnerSearch.toasts.scrapeErrorDescription"),
@@ -344,6 +352,14 @@ const PartnerSearch = () => {
       }
     } catch (error: any) {
       console.error('Scrape confirm error:', error);
+      if (error?.message === 'Authentication required') {
+        toast({
+          title: t("partnerSearch.toasts.scrapeLoginRequiredTitle"),
+          description: t("partnerSearch.toasts.scrapeLoginRequiredDescription"),
+          variant: "destructive",
+        });
+        return;
+      }
       toast({
         title: t("partnerSearch.toasts.scrapeErrorTitle"),
         description: t("partnerSearch.toasts.scrapeErrorDescription"),

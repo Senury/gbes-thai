@@ -446,6 +446,8 @@
       "searchErrorDescription": "An error occurred while searching.",
       "loginRequiredTitle": "Login Required",
       "loginRequiredDescription": "Please log in to send partnership inquiries",
+      "scrapeLoginRequiredTitle": "Login Required",
+      "scrapeLoginRequiredDescription": "Please log in to scrape company websites.",
       "validationErrorTitle": "Error",
       "validationErrorDescription": "Please enter a message",
       "inquirySentTitle": "Inquiry Sent",

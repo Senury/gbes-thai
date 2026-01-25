@@ -446,6 +446,8 @@
       "searchErrorDescription": "検索中にエラーが発生しました。",
       "loginRequiredTitle": "ログインが必要です",
       "loginRequiredDescription": "お問い合わせにはログインが必要です",
+      "scrapeLoginRequiredTitle": "ログインが必要です",
+      "scrapeLoginRequiredDescription": "企業データの取得にはログインが必要です",
       "validationErrorTitle": "エラー",
       "validationErrorDescription": "メッセージを入力してください",
       "inquirySentTitle": "お問い合わせ送信完了",
