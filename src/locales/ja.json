@@ -709,5 +709,27 @@
     "checkoutError": "チェックアウトの作成に失敗しました",
     "manageAuthRequired": "サブスクリプション管理にはログインが必要です",
     "portalError": "カスタマーポータルの開設に失敗しました"
+  },
+  "subscriptionPage": {
+    "title": "サブスクリプション管理",
+    "subtitle": "現在のプランと請求情報を確認できます。",
+    "refresh": "更新",
+    "statusLabel": "ステータス:",
+    "statusActive": "アクティブ",
+    "statusInactive": "未契約",
+    "planLabel": "プラン:",
+    "priceLabel": "料金:",
+    "renewalLabel": "次回更新日:",
+    "manageButton": "ポータルを開く",
+    "changeButton": "プランを変更する",
+    "cancelButton": "サブスクリプションを解約する",
+    "portalHint": "請求ポータルへ移動します。",
+    "featuresTitle": "プランの内容",
+    "noFeatures": "プラン内容がありません。",
+    "noRenewal": "更新日はありません。"
+  },
+  "notFound": {
+    "title": "ページが見つかりませんでした",
+    "cta": "ホームに戻る"
   }
 }

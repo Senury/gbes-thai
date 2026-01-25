@@ -709,5 +709,27 @@
     "checkoutError": "Failed to create checkout",
     "manageAuthRequired": "Please log in to manage your subscription",
     "portalError": "Failed to open customer portal"
+  },
+  "subscriptionPage": {
+    "title": "Subscription Management",
+    "subtitle": "View your plan and manage billing details.",
+    "refresh": "Refresh",
+    "statusLabel": "Status:",
+    "statusActive": "Active",
+    "statusInactive": "Not Subscribed",
+    "planLabel": "Plan:",
+    "priceLabel": "Price:",
+    "renewalLabel": "Next Renewal:",
+    "manageButton": "Open customer portal",
+    "changeButton": "Change plan",
+    "cancelButton": "Cancel subscription",
+    "portalHint": "You will be redirected to the billing portal.",
+    "featuresTitle": "Plan features",
+    "noFeatures": "No plan features available.",
+    "noRenewal": "No renewal date available."
+  },
+  "notFound": {
+    "title": "Oops! Page not found",
+    "cta": "Return to Home"
   }
 }

@@ -43,7 +43,7 @@ export function DashboardLayout({ children, language = 'en' }: DashboardLayoutPr
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full bg-muted/20">
         <AppSidebar language={language} />
         
         <div className="flex-1 flex flex-col">
@@ -57,7 +57,7 @@ export function DashboardLayout({ children, language = 'en' }: DashboardLayoutPr
             </div>
           </header>
           
-          <main className="flex-1 p-6 md:p-8 bg-muted/20">
+          <main className="flex-1 p-6 md:p-8">
             {children}
           </main>
         </div>

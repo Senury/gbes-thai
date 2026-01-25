@@ -6,6 +6,7 @@ import {
   LogOut,
   Shield,
   BarChart3,
+  CreditCard,
   ArrowLeft
 } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -55,6 +56,11 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
       title: getText("Profile", "プロフィール", "โปรไฟล์"), 
       url: `/${language}/profile`, 
       icon: User 
+    },
+    {
+      title: getText("Subscription", "サブスクリプション", "การสมัครสมาชิก"),
+      url: `/${language}/subscription`,
+      icon: CreditCard,
     },
   ];
 

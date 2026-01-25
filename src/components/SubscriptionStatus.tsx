@@ -7,9 +7,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { format } from "date-fns";
 import { ja, enUS, th as thLocale } from "date-fns/locale";
+import { getPlanDetails } from "@/utils/servicePlans";
+import { useNavigate } from "react-router-dom";
 
 interface SubscriptionStatusProps {
   language?: 'ja' | 'en' | 'th';
+  planOverride?: string | null;
 }
 
 const translations = {
@@ -57,10 +60,11 @@ const localeMap = {
   th: thLocale,
 };
 
-const SubscriptionStatus = ({ language = 'ja' }: SubscriptionStatusProps) => {
+const SubscriptionStatus = ({ language = 'ja', planOverride }: SubscriptionStatusProps) => {
   const { user } = useAuth();
   const { subscription, loading, checkSubscription, openCustomerPortal } = useSubscription();
   const { hasSubscription, subscriptionTier } = useUserRole();
+  const navigate = useNavigate();
   const t = translations[language] ?? translations.ja;
   const locale = localeMap[language] ?? ja;
   const localePrefix = language === 'ja' ? 'ja' : language === 'th' ? 'th' : 'en';
@@ -69,8 +73,11 @@ const SubscriptionStatus = ({ language = 'ja' }: SubscriptionStatusProps) => {
     return null;
   }
 
-  const isSubscribed = subscription.subscribed || hasSubscription;
-  const activeTier = subscription.subscription_tier || subscriptionTier;
+  const hasOverridePlan = Boolean(planOverride);
+  const isSubscribed = subscription.subscribed || hasSubscription || hasOverridePlan;
+  const activeTier = planOverride || subscription.subscription_tier || subscriptionTier;
+  const planKey = activeTier;
+  const planLabel = planKey ? getPlanDetails(planKey, language).name : '-';
 
   const getStatusVariant = () => {
     if (isSubscribed) return "default";
@@ -118,7 +125,7 @@ const SubscriptionStatus = ({ language = 'ja' }: SubscriptionStatusProps) => {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">{t.planLabel}</span>
               <span className="text-sm font-semibold">
-                {activeTier || '-'}
+                {planLabel}
               </span>
             </div>
             
@@ -138,7 +145,7 @@ const SubscriptionStatus = ({ language = 'ja' }: SubscriptionStatusProps) => {
             <Button
               variant="outline"
               className="w-full"
-              onClick={openCustomerPortal}
+              onClick={() => navigate(`/${localePrefix}/subscription`)}
             >
               <Settings className="h-4 w-4 mr-2" />
               {t.manage}

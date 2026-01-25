@@ -709,5 +709,27 @@
     "checkoutError": "ไม่สามารถสร้างการชำระเงินได้",
     "manageAuthRequired": "โปรดเข้าสู่ระบบเพื่อจัดการการสมัครสมาชิก",
     "portalError": "ไม่สามารถเปิดพอร์ทัลลูกค้าได้"
+  },
+  "subscriptionPage": {
+    "title": "จัดการการสมัครสมาชิก",
+    "subtitle": "ดูแพ็กเกจและจัดการข้อมูลการชำระเงิน",
+    "refresh": "รีเฟรช",
+    "statusLabel": "สถานะ:",
+    "statusActive": "ใช้งานอยู่",
+    "statusInactive": "ยังไม่ได้สมัคร",
+    "planLabel": "แพ็กเกจ:",
+    "priceLabel": "ราคา:",
+    "renewalLabel": "รอบบิลถัดไป:",
+    "manageButton": "เปิดพอร์ทัลการชำระเงิน",
+    "changeButton": "เปลี่ยนแพ็กเกจ",
+    "cancelButton": "ยกเลิกการสมัครสมาชิก",
+    "portalHint": "ระบบจะพาคุณไปยังพอร์ทัลการชำระเงิน",
+    "featuresTitle": "ฟีเจอร์ของแพ็กเกจ",
+    "noFeatures": "ไม่มีรายละเอียดแพ็กเกจ",
+    "noRenewal": "ไม่มีวันต่ออายุ"
+  },
+  "notFound": {
+    "title": "ไม่พบหน้านี้",
+    "cta": "กลับหน้าแรก"
   }
 }

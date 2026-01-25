@@ -752,7 +752,7 @@ const PartnerSearch = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
+                  <div className="md:col-span-2">
                     <label className="text-sm font-medium mb-2 block">{t("partnerSearch.companySizeLabel")}</label>
                     <Select 
                       value={filters.companySize || "all"} 

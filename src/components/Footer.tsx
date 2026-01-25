@@ -4,6 +4,16 @@ import { useTranslation } from "react-i18next";
 
 const Footer = () => {
   const { t, i18n } = useTranslation();
+  const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
+  const handleAnchorClick = (event: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    event.preventDefault();
+    const target = document.getElementById(targetId);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.location.href = `/${localePrefix}#${targetId}`;
+    }
+  };
 
   return (
     <footer className="bg-section-surface border-t border-border">
@@ -36,30 +46,119 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-foreground mb-4">{t("footer.product")}</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.services")}</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.pricing")}</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.api")}</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.documentation")}</a></li>
+              <li>
+                <a
+                  href={`/${localePrefix}#services`}
+                  onClick={(event) => handleAnchorClick(event, "services")}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.services")}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`/${localePrefix}#pricing`}
+                  onClick={(event) => handleAnchorClick(event, "pricing")}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.pricing")}
+                </a>
+              </li>
+              <li>
+                <Link
+                  to={`/${localePrefix}/social`}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.api")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={`/${localePrefix}/partner-search`}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.documentation")}
+                </Link>
+              </li>
             </ul>
           </div>
 
           <div>
             <h3 className="font-semibold text-foreground mb-4">{t("footer.company")}</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.about")}</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.news")}</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.careers")}</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.contact")}</a></li>
+              <li>
+                <a
+                  href={`/${localePrefix}#mission`}
+                  onClick={(event) => handleAnchorClick(event, "mission")}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.about")}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`/${localePrefix}#partners`}
+                  onClick={(event) => handleAnchorClick(event, "partners")}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.news")}
+                </a>
+              </li>
+              <li>
+                <Link
+                  to={`/${localePrefix}/register`}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.careers")}
+                </Link>
+              </li>
+              <li>
+                <a
+                  href={`/${localePrefix}#contact`}
+                  onClick={(event) => handleAnchorClick(event, "contact")}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.contact")}
+                </a>
+              </li>
             </ul>
           </div>
 
           <div>
             <h3 className="font-semibold text-foreground mb-4">{t("footer.support")}</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.helpCenter")}</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.status")}</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.terms")}</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">{t("footer.links.privacy")}</a></li>
+              <li>
+                <Link
+                  to={`/${localePrefix}/login`}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.helpCenter")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={`/${localePrefix}/dashboard`}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.status")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={`/${localePrefix}/register`}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.terms")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={`/${localePrefix}/register`}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("footer.links.privacy")}
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

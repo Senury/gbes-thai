@@ -9,6 +9,14 @@ Working document that tracks the functional problems surfaced so far plus the ag
   - Optional OpenAI enrichment pass added (guarded by `OPENAI_API_KEY` and UI toggle) to fill missing/weak fields without overwriting strong heuristics (`supabase/functions/scrape-company-data/index.ts`, `src/pages/PartnerSearch.tsx`, `src/utils/CompanySearchService.ts`).
 - **Status**: ✅ done (requires edge function redeploy; use “Rescrape & replace” to overwrite old records).
 
+## 37. Subscription Management Page
+- **Symptom**: The subscription status panel linked to the billing portal directly and there was no dedicated dashboard page to review plan details or manage actions. Users couldn’t see plan features in-context.
+- **Fix Implemented**:
+  - Added a dedicated dashboard page at `/{locale}/subscription` with current plan, price, renewal date, and features, plus Manage/Change/Cancel actions (`src/pages/Subscription.tsx`, `src/pages/en/Subscription.tsx`, `src/pages/th/Subscription.tsx`).
+  - Updated the subscription status card’s “Manage” button to route to the new page instead of jumping directly to the portal (`src/components/SubscriptionStatus.tsx`).
+  - Added a sidebar link under Profile and localized subscription page copy in all locales (`src/components/AppSidebar.tsx`, `src/locales/en.json`, `src/locales/ja.json`, `src/locales/th.json`).
+- **Status**: ✅ done.
+
 ## 1. Partner Search Allows Blank Queries but Backend Rejects Them
 - **Symptom**: `PartnerSearch` (all locales) sends `CompanySearchService.searchCompanies(searchQuery || "")`, but the Edge function refuses empty queries when filters are `"all"` and silently throws. Users see the generic “検索エラー/ข้อผิดพลาดในการค้นหา/Search error” toast despite the UI claiming blank searches are valid.
 - **Fix Implemented**:

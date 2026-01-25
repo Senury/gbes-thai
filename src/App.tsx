@@ -19,6 +19,9 @@ import ThaiSignup from "./pages/th/Signup";
 import Dashboard from "./pages/Dashboard";
 import EnglishDashboard from "./pages/en/Dashboard";
 import ThaiDashboard from "./pages/th/Dashboard";
+import Subscription from "./pages/Subscription";
+import EnglishSubscription from "./pages/en/Subscription";
+import ThaiSubscription from "./pages/th/Subscription";
 import AdminPanel from "./pages/AdminPanel";
 import EnglishAdminPanel from "./pages/en/AdminPanel";
 import ThaiAdminPanel from "./pages/th/AdminPanel";
@@ -62,6 +65,7 @@ const App = () => (
           <Route path="/dashboard" element={<Navigate to={`/${detectLanguage()}/dashboard`} replace />} />
           <Route path="/ja" element={<Japanese />} />
           <Route path="/ja/dashboard" element={<Dashboard />} />
+          <Route path="/ja/subscription" element={<Subscription />} />
           <Route path="/ja/admin" element={<AdminPanel />} />
           <Route path="/ja/profile" element={<Profile />} />
           <Route path="/ja/social-media" element={<SocialMediaAutomation />} />
@@ -71,6 +75,7 @@ const App = () => (
           <Route path="/ja/signup" element={<Signup />} />
           <Route path="/en" element={<English />} />
           <Route path="/en/dashboard" element={<EnglishDashboard />} />
+          <Route path="/en/subscription" element={<EnglishSubscription />} />
           <Route path="/en/admin" element={<EnglishAdminPanel />} />
           <Route path="/en/profile" element={<EnglishProfile />} />
           <Route path="/en/social-media" element={<EnglishSocialMediaAutomation />} />
@@ -80,6 +85,7 @@ const App = () => (
           <Route path="/en/signup" element={<EnglishSignup />} />
           <Route path="/th" element={<Thai />} />
           <Route path="/th/dashboard" element={<ThaiDashboard />} />
+          <Route path="/th/subscription" element={<ThaiSubscription />} />
           <Route path="/th/admin" element={<ThaiAdminPanel />} />
           <Route path="/th/login" element={<ThaiLogin />} />
           <Route path="/th/signup" element={<ThaiSignup />} />

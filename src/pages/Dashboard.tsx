@@ -79,7 +79,7 @@ export default function Dashboard() {
         </div>
 
         {/* Subscription Status */}
-        <SubscriptionStatus language={localePrefix} />
+        <SubscriptionStatus language={localePrefix} planOverride={registration?.service} />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
