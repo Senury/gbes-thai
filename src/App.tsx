@@ -37,6 +37,9 @@ import NotFound from "./pages/NotFound";
 import PartnerSearch from "./pages/PartnerSearch";
 import EnglishPartnerSearch from "./pages/en/PartnerSearch";
 import ThaiPartnerSearch from "./pages/th/PartnerSearch";
+import BusinessChat from "./pages/BusinessChat";
+import EnglishBusinessChat from "./pages/en/BusinessChat";
+import ThaiBusinessChat from "./pages/th/BusinessChat";
 import { AuthProvider } from "@/hooks/useAuth";
 import LocaleSync from "@/components/LocaleSync";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -70,6 +73,7 @@ const App = () => (
           <Route path="/ja/profile" element={<Profile />} />
           <Route path="/ja/social-media" element={<SocialMediaAutomation />} />
           <Route path="/ja/partner-search" element={<PartnerSearch />} />
+          <Route path="/ja/messages" element={<BusinessChat />} />
           <Route path="/ja/register" element={<Register />} />
           <Route path="/ja/login" element={<Login />} />
           <Route path="/ja/signup" element={<Signup />} />
@@ -80,6 +84,7 @@ const App = () => (
           <Route path="/en/profile" element={<EnglishProfile />} />
           <Route path="/en/social-media" element={<EnglishSocialMediaAutomation />} />
           <Route path="/en/partner-search" element={<EnglishPartnerSearch />} />
+          <Route path="/en/messages" element={<EnglishBusinessChat />} />
           <Route path="/en/register" element={<EnglishRegister />} />
           <Route path="/en/login" element={<EnglishLogin />} />
           <Route path="/en/signup" element={<EnglishSignup />} />
@@ -93,6 +98,7 @@ const App = () => (
           <Route path="/th/profile" element={<ThaiProfile />} />
           <Route path="/th/social-media" element={<ThaiSocialMediaAutomation />} />
           <Route path="/th/partner-search" element={<ThaiPartnerSearch />} />
+          <Route path="/th/messages" element={<ThaiBusinessChat />} />
           <Route path="/index" element={<Index />} />
           <Route path="/email-test" element={<EmailTest />} />
           <Route path="/simple-email-test" element={<SimpleEmailTest />} />

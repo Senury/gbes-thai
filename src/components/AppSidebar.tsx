@@ -3,6 +3,7 @@ import {
   User, 
   Users, 
   FileText, 
+  MessageCircle,
   LogOut,
   Shield,
   BarChart3,
@@ -61,6 +62,11 @@ export function AppSidebar({ language = 'en' }: AppSidebarProps) {
       title: getText("Subscription", "サブスクリプション", "การสมัครสมาชิก"),
       url: `/${language}/subscription`,
       icon: CreditCard,
+    },
+    {
+      title: getText("Messages", "メッセージ", "ข้อความ"),
+      url: `/${language}/messages`,
+      icon: MessageCircle,
     },
   ];
 

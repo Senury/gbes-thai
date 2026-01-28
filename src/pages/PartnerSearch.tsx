@@ -17,6 +17,7 @@ import { DataSourceSelector } from "@/components/DataSourceSelector";
 import { ContactAccessPrompt } from "@/components/ContactAccessPrompt";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import PageShell from "@/components/PageShell";
 
 interface Company {
@@ -69,6 +70,7 @@ const PartnerSearch = () => {
   const [inquiryMessage, setInquiryMessage] = useState("");
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { isPremium, isAdmin } = useUserRole();
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -99,6 +101,18 @@ const PartnerSearch = () => {
 
   const industries = t("partnerSearch.industries", { returnObjects: true }) as Array<{ value: string; label: string }>;
   const companySizes = t("partnerSearch.companySizes", { returnObjects: true }) as Array<{ value: string; label: string }>;
+  const handlePrimaryAction = (company: Company) => {
+    if (company.verified) {
+      toast({
+        title: t("partnerSearch.chatToastTitle"),
+        description: t("partnerSearch.chatToastDescription", { company: getDisplayName(company) }),
+      });
+      navigate(`/${localePrefix}/messages`);
+      return;
+    }
+
+    openInquiryDialog(company);
+  };
 
   // Add defensive error boundary for the component
   useEffect(() => {
@@ -1020,12 +1034,12 @@ const PartnerSearch = () => {
                 
                 <div className="flex flex-col sm:flex-row gap-2 mt-auto pt-4">
                   <Button
-                    variant="outline"
+                    variant={company.verified ? "cta" : "outline"}
                     size="sm"
                     className="flex-1"
-                    onClick={() => openInquiryDialog(company)}
+                    onClick={() => handlePrimaryAction(company)}
                   >
-                    {t("partnerSearch.contactAction")}
+                    {company.verified ? t("partnerSearch.chatAction") : t("partnerSearch.contactAction")}
                   </Button>
                   {company.website_url && (
                     <Button
