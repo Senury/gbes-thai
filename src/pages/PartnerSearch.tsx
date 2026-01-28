@@ -19,6 +19,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import PageShell from "@/components/PageShell";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Company {
   id: string;
@@ -32,6 +33,7 @@ interface Company {
   website_url: string;
   verified: boolean;
   data_source: string;
+  user_id?: string | null;
   contact_email?: string | null;
   phone?: string | null;
   _contact_restricted?: boolean;
@@ -101,14 +103,81 @@ const PartnerSearch = () => {
 
   const industries = t("partnerSearch.industries", { returnObjects: true }) as Array<{ value: string; label: string }>;
   const companySizes = t("partnerSearch.companySizes", { returnObjects: true }) as Array<{ value: string; label: string }>;
-  const handlePrimaryAction = (company: Company) => {
+  const handlePrimaryAction = async (company: Company) => {
     if (company.verified) {
-      toast({
-        title: t("partnerSearch.chatToastTitle"),
-        description: t("partnerSearch.chatToastDescription", { company: getDisplayName(company) }),
-      });
-      navigate(`/${localePrefix}/messages`);
-      return;
+      if (!user) {
+        toast({
+          title: t("partnerSearch.chatAuthRequiredTitle"),
+          description: t("partnerSearch.chatAuthRequiredDescription"),
+        });
+        navigate(`/${localePrefix}/login`);
+        return;
+      }
+
+      const linkedUserId = company.user_id ?? null;
+
+      if (!linkedUserId && !company.contact_email) {
+        toast({
+          title: t("partnerSearch.chatUnavailableTitle"),
+          description: t("partnerSearch.chatUnavailableDescription"),
+        });
+        openInquiryDialog(company);
+        return;
+      }
+
+      try {
+        let targetUserId = linkedUserId;
+
+        if (!targetUserId && company.contact_email) {
+          const { data: profile, error: profileError } = await supabase
+            .from("profiles")
+            .select("user_id, email")
+            .eq("email", company.contact_email)
+            .maybeSingle();
+
+          if (profileError) throw profileError;
+          targetUserId = profile?.user_id ?? null;
+        }
+
+        if (!targetUserId) {
+          toast({
+            title: t("partnerSearch.chatUnavailableTitle"),
+            description: t("partnerSearch.chatUnavailableDescription"),
+          });
+          openInquiryDialog(company);
+          return;
+        }
+
+        if (targetUserId === user.id) {
+          toast({
+            title: t("partnerSearch.chatSelfTitle"),
+            description: t("partnerSearch.chatSelfDescription"),
+          });
+          return;
+        }
+
+        const { data: conversationId, error: conversationError } = await supabase.rpc(
+          "create_direct_conversation",
+          { other_user: targetUserId }
+        );
+
+        if (conversationError) throw conversationError;
+
+        toast({
+          title: t("partnerSearch.chatToastTitle"),
+          description: t("partnerSearch.chatToastDescription", { company: getDisplayName(company) }),
+        });
+        navigate(`/${localePrefix}/messages?conversation=${conversationId}`);
+        return;
+      } catch (error) {
+        console.error("Failed to start chat:", error);
+        toast({
+          title: t("partnerSearch.chatErrorTitle"),
+          description: t("partnerSearch.chatErrorDescription"),
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     openInquiryDialog(company);

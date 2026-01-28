@@ -31,6 +31,7 @@ export type Database = {
           phone: string | null
           specialties: string[]
           updated_at: string
+          user_id: string | null
           verified: boolean
           website_url: string | null
         }
@@ -50,6 +51,7 @@ export type Database = {
           phone?: string | null
           specialties?: string[]
           updated_at?: string
+          user_id?: string | null
           verified?: boolean
           website_url?: string | null
         }
@@ -69,10 +71,108 @@ export type Database = {
           phone?: string | null
           specialties?: string[]
           updated_at?: string
+          user_id?: string | null
           verified?: boolean
           website_url?: string | null
         }
         Relationships: []
+      }
+      conversation_members: {
+        Row: {
+          conversation_id: string
+          joined_at: string
+          last_read_at: string | null
+          last_typing_at: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          joined_at?: string
+          last_read_at?: string | null
+          last_typing_at?: string | null
+          role?: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          joined_at?: string
+          last_read_at?: string | null
+          last_typing_at?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_members_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          created_by: string
+          direct_key: string
+          id: string
+          is_direct: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          direct_key: string
+          id?: string
+          is_direct?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          direct_key?: string
+          id?: string
+          is_direct?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          body: string
+          conversation_id: string
+          created_at: string
+          edited_at: string | null
+          id: string
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          conversation_id: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       partnership_inquiries: {
         Row: {
@@ -256,6 +356,14 @@ export type Database = {
         Args: { _user_id: string; company_uuid: string }
         Returns: boolean
       }
+      create_direct_conversation: {
+        Args: { other_user: string }
+        Returns: string
+      }
+      direct_conversation_key: {
+        Args: { user_a: string; user_b: string }
+        Returns: string
+      }
       get_user_role_level: { Args: { _user_id: string }; Returns: number }
       get_user_subscription_info: {
         Args: { _user_id: string }
@@ -272,6 +380,14 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      mark_conversation_read: {
+        Args: { p_conversation_id: string }
+        Returns: undefined
+      }
+      set_typing_status: {
+        Args: { p_conversation_id: string; p_is_typing: boolean }
+        Returns: undefined
       }
       user_has_company_access: {
         Args: { company_uuid: string }

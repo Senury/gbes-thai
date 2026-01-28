@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,9 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import {
   Building2,
   Calendar,
@@ -46,19 +49,22 @@ import {
   Video,
 } from "lucide-react";
 
-type Conversation = {
+type ConversationMember = Database["public"]["Tables"]["conversation_members"]["Row"];
+type MessageRow = Database["public"]["Tables"]["messages"]["Row"];
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+
+type ConversationListItem = {
   id: string;
   company: string;
   contact: string;
-  role: string;
-  location: string;
-  lastMessage: string;
-  time: string;
-  unread: number;
-  tags: string[];
-  status: "active" | "offline" | "typing";
-  matchScore: string;
-  rating: string;
+  role?: string | null;
+  location?: string | null;
+  lastMessage?: MessageRow | null;
+  unreadCount: number;
+  otherMember?: ConversationMember | null;
+  selfMember?: ConversationMember | null;
+  profile?: ProfileRow | null;
+  updatedAt: string;
 };
 
 type ChatMessage = {
@@ -69,205 +75,480 @@ type ChatMessage = {
   status?: "sent" | "read" | "pending";
 };
 
-const conversations: Conversation[] = [
-  {
-    id: "kyoto-robotics",
-    company: "Kyoto Robotics",
-    contact: "Aiko Tanaka",
-    role: "Head of Partnerships",
-    location: "Osaka, JP",
-    lastMessage: "We can allocate 500 units for Q2 with priority shipping.",
-    time: "2m",
-    unread: 2,
-    tags: ["Automation", "OEM"],
-    status: "typing",
-    matchScore: "96%",
-    rating: "4.9",
-  },
-  {
-    id: "siam-logistics",
-    company: "Siam Logistics",
-    contact: "Nattapong R.",
-    role: "BD Director",
-    location: "Bangkok, TH",
-    lastMessage: "Could you share your preferred Incoterms?",
-    time: "1h",
-    unread: 0,
-    tags: ["Freight", "SEA"],
-    status: "active",
-    matchScore: "92%",
-    rating: "4.7",
-  },
-  {
-    id: "luna-packaging",
-    company: "Luna Packaging",
-    contact: "Marisol V.",
-    role: "Sales Lead",
-    location: "Monterrey, MX",
-    lastMessage: "Our eco line meets EU standards, ready to quote.",
-    time: "4h",
-    unread: 1,
-    tags: ["Packaging", "Eco"],
-    status: "offline",
-    matchScore: "88%",
-    rating: "4.8",
-  },
-  {
-    id: "northwind",
-    company: "Northwind Components",
-    contact: "Chris Morgan",
-    role: "Supply Manager",
-    location: "Seattle, US",
-    lastMessage: "We reviewed your MOQ and can proceed next week.",
-    time: "Yesterday",
-    unread: 0,
-    tags: ["Electronics", "B2B"],
-    status: "offline",
-    matchScore: "90%",
-    rating: "4.6",
-  },
-];
-
-const conversationMessages: Record<string, ChatMessage[]> = {
-  "kyoto-robotics": [
-    {
-      id: "kr-1",
-      direction: "incoming",
-      body: "Thanks for the detailed spec sheet. We can align on the 3-axis configuration.",
-      time: "09:12",
-    },
-    {
-      id: "kr-2",
-      direction: "outgoing",
-      body: "Great. Could you confirm lead times for the first 250 units?",
-      time: "09:13",
-      status: "read",
-    },
-    {
-      id: "kr-3",
-      direction: "incoming",
-      body: "Standard lead time is 6 weeks. Expedited batches can be 4 weeks with a 6% surcharge.",
-      time: "09:16",
-    },
-    {
-      id: "kr-4",
-      direction: "outgoing",
-      body: "Understood. Please draft a proposal with both timelines and pricing tiers.",
-      time: "09:18",
-      status: "sent",
-    },
-  ],
-  "siam-logistics": [
-    {
-      id: "sl-1",
-      direction: "incoming",
-      body: "We can offer DDP or FOB depending on the shipment size. Which lane are you targeting?",
-      time: "08:34",
-    },
-    {
-      id: "sl-2",
-      direction: "outgoing",
-      body: "Initially Bangkok → Ho Chi Minh, with a monthly volume of 8-10 containers.",
-      time: "08:39",
-      status: "read",
-    },
-  ],
-  "luna-packaging": [
-    {
-      id: "lp-1",
-      direction: "incoming",
-      body: "Happy to share our compliance documents. Do you need FSC or ISO 14001?",
-      time: "06:45",
-    },
-    {
-      id: "lp-2",
-      direction: "outgoing",
-      body: "Both would be ideal. Please include pricing for 50k and 100k units.",
-      time: "06:47",
-      status: "sent",
-    },
-  ],
-  northwind: [
-    {
-      id: "nw-1",
-      direction: "incoming",
-      body: "We are aligned on the MOQ. Can we finalize the service agreement this week?",
-      time: "Yesterday",
-    },
-    {
-      id: "nw-2",
-      direction: "outgoing",
-      body: "Yes, sending the latest draft now.",
-      time: "Yesterday",
-      status: "read",
-    },
-  ],
-};
-
-const conversationDetails = {
-  "kyoto-robotics": {
-    about:
-      "Advanced robotics manufacturer focused on precision assembly lines for electronics and medical devices.",
-    highlights: [
-      "Verified exporter",
-      "ISO 9001 certified",
-      "Ships to 18 countries",
-    ],
-    opportunities: ["Joint distribution", "Custom modules", "After-sales support"],
-    files: [
-      "Pricing_KR_Q2.pdf",
-      "Service_Tiers.xlsx",
-      "Tech_Specs_3Axis.pdf",
-    ],
-  },
-  "siam-logistics": {
-    about:
-      "SEA & air freight partner with dedicated compliance teams for ASEAN corridors.",
-    highlights: ["Customs brokerage", "Cold chain", "24/7 tracking"],
-    opportunities: ["Preferred carrier", "Volume rebates"],
-    files: ["Lane_Rates_2026.pdf", "SLA_Template.docx"],
-  },
-  "luna-packaging": {
-    about: "Sustainable packaging supplier with strong EU and APAC distribution.",
-    highlights: ["Eco line", "Rapid prototyping", "EU compliance"],
-    opportunities: ["Private label", "Bulk discounts"],
-    files: ["Compliance_Report.pdf", "Eco_Line_Catalog.pdf"],
-  },
-  northwind: {
-    about: "Electronics component distributor with nationwide warehouse coverage.",
-    highlights: ["Fast lead times", "Engineering support"],
-    opportunities: ["Exclusive region", "Joint marketing"],
-    files: ["Agreement_Draft.pdf"],
-  },
-};
-
 const statusStyles = {
   active: "bg-emerald-500",
   offline: "bg-slate-400",
   typing: "bg-amber-500",
 };
 
+const typingWindowMs = 8000;
+
+const getShortTime = (timestamp: string | null | undefined, nowLabel: string) => {
+  if (!timestamp) return "";
+  const diffMs = Date.now() - new Date(timestamp).getTime();
+  if (Number.isNaN(diffMs)) return "";
+  const minutes = Math.floor(diffMs / 60000);
+  if (minutes < 1) return nowLabel;
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d`;
+  return new Date(timestamp).toLocaleDateString();
+};
+
+const isTypingActive = (lastTypingAt?: string | null) => {
+  if (!lastTypingAt) return false;
+  return Date.now() - new Date(lastTypingAt).getTime() <= typingWindowMs;
+};
+
 export default function BusinessChat() {
   const { i18n, t } = useTranslation();
   const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const [activeId, setActiveId] = useState(conversations[0]?.id ?? "");
+  const [conversations, setConversations] = useState<ConversationListItem[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [messageRows, setMessageRows] = useState<MessageRow[]>([]);
+  const [messageInput, setMessageInput] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [isLoadingConversations, setIsLoadingConversations] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<number | null>(null);
+  const typingActiveRef = useRef(false);
+  const activeIdRef = useRef<string | null>(null);
+  const userIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    activeIdRef.current = activeId;
+  }, [activeId]);
+
+  useEffect(() => {
+    userIdRef.current = user?.id ?? null;
+  }, [user?.id]);
 
   const activeConversation = useMemo(
-    () => conversations.find((conversation) => conversation.id === activeId),
-    [activeId]
+    () => conversations.find((conversation) => conversation.id === activeId) ?? null,
+    [activeId, conversations]
   );
 
-  const activeMessages = conversationMessages[activeId] ?? [];
-  const activeDetails = conversationDetails[activeId as keyof typeof conversationDetails];
-  const unreadTotal = conversations.reduce((sum, conversation) => sum + conversation.unread, 0);
-  const quickActions = [
-    t("businessChat.quickActions.shareDeck"),
-    t("businessChat.quickActions.requestMoq"),
-    t("businessChat.quickActions.scheduleCall"),
-  ];
+  const activePartner = activeConversation?.profile ?? null;
+  const nowLabel = t("businessChat.now");
+  const requestedConversationId = searchParams.get("conversation");
+
+  const unreadTotal = useMemo(
+    () => conversations.reduce((sum, conversation) => sum + conversation.unreadCount, 0),
+    [conversations]
+  );
+
+  const quickActions = useMemo(
+    () => [
+      t("businessChat.quickActions.shareDeck"),
+      t("businessChat.quickActions.requestMoq"),
+      t("businessChat.quickActions.scheduleCall"),
+    ],
+    [t]
+  );
+
+  const activeMessages = useMemo(() => {
+    const otherReadAt = activeConversation?.otherMember?.last_read_at;
+    return messageRows
+      .slice()
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+      .map((message): ChatMessage => {
+        const isOutgoing = message.sender_id === user?.id;
+        let status: ChatMessage["status"];
+        if (isOutgoing) {
+          status = otherReadAt && new Date(message.created_at) <= new Date(otherReadAt) ? "read" : "sent";
+        }
+        return {
+          id: message.id,
+          direction: isOutgoing ? "outgoing" : "incoming",
+          body: message.body,
+          time: getShortTime(message.created_at, nowLabel),
+          status,
+        };
+      });
+  }, [messageRows, activeConversation?.otherMember?.last_read_at, nowLabel, user?.id]);
+
+  const contactLine = useMemo(() => {
+    if (!activeConversation) return "";
+    if (activeConversation.role) {
+      return `${activeConversation.contact} · ${activeConversation.role}`;
+    }
+    return activeConversation.contact;
+  }, [activeConversation]);
+
+  const partnerSummary = useMemo(() => {
+    if (!activePartner) return "";
+    return [activePartner.company, activePartner.email].filter(Boolean).join(" · ");
+  }, [activePartner]);
+
+  const scrollToBottom = () => {
+    const scrollElement = scrollAreaRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLDivElement | null;
+    if (scrollElement) {
+      scrollElement.scrollTop = scrollElement.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [activeMessages, activeId]);
+
+  const loadConversations = async () => {
+    if (!user) return;
+    setIsLoadingConversations(true);
+    try {
+      const { data: selfMemberships, error: selfError } = await supabase
+        .from("conversation_members")
+        .select("*")
+        .eq("user_id", user.id);
+
+      if (selfError) throw selfError;
+
+      if (!selfMemberships || selfMemberships.length === 0) {
+        setConversations([]);
+        setActiveId(null);
+        setMessageRows([]);
+        return;
+      }
+
+      const conversationIds = selfMemberships.map((member) => member.conversation_id);
+
+      const { data: otherMemberships, error: otherError } = await supabase
+        .from("conversation_members")
+        .select("*")
+        .in("conversation_id", conversationIds)
+        .neq("user_id", user.id);
+
+      if (otherError) throw otherError;
+
+      const otherUserIds = otherMemberships?.map((member) => member.user_id) ?? [];
+
+      const { data: profiles, error: profileError } = await supabase
+        .from("profiles")
+        .select("user_id, first_name, last_name, company, email")
+        .in("user_id", otherUserIds);
+
+      if (profileError) throw profileError;
+
+      const { data: conversationRows, error: conversationError } = await supabase
+        .from("conversations")
+        .select("*")
+        .in("id", conversationIds)
+        .order("updated_at", { ascending: false });
+
+      if (conversationError) throw conversationError;
+
+      const lastMessages = await Promise.all(
+        (conversationRows ?? []).map(async (conversation) => {
+          const { data } = await supabase
+            .from("messages")
+            .select("*")
+            .eq("conversation_id", conversation.id)
+            .order("created_at", { ascending: false })
+            .limit(1);
+
+          return { conversationId: conversation.id, message: data?.[0] ?? null };
+        })
+      );
+
+      const unreadCounts = await Promise.all(
+        (conversationRows ?? []).map(async (conversation) => {
+          const selfMember = selfMemberships.find(
+            (member) => member.conversation_id === conversation.id
+          );
+          let query = supabase
+            .from("messages")
+            .select("id", { count: "exact", head: true })
+            .eq("conversation_id", conversation.id)
+            .neq("sender_id", user.id);
+
+          if (selfMember?.last_read_at) {
+            query = query.gt("created_at", selfMember.last_read_at);
+          }
+
+          const { count } = await query;
+          return { conversationId: conversation.id, count: count ?? 0 };
+        })
+      );
+
+      const lastMessageMap = new Map(
+        lastMessages.map((entry) => [entry.conversationId, entry.message])
+      );
+      const unreadCountMap = new Map(
+        unreadCounts.map((entry) => [entry.conversationId, entry.count])
+      );
+
+      const list = (conversationRows ?? []).map((conversation) => {
+        const otherMember = otherMemberships?.find(
+          (member) => member.conversation_id === conversation.id
+        );
+        const profile = profiles?.find((item) => item.user_id === otherMember?.user_id) ?? null;
+        const contactName = [profile?.first_name, profile?.last_name]
+          .filter(Boolean)
+          .join(" ");
+        const contact = contactName || profile?.email || t("businessChat.partnerFallback");
+        const company = profile?.company || contact;
+
+        return {
+          id: conversation.id,
+          company,
+          contact,
+          role: null,
+          location: null,
+          lastMessage: lastMessageMap.get(conversation.id) ?? null,
+          unreadCount: unreadCountMap.get(conversation.id) ?? 0,
+          otherMember: otherMember ?? null,
+          selfMember: selfMemberships.find(
+            (member) => member.conversation_id === conversation.id
+          ) ?? null,
+          profile,
+          updatedAt: conversation.updated_at,
+        } satisfies ConversationListItem;
+      });
+
+      setConversations(list);
+      setActiveId((current) => {
+        if (requestedConversationId && list.some((item) => item.id === requestedConversationId)) {
+          return requestedConversationId;
+        }
+        if (current && list.some((item) => item.id === current)) {
+          return current;
+        }
+        return list[0]?.id ?? null;
+      });
+    } catch (error) {
+      console.error("Failed to load conversations:", error);
+      toast({
+        title: t("chat.errorTitle"),
+        description: t("chat.errorDescription"),
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingConversations(false);
+    }
+  };
+
+  const loadMessages = async (conversationId: string) => {
+    if (!user) return;
+    setIsLoadingMessages(true);
+    try {
+      const { data, error } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("conversation_id", conversationId)
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+
+      setMessageRows(data ?? []);
+      await supabase.rpc("mark_conversation_read", { p_conversation_id: conversationId });
+      setConversations((prev) =>
+        prev.map((conversation) =>
+          conversation.id === conversationId
+            ? { ...conversation, unreadCount: 0 }
+            : conversation
+        )
+      );
+    } catch (error) {
+      console.error("Failed to load messages:", error);
+      toast({
+        title: t("chat.errorTitle"),
+        description: t("chat.errorDescription"),
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingMessages(false);
+    }
+  };
+
+  const handleIncomingMessage = (message: MessageRow) => {
+    setConversations((prev) =>
+      prev.map((conversation) => {
+        if (conversation.id !== message.conversation_id) return conversation;
+        const isOwnMessage = message.sender_id === userIdRef.current;
+        const isActiveConversation = activeIdRef.current === conversation.id;
+        const incrementUnread = !isOwnMessage && !isActiveConversation;
+        return {
+          ...conversation,
+          lastMessage: message,
+          updatedAt: message.created_at,
+          unreadCount: incrementUnread ? conversation.unreadCount + 1 : conversation.unreadCount,
+        };
+      })
+    );
+
+    if (activeIdRef.current === message.conversation_id) {
+      setMessageRows((prev) => {
+        if (prev.some((item) => item.id === message.id)) return prev;
+        return [...prev, message];
+      });
+
+      if (message.sender_id !== userIdRef.current) {
+        supabase.rpc("mark_conversation_read", { p_conversation_id: message.conversation_id });
+        setConversations((prev) =>
+          prev.map((conversation) =>
+            conversation.id === message.conversation_id
+              ? { ...conversation, unreadCount: 0 }
+              : conversation
+          )
+        );
+      }
+    }
+  };
+
+  const handleMemberUpdate = (member: ConversationMember) => {
+    setConversations((prev) =>
+      prev.map((conversation) => {
+        if (conversation.id !== member.conversation_id) return conversation;
+        if (member.user_id === userIdRef.current) {
+          return { ...conversation, selfMember: member };
+        }
+        return { ...conversation, otherMember: member };
+      })
+    );
+  };
+
+  const handleSendMessage = async () => {
+    if (!messageInput.trim() || !activeId || !user) return;
+
+    setIsSending(true);
+    try {
+      const { error } = await supabase.from("messages").insert({
+        conversation_id: activeId,
+        sender_id: user.id,
+        body: messageInput.trim(),
+      });
+
+      if (error) throw error;
+
+      setMessageInput("");
+      typingActiveRef.current = false;
+      await supabase.rpc("set_typing_status", {
+        p_conversation_id: activeId,
+        p_is_typing: false,
+      });
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      toast({
+        title: t("chat.errorTitle"),
+        description: t("chat.errorDescription"),
+        variant: "destructive",
+      });
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleMessageChange = (value: string) => {
+    setMessageInput(value);
+    if (!activeId) return;
+
+    if (!typingActiveRef.current) {
+      typingActiveRef.current = true;
+      supabase.rpc("set_typing_status", {
+        p_conversation_id: activeId,
+        p_is_typing: true,
+      });
+    }
+
+    if (typingTimeoutRef.current) {
+      window.clearTimeout(typingTimeoutRef.current);
+    }
+
+    typingTimeoutRef.current = window.setTimeout(() => {
+      typingActiveRef.current = false;
+      supabase.rpc("set_typing_status", {
+        p_conversation_id: activeId,
+        p_is_typing: false,
+      });
+    }, 1200);
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    loadConversations();
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!requestedConversationId) return;
+    if (conversations.some((conversation) => conversation.id === requestedConversationId)) {
+      setActiveId(requestedConversationId);
+    }
+  }, [requestedConversationId, conversations]);
+
+  useEffect(() => {
+    if (!activeId) {
+      setMessageRows([]);
+      return;
+    }
+
+    loadMessages(activeId);
+
+    return () => {
+      if (!activeId) return;
+      if (typingTimeoutRef.current) {
+        window.clearTimeout(typingTimeoutRef.current);
+      }
+      typingActiveRef.current = false;
+      supabase.rpc("set_typing_status", {
+        p_conversation_id: activeId,
+        p_is_typing: false,
+      });
+    };
+  }, [activeId]);
+
+  useEffect(() => {
+    if (!user || conversations.length === 0) return;
+
+    const channels = conversations.map((conversation) => {
+      const channel = supabase.channel(`chat-${conversation.id}`);
+      channel.on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `conversation_id=eq.${conversation.id}`,
+        },
+        (payload) => handleIncomingMessage(payload.new as MessageRow)
+      );
+      channel.on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "conversation_members",
+          filter: `conversation_id=eq.${conversation.id}`,
+        },
+        (payload) => handleMemberUpdate(payload.new as ConversationMember)
+      );
+      channel.subscribe();
+      return channel;
+    });
+
+    return () => {
+      channels.forEach((channel) => {
+        supabase.removeChannel(channel);
+      });
+    };
+  }, [conversations, user?.id]);
+
+  const conversationStatus = (conversation: ConversationListItem) => {
+    if (isTypingActive(conversation.otherMember?.last_typing_at)) return "typing";
+    return "active";
+  };
+
+  const highlightItems: string[] = [];
+  const opportunityItems: string[] = [];
+  const sharedFiles: string[] = [];
 
   return (
     <DashboardLayout language={localePrefix}>
@@ -355,6 +636,16 @@ export default function BusinessChat() {
                   <div className="px-4 pb-4 pt-3 flex-1 min-h-0">
                     <ScrollArea className="h-full">
                       <div className="space-y-2 pr-4">
+                        {isLoadingConversations && (
+                          <div className="rounded-xl border border-border bg-background/70 px-3 py-4 text-sm text-muted-foreground">
+                            {t("businessChat.loadingConversations")}
+                          </div>
+                        )}
+                        {!isLoadingConversations && conversations.length === 0 && (
+                          <div className="rounded-xl border border-border bg-background/70 px-3 py-4 text-sm text-muted-foreground">
+                            {t("businessChat.noConversations")}
+                          </div>
+                        )}
                         {conversations.map((conversation) => (
                           <button
                             key={conversation.id}
@@ -377,30 +668,30 @@ export default function BusinessChat() {
                                 <span
                                   className={cn(
                                     "absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background",
-                                    statusStyles[conversation.status]
+                                    statusStyles[conversationStatus(conversation)]
                                   )}
                                 />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between gap-2">
                                   <p className="font-semibold text-sm truncate">{conversation.company}</p>
-                                  <span className="text-xs text-muted-foreground">{conversation.time}</span>
+                                  <span className="text-xs text-muted-foreground">
+                                    {getShortTime(
+                                      conversation.lastMessage?.created_at || conversation.updatedAt,
+                                      nowLabel
+                                    )}
+                                  </span>
                                 </div>
                                 <p className="text-xs text-muted-foreground truncate">
-                                  {conversation.contact} · {conversation.role}
+                                  {conversation.contact}
                                 </p>
                                 <p className="text-sm text-foreground/80 mt-1 line-clamp-2">
-                                  {conversation.lastMessage}
+                                  {conversation.lastMessage?.body || t("businessChat.noMessages")}
                                 </p>
                                 <div className="mt-2 flex flex-wrap items-center gap-2">
-                                  {conversation.tags.map((tag) => (
-                                    <Badge key={tag} variant="secondary" className="bg-secondary/60 text-xs">
-                                      {tag}
-                                    </Badge>
-                                  ))}
-                                  {conversation.unread > 0 && (
+                                  {conversation.unreadCount > 0 && (
                                     <Badge className="bg-primary text-primary-foreground text-xs">
-                                      {t("businessChat.newBadge", { count: conversation.unread })}
+                                      {t("businessChat.newBadge", { count: conversation.unreadCount })}
                                     </Badge>
                                   )}
                                 </div>
@@ -425,9 +716,11 @@ export default function BusinessChat() {
                     </Button>
                     <div className="flex flex-col items-center gap-2">
                       <MessageCircle className="h-5 w-5 text-muted-foreground" />
-                      <Badge className="bg-primary text-primary-foreground text-xs">
-                        {t("businessChat.newBadge", { count: unreadTotal })}
-                      </Badge>
+                      {unreadTotal > 0 && (
+                        <Badge className="bg-primary text-primary-foreground text-xs">
+                          {t("businessChat.newBadge", { count: unreadTotal })}
+                        </Badge>
+                      )}
                     </div>
                     <div className="h-6" />
                   </div>
@@ -440,20 +733,26 @@ export default function BusinessChat() {
                     <div className="flex items-center gap-3">
                       <Avatar className="h-11 w-11">
                         <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                          {activeConversation?.company.slice(0, 2).toUpperCase()}
+                          {(activeConversation?.company || t("businessChat.partnerFallback"))
+                            .slice(0, 2)
+                            .toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <CardTitle className="text-base">{activeConversation?.company}</CardTitle>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          {activeConversation?.contact} · {activeConversation?.role}
-                        </p>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                          <MapPin className="h-3.5 w-3.5" />
-                          {activeConversation?.location}
-                        </p>
+                        <CardTitle className="text-base">
+                          {activeConversation?.company || t("businessChat.partnerFallback")}
+                        </CardTitle>
+                        {contactLine && (
+                          <p className="text-xs text-muted-foreground">
+                            {contactLine}
+                          </p>
+                        )}
+                        {activeConversation?.location && (
+                          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                            <MapPin className="h-3.5 w-3.5" />
+                            {activeConversation.location}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -482,7 +781,7 @@ export default function BusinessChat() {
                                 <div>
                                   <p className="font-semibold text-sm">{t("businessChat.verifiedPartner")}</p>
                                   <p className="text-xs text-muted-foreground">
-                                    {t("businessChat.averageRating", { rating: activeConversation?.rating ?? "--" })}
+                                    {t("businessChat.averageRating", { rating: "--" })}
                                   </p>
                                 </div>
                               </div>
@@ -490,60 +789,66 @@ export default function BusinessChat() {
                               <div className="rounded-2xl border border-border bg-background/80 p-4">
                                 <p className="text-sm text-muted-foreground mb-2">{t("businessChat.about")}</p>
                                 <p className="text-sm leading-relaxed">
-                                  {activeDetails?.about ?? t("businessChat.partnerDetailsFallback")}
+                                  {partnerSummary || t("businessChat.partnerDetailsFallback")}
                                 </p>
                               </div>
 
-                              <div className="space-y-3">
-                                <div className="flex items-center gap-2 text-sm font-semibold">
-                                  <Star className="h-4 w-4 text-primary" />
-                                  {t("businessChat.highlights")}
+                              {highlightItems.length > 0 && (
+                                <div className="space-y-3">
+                                  <div className="flex items-center gap-2 text-sm font-semibold">
+                                    <Star className="h-4 w-4 text-primary" />
+                                    {t("businessChat.highlights")}
+                                  </div>
+                                  <div className="space-y-2">
+                                    {highlightItems.map((item) => (
+                                      <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                                        {item}
+                                      </div>
+                                    ))}
+                                  </div>
                                 </div>
-                                <div className="space-y-2">
-                                  {activeDetails?.highlights?.map((item) => (
-                                    <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
-                                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                                      {item}
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
+                              )}
 
-                              <div className="space-y-3">
-                                <div className="flex items-center gap-2 text-sm font-semibold">
-                                  <Tag className="h-4 w-4 text-primary" />
-                                  {t("businessChat.opportunities")}
+                              {opportunityItems.length > 0 && (
+                                <div className="space-y-3">
+                                  <div className="flex items-center gap-2 text-sm font-semibold">
+                                    <Tag className="h-4 w-4 text-primary" />
+                                    {t("businessChat.opportunities")}
+                                  </div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {opportunityItems.map((item) => (
+                                      <Badge key={item} variant="secondary" className="bg-secondary/70">
+                                        {item}
+                                      </Badge>
+                                    ))}
+                                  </div>
                                 </div>
-                                <div className="flex flex-wrap gap-2">
-                                  {activeDetails?.opportunities?.map((item) => (
-                                    <Badge key={item} variant="secondary" className="bg-secondary/70">
-                                      {item}
-                                    </Badge>
-                                  ))}
-                                </div>
-                              </div>
+                              )}
                             </div>
 
                             <div className="space-y-5">
-                              <div className="space-y-3">
-                                <div className="flex items-center gap-2 text-sm font-semibold">
-                                  <FileText className="h-4 w-4 text-primary" />
-                                  {t("businessChat.sharedFiles")}
+                              {sharedFiles.length > 0 && (
+                                <div className="space-y-3">
+                                  <div className="flex items-center gap-2 text-sm font-semibold">
+                                    <FileText className="h-4 w-4 text-primary" />
+                                    {t("businessChat.sharedFiles")}
+                                  </div>
+                                  <div className="space-y-2">
+                                    {sharedFiles.map((file) => (
+                                      <div
+                                        key={file}
+                                        className="flex items-center justify-between rounded-lg border border-border bg-background/80 px-3 py-2 text-sm"
+                                      >
+                                        <span className="truncate">{file}</span>
+                                        <Button variant="ghost" size="sm" className="gap-1">
+                                          {t("businessChat.viewFile")}
+                                        </Button>
+                                      </div>
+                                    ))}
+                                  </div>
                                 </div>
-                                <div className="space-y-2">
-                                  {activeDetails?.files?.map((file) => (
-                                    <div
-                                      key={file}
-                                      className="flex items-center justify-between rounded-lg border border-border bg-background/80 px-3 py-2 text-sm"
-                                    >
-                                      <span className="truncate">{file}</span>
-                                      <Button variant="ghost" size="sm" className="gap-1">
-                                        {t("businessChat.viewFile")}
-                                      </Button>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
+                              )}
 
                               <div className="rounded-2xl border border-border bg-gradient-secondary p-4">
                                 <div className="flex items-center gap-3">
@@ -579,7 +884,7 @@ export default function BusinessChat() {
                 </div>
 
                 <div className="flex flex-1 min-h-0 flex-col">
-                  <ScrollArea className="flex-1 px-6">
+                  <ScrollArea ref={scrollAreaRef} className="flex-1 px-6">
                     <div className="py-6 space-y-5">
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <Separator className="flex-1" />
@@ -587,7 +892,13 @@ export default function BusinessChat() {
                         <Separator className="flex-1" />
                       </div>
 
-                      {activeMessages.length === 0 && (
+                      {isLoadingMessages && (
+                        <div className="rounded-2xl border border-border bg-background/80 px-4 py-5 text-center text-muted-foreground text-sm">
+                          {t("businessChat.loadingMessages")}
+                        </div>
+                      )}
+
+                      {!isLoadingMessages && activeMessages.length === 0 && (
                         <div className="rounded-2xl border border-border bg-background/80 px-4 py-5 text-center text-muted-foreground text-sm">
                           {t("businessChat.emptyPrompt")}
                         </div>
@@ -644,68 +955,93 @@ export default function BusinessChat() {
                         </div>
                       ))}
 
-                      {activeConversation?.status === "typing" && (
+                      {activeConversation && isTypingActive(activeConversation.otherMember?.last_typing_at) && (
                         <div className="flex items-center gap-3">
                           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
                             <Building2 className="h-4 w-4 text-primary" />
                           </div>
-                        <div className="rounded-2xl bg-background border border-border px-4 py-2 text-sm text-muted-foreground flex items-center gap-2">
-                          <span className="flex gap-1">
-                            <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 motion-safe:animate-pulse" />
-                            <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 motion-safe:animate-pulse" />
-                            <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 motion-safe:animate-pulse" />
-                          </span>
-                          {t("businessChat.typingIndicator", {
-                            name: activeConversation?.contact ?? t("businessChat.partnerFallback"),
-                          })}
+                          <div className="rounded-2xl bg-background border border-border px-4 py-2 text-sm text-muted-foreground flex items-center gap-2">
+                            <span className="flex gap-1">
+                              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 motion-safe:animate-pulse" />
+                              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 motion-safe:animate-pulse" />
+                              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 motion-safe:animate-pulse" />
+                            </span>
+                            {t("businessChat.typingIndicator", {
+                              name: activeConversation.contact || t("businessChat.partnerFallback"),
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                </ScrollArea>
-
-                <div className="border-t border-border bg-background/90 p-4">
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {quickActions.map((item) => (
-                      <Button key={item} variant="secondary" size="sm" className="gap-2">
-                        <Sparkles className="h-4 w-4" />
-                        {item}
-                      </Button>
-                    ))}
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <Label htmlFor="message-editor" className="sr-only">
-                      {t("businessChat.messageLabel")}
-                    </Label>
-                    <Textarea
-                      id="message-editor"
-                      placeholder={t("businessChat.messagePlaceholder")}
-                      className="min-h-[90px] resize-none"
-                    />
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" aria-label={t("businessChat.aria.attachFile")}>
-                          <Paperclip className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" aria-label={t("businessChat.aria.createTask")}>
-                          <CheckCircle2 className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" aria-label={t("businessChat.aria.scheduleMeeting")}>
-                          <Calendar className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <Button variant="cta" className="gap-2">
-                        <Send className="h-4 w-4" />
-                        {t("businessChat.sendMessage")}
-                      </Button>
+                      )}
                     </div>
-                  </div>
+                  </ScrollArea>
+
+                  <div className="border-t border-border bg-background/90 p-4">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {quickActions.map((item) => (
+                        <Button key={item} variant="secondary" size="sm" className="gap-2">
+                          <Sparkles className="h-4 w-4" />
+                          {item}
+                        </Button>
+                      ))}
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <Label htmlFor="message-editor" className="sr-only">
+                        {t("businessChat.messageLabel")}
+                      </Label>
+                      <Textarea
+                        id="message-editor"
+                        value={messageInput}
+                        onChange={(event) => handleMessageChange(event.target.value)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" && !event.shiftKey) {
+                            event.preventDefault();
+                            handleSendMessage();
+                          }
+                        }}
+                        placeholder={t("businessChat.messagePlaceholder")}
+                        className="min-h-[90px] resize-none"
+                        disabled={!activeConversation || isSending}
+                      />
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label={t("businessChat.aria.attachFile")}
+                          >
+                            <Paperclip className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label={t("businessChat.aria.createTask")}
+                          >
+                            <CheckCircle2 className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label={t("businessChat.aria.scheduleMeeting")}
+                          >
+                            <Calendar className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <Button
+                          variant="cta"
+                          className="gap-2"
+                          onClick={handleSendMessage}
+                          disabled={!messageInput.trim() || !activeConversation || isSending}
+                        >
+                          <Send className="h-4 w-4" />
+                          {t("businessChat.sendMessage")}
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </Card>
-
         </div>
       </div>
     </DashboardLayout>
