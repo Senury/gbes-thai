@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, ShieldCheck, Sparkles, CheckCircle2 } from "lucide-react";
-import heroImage from "@/assets/hero-bg.jpg";
+import { ArrowRight, Play, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -8,7 +7,6 @@ const Hero = () => {
   const { t, i18n } = useTranslation();
   const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
   const stats = t("hero.stats", { returnObjects: true }) as Array<{ label: string; value: string }>;
-  const benefits = t("mission.benefits", { returnObjects: true }) as string[];
   const titleSuffix = t("hero.titleSuffix");
 
   const handleScrollToServices = () => {
@@ -61,36 +59,97 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="relative w-full max-w-[560px] md:max-w-[680px] mx-auto lg:mx-0 lg:justify-self-end">
-            <div className="rounded-[32px] border border-border bg-[linear-gradient(140deg,#f8fafc,rgba(15,23,42,0.04))] p-6 sm:p-7 lg:p-8 shadow-[0_24px_70px_-45px_rgba(15,23,42,0.7)]">
-              <div className="space-y-5 sm:space-y-6">
-                <div className="overflow-hidden rounded-[26px] border border-border bg-background shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
-                  <img
-                    src={heroImage}
-                    alt="GBES platform preview"
-                    className="h-[220px] sm:h-[300px] lg:h-[360px] w-full object-cover"
-                  />
+          {/* Bento Grid Visual */}
+          <div className="relative w-full max-w-[520px] mx-auto lg:mx-0 lg:justify-self-end">
+            <div className="grid grid-cols-6 grid-rows-5 gap-3 h-[420px] sm:h-[480px]">
+
+              {/* Globe/Map Card - Large */}
+              <div className="col-span-4 row-span-3 rounded-3xl bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border border-primary/20 p-5 relative overflow-hidden group">
+                {/* Animated concentric circles */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="absolute w-32 h-32 rounded-full border border-primary/20 animate-[ping_3s_ease-in-out_infinite]" />
+                  <div className="absolute w-48 h-48 rounded-full border border-primary/10 animate-[ping_3s_ease-in-out_infinite_0.5s]" />
+                  <div className="absolute w-64 h-64 rounded-full border border-primary/5 animate-[ping_3s_ease-in-out_infinite_1s]" />
                 </div>
 
-                <div className="rounded-2xl border border-border bg-background/90 px-4 py-4 sm:px-5 sm:py-5">
-                  <div className="flex items-center gap-2 text-xs uppercase text-muted-foreground">
-                    <Sparkles className="h-3.5 w-3.5 text-primary" />
-                    {t("hero.panelHighlightsLabel")}
-                  </div>
-                  <div className="mt-3 space-y-2 text-sm text-foreground">
-                    {benefits.slice(0, 3).map((item) => (
-                      <div key={item} className="flex items-start gap-2">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 text-primary" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
+                {/* Connection dots */}
+                <div className="absolute top-8 left-8 h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="absolute top-16 right-12 h-2 w-2 rounded-full bg-primary animate-pulse [animation-delay:0.3s]" />
+                <div className="absolute bottom-20 left-16 h-2 w-2 rounded-full bg-amber-500 animate-pulse [animation-delay:0.6s]" />
+                <div className="absolute bottom-12 right-8 h-2 w-2 rounded-full bg-emerald-500 animate-pulse [animation-delay:0.9s]" />
+                <div className="absolute top-1/2 left-1/3 h-2 w-2 rounded-full bg-primary animate-pulse [animation-delay:1.2s]" />
+
+                {/* Center icon */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="h-16 w-16 rounded-2xl bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center shadow-lg">
+                    <svg className="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                    </svg>
                   </div>
                 </div>
 
-                <div className="border-l-2 border-primary/60 pl-3 text-sm leading-relaxed text-foreground">
-                  {t("hero.note")}
+                {/* Label */}
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="text-xs font-medium text-primary/80 uppercase tracking-wider">Global Network</div>
+                  <div className="text-sm text-foreground/70 mt-0.5">Thailand · Japan · SEA</div>
                 </div>
               </div>
+
+              {/* Live Activity Card */}
+              <div className="col-span-2 row-span-2 rounded-2xl bg-card border border-border p-4 flex flex-col justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </span>
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Live</span>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-foreground">847</div>
+                  <div className="text-[10px] text-muted-foreground">Active now</div>
+                </div>
+              </div>
+
+              {/* Languages Card */}
+              <div className="col-span-2 row-span-1 rounded-2xl bg-card border border-border p-3 flex items-center gap-3">
+                <div className="flex -space-x-1">
+                  <div className="h-6 w-6 rounded-full bg-red-100 border-2 border-background flex items-center justify-center text-[10px]">🇯🇵</div>
+                  <div className="h-6 w-6 rounded-full bg-blue-100 border-2 border-background flex items-center justify-center text-[10px]">🇹🇭</div>
+                  <div className="h-6 w-6 rounded-full bg-slate-100 border-2 border-background flex items-center justify-center text-[10px]">🇺🇸</div>
+                </div>
+                <div className="text-xs text-muted-foreground">3 languages</div>
+              </div>
+
+              {/* NEXI Insurance Card */}
+              <div className="col-span-3 row-span-2 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100/50 dark:from-blue-950/30 dark:to-indigo-900/20 border border-blue-200/50 dark:border-blue-800/30 p-4 flex flex-col justify-between">
+                <div className="h-10 w-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                  <svg className="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-blue-900 dark:text-blue-100">NEXI Backed</div>
+                  <div className="text-xs text-blue-700/70 dark:text-blue-300/70">Trade insurance</div>
+                </div>
+              </div>
+
+              {/* Quick Connect Card */}
+              <div className="col-span-3 row-span-2 rounded-2xl bg-card border border-border p-4 flex flex-col justify-between group hover:border-primary/30 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <svg className="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-foreground">Direct Chat</div>
+                  <div className="text-xs text-muted-foreground">No middlemen</div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
