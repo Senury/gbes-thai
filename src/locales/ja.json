@@ -350,6 +350,10 @@
     "messageLabel": "メッセージ",
     "messagePlaceholder": "目的と期待値を明確にしてメッセージを作成...",
     "sendMessage": "送信",
+    "quickActionsLabel": "クイックアクション",
+    "toSend": "で送信",
+    "emptyTitle": "会話を始める",
+    "findPartners": "パートナーを探す",
     "aria": {
       "collapseConversations": "会話一覧を折りたたむ",
       "expandConversations": "会話一覧を展開",
@@ -359,7 +363,8 @@
       "moreOptions": "その他のオプション",
       "attachFile": "ファイルを添付",
       "createTask": "タスクを作成",
-      "scheduleMeeting": "ミーティングを予約"
+      "scheduleMeeting": "ミーティングを予約",
+      "scrollToBottom": "一番下へスクロール"
     }
   },
   "partnerSearch": {

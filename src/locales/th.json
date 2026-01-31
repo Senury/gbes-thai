@@ -350,6 +350,10 @@
     "messageLabel": "ข้อความ",
     "messagePlaceholder": "เขียนข้อความพร้อมเป้าหมายและความคาดหวังที่ชัดเจน...",
     "sendMessage": "ส่งข้อความ",
+    "quickActionsLabel": "การดำเนินการด่วน",
+    "toSend": "เพื่อส่ง",
+    "emptyTitle": "เริ่มการสนทนา",
+    "findPartners": "ค้นหาพาร์ทเนอร์",
     "aria": {
       "collapseConversations": "ย่อรายการสนทนา",
       "expandConversations": "ขยายรายการสนทนา",
@@ -359,7 +363,8 @@
       "moreOptions": "ตัวเลือกเพิ่มเติม",
       "attachFile": "แนบไฟล์",
       "createTask": "สร้างงาน",
-      "scheduleMeeting": "นัดหมายประชุม"
+      "scheduleMeeting": "นัดหมายประชุม",
+      "scrollToBottom": "เลื่อนไปด้านล่าง"
     }
   },
   "partnerSearch": {

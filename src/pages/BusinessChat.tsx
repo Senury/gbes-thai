@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
@@ -24,9 +25,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import {
+  ArrowDown,
   Building2,
   Calendar,
+  Check,
+  CheckCheck,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   Clock,
   FileText,
   Filter,
@@ -73,6 +79,8 @@ type ChatMessage = {
   body: string;
   time: string;
   status?: "sent" | "read" | "pending";
+  isFirstInGroup: boolean;
+  isLastInGroup: boolean;
 };
 
 const statusStyles = {
@@ -117,7 +125,10 @@ export default function BusinessChat() {
   const [isLoadingConversations, setIsLoadingConversations] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [quickActionsExpanded, setQuickActionsExpanded] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<number | null>(null);
   const typingActiveRef = useRef(false);
   const activeIdRef = useRef<string | null>(null);
@@ -156,23 +167,36 @@ export default function BusinessChat() {
 
   const activeMessages = useMemo(() => {
     const otherReadAt = activeConversation?.otherMember?.last_read_at;
-    return messageRows
+    const sortedMessages = messageRows
       .slice()
-      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-      .map((message): ChatMessage => {
-        const isOutgoing = message.sender_id === user?.id;
-        let status: ChatMessage["status"];
-        if (isOutgoing) {
-          status = otherReadAt && new Date(message.created_at) <= new Date(otherReadAt) ? "read" : "sent";
-        }
-        return {
-          id: message.id,
-          direction: isOutgoing ? "outgoing" : "incoming",
-          body: message.body,
-          time: getShortTime(message.created_at, nowLabel),
-          status,
-        };
-      });
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+
+    return sortedMessages.map((message, index): ChatMessage => {
+      const isOutgoing = message.sender_id === user?.id;
+      let status: ChatMessage["status"];
+      if (isOutgoing) {
+        status = otherReadAt && new Date(message.created_at) <= new Date(otherReadAt) ? "read" : "sent";
+      }
+
+      const prevMessage = sortedMessages[index - 1];
+      const nextMessage = sortedMessages[index + 1];
+      const currentDirection = isOutgoing ? "outgoing" : "incoming";
+      const prevDirection = prevMessage ? (prevMessage.sender_id === user?.id ? "outgoing" : "incoming") : null;
+      const nextDirection = nextMessage ? (nextMessage.sender_id === user?.id ? "outgoing" : "incoming") : null;
+
+      const isFirstInGroup = prevDirection !== currentDirection;
+      const isLastInGroup = nextDirection !== currentDirection;
+
+      return {
+        id: message.id,
+        direction: currentDirection,
+        body: message.body,
+        time: getShortTime(message.created_at, nowLabel),
+        status,
+        isFirstInGroup,
+        isLastInGroup,
+      };
+    });
   }, [messageRows, activeConversation?.otherMember?.last_read_at, nowLabel, user?.id]);
 
   const contactLine = useMemo(() => {
@@ -188,18 +212,51 @@ export default function BusinessChat() {
     return [activePartner.company, activePartner.email].filter(Boolean).join(" · ");
   }, [activePartner]);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = (smooth = false) => {
     const scrollElement = scrollAreaRef.current?.querySelector(
       "[data-radix-scroll-area-viewport]"
     ) as HTMLDivElement | null;
     if (scrollElement) {
-      scrollElement.scrollTop = scrollElement.scrollHeight;
+      if (smooth) {
+        scrollElement.scrollTo({ top: scrollElement.scrollHeight, behavior: "smooth" });
+      } else {
+        scrollElement.scrollTop = scrollElement.scrollHeight;
+      }
+    }
+  };
+
+  const handleScroll = () => {
+    const scrollElement = scrollAreaRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLDivElement | null;
+    if (scrollElement) {
+      const isNearBottom = scrollElement.scrollHeight - scrollElement.scrollTop - scrollElement.clientHeight < 100;
+      setShowScrollButton(!isNearBottom);
+    }
+  };
+
+  const autoResizeTextarea = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      const newHeight = Math.min(textarea.scrollHeight, 160);
+      textarea.style.height = `${Math.max(newHeight, 44)}px`;
     }
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [activeMessages, activeId]);
+
+  useEffect(() => {
+    const scrollElement = scrollAreaRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLDivElement | null;
+    if (scrollElement) {
+      scrollElement.addEventListener("scroll", handleScroll);
+      return () => scrollElement.removeEventListener("scroll", handleScroll);
+    }
+  }, [activeId]);
 
   const loadConversations = async () => {
     if (!user) return;
@@ -637,13 +694,41 @@ export default function BusinessChat() {
                     <ScrollArea className="h-full">
                       <div className="space-y-2 pr-4">
                         {isLoadingConversations && (
-                          <div className="rounded-xl border border-border bg-background/70 px-3 py-4 text-sm text-muted-foreground">
-                            {t("businessChat.loadingConversations")}
+                          <div className="space-y-2">
+                            {[1, 2, 3].map((i) => (
+                              <div key={i} className="rounded-xl border border-border bg-background/70 px-3 py-3">
+                                <div className="flex items-start gap-3">
+                                  <Skeleton className="h-10 w-10 rounded-full" />
+                                  <div className="flex-1 space-y-2">
+                                    <div className="flex items-center justify-between">
+                                      <Skeleton className="h-4 w-24" />
+                                      <Skeleton className="h-3 w-8" />
+                                    </div>
+                                    <Skeleton className="h-3 w-20" />
+                                    <Skeleton className="h-4 w-full" />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         )}
                         {!isLoadingConversations && conversations.length === 0 && (
-                          <div className="rounded-xl border border-border bg-background/70 px-3 py-4 text-sm text-muted-foreground">
-                            {t("businessChat.noConversations")}
+                          <div className="flex flex-col items-center justify-center py-8 text-center">
+                            <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-3">
+                              <MessageCircle className="h-6 w-6 text-muted-foreground" />
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-3">
+                              {t("businessChat.noConversations")}
+                            </p>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="gap-2"
+                              onClick={() => navigate(`/${localePrefix}/partner-search`)}
+                            >
+                              <Plus className="h-4 w-4" />
+                              {t("businessChat.findPartners") || "Find partners"}
+                            </Button>
                           </div>
                         )}
                         {conversations.map((conversation) => (
@@ -883,7 +968,7 @@ export default function BusinessChat() {
                   </div>
                 </div>
 
-                <div className="flex flex-1 min-h-0 flex-col">
+                <div className="flex flex-1 min-h-0 flex-col relative">
                   <ScrollArea ref={scrollAreaRef} className="flex-1 px-6">
                     <div className="py-6 space-y-5">
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -893,14 +978,42 @@ export default function BusinessChat() {
                       </div>
 
                       {isLoadingMessages && (
-                        <div className="rounded-2xl border border-border bg-background/80 px-4 py-5 text-center text-muted-foreground text-sm">
-                          {t("businessChat.loadingMessages")}
+                        <div className="space-y-4">
+                          <div className="flex gap-2 justify-start">
+                            <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
+                            <div className="space-y-1">
+                              <Skeleton className="h-16 w-48 rounded-2xl rounded-bl-lg" />
+                              <Skeleton className="h-3 w-12" />
+                            </div>
+                          </div>
+                          <div className="flex gap-2 justify-end">
+                            <div className="space-y-1 flex flex-col items-end">
+                              <Skeleton className="h-10 w-36 rounded-2xl rounded-br-lg" />
+                              <Skeleton className="h-3 w-16" />
+                            </div>
+                            <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
+                          </div>
+                          <div className="flex gap-2 justify-start">
+                            <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
+                            <div className="space-y-1">
+                              <Skeleton className="h-12 w-56 rounded-2xl rounded-bl-lg" />
+                              <Skeleton className="h-3 w-12" />
+                            </div>
+                          </div>
                         </div>
                       )}
 
                       {!isLoadingMessages && activeMessages.length === 0 && (
-                        <div className="rounded-2xl border border-border bg-background/80 px-4 py-5 text-center text-muted-foreground text-sm">
-                          {t("businessChat.emptyPrompt")}
+                        <div className="flex flex-col items-center justify-center py-12 text-center">
+                          <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                            <MessageCircle className="h-8 w-8 text-primary/60" />
+                          </div>
+                          <p className="text-sm font-medium text-foreground mb-1">
+                            {t("businessChat.emptyTitle") || "Start the conversation"}
+                          </p>
+                          <p className="text-sm text-muted-foreground max-w-[240px]">
+                            {t("businessChat.emptyPrompt")}
+                          </p>
                         </div>
                       )}
 
@@ -908,90 +1021,152 @@ export default function BusinessChat() {
                         <div
                           key={message.id}
                           className={cn(
-                            "flex gap-3",
-                            message.direction === "outgoing" ? "justify-end" : "justify-start"
+                            "flex gap-2",
+                            message.direction === "outgoing" ? "justify-end" : "justify-start",
+                            !message.isFirstInGroup && "mt-0.5",
+                            message.isFirstInGroup && "mt-4 first:mt-0"
                           )}
                         >
                           {message.direction === "incoming" && (
-                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
-                              <Building2 className="h-4 w-4 text-primary" />
+                            <div className={cn("h-8 w-8 flex-shrink-0", !message.isFirstInGroup && "invisible")}>
+                              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+                                <Building2 className="h-4 w-4 text-primary" />
+                              </div>
                             </div>
                           )}
-                          <div className="max-w-[72%]">
+                          <div className="max-w-[72%] flex flex-col">
                             <div
                               className={cn(
-                                "rounded-2xl px-4 py-3 text-sm leading-relaxed",
+                                "px-4 py-2.5 text-sm leading-relaxed",
                                 message.direction === "outgoing"
-                                  ? "bg-primary text-primary-foreground rounded-br-md"
-                                  : "bg-background border border-border rounded-bl-md"
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-background border border-border",
+                                message.isFirstInGroup && message.isLastInGroup && "rounded-2xl",
+                                message.isFirstInGroup && !message.isLastInGroup && (
+                                  message.direction === "outgoing"
+                                    ? "rounded-2xl rounded-br-lg"
+                                    : "rounded-2xl rounded-bl-lg"
+                                ),
+                                !message.isFirstInGroup && message.isLastInGroup && (
+                                  message.direction === "outgoing"
+                                    ? "rounded-2xl rounded-tr-lg"
+                                    : "rounded-2xl rounded-tl-lg"
+                                ),
+                                !message.isFirstInGroup && !message.isLastInGroup && (
+                                  message.direction === "outgoing"
+                                    ? "rounded-l-2xl rounded-r-lg"
+                                    : "rounded-r-2xl rounded-l-lg"
+                                )
                               )}
                             >
                               {message.body}
                             </div>
-                            <div
-                              className={cn(
-                                "mt-1 flex items-center gap-2 text-xs text-muted-foreground",
-                                message.direction === "outgoing" ? "justify-end" : "justify-start"
-                              )}
-                            >
-                              <span>{message.time}</span>
-                              {message.direction === "outgoing" && message.status && (
-                                <span className="flex items-center gap-1">
-                                  {message.status === "pending" && <Clock className="h-3 w-3" />}
-                                  {message.status === "sent" && <CheckCircle2 className="h-3 w-3" />}
-                                  {message.status === "read" && (
-                                    <CheckCircle2 className="h-3 w-3 text-primary" />
-                                  )}
-                                  {message.status}
-                                </span>
-                              )}
-                            </div>
+                            {message.isLastInGroup && (
+                              <div
+                                className={cn(
+                                  "mt-1 flex items-center gap-1.5 text-xs text-muted-foreground",
+                                  message.direction === "outgoing" ? "justify-end" : "justify-start"
+                                )}
+                              >
+                                <span>{message.time}</span>
+                                {message.direction === "outgoing" && message.status && (
+                                  <span className="flex items-center">
+                                    {message.status === "pending" && (
+                                      <Clock className="h-3.5 w-3.5 text-muted-foreground/60" />
+                                    )}
+                                    {message.status === "sent" && (
+                                      <Check className="h-3.5 w-3.5 text-muted-foreground" />
+                                    )}
+                                    {message.status === "read" && (
+                                      <CheckCheck className="h-3.5 w-3.5 text-primary" />
+                                    )}
+                                  </span>
+                                )}
+                              </div>
+                            )}
                           </div>
                           {message.direction === "outgoing" && (
-                            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center border border-border">
-                              <User className="h-4 w-4 text-muted-foreground" />
+                            <div className={cn("h-8 w-8 flex-shrink-0", !message.isFirstInGroup && "invisible")}>
+                              <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center border border-border">
+                                <User className="h-4 w-4 text-muted-foreground" />
+                              </div>
                             </div>
                           )}
                         </div>
                       ))}
 
                       {activeConversation && isTypingActive(activeConversation.otherMember?.last_typing_at) && (
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
                           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
                             <Building2 className="h-4 w-4 text-primary" />
                           </div>
-                          <div className="rounded-2xl bg-background border border-border px-4 py-2 text-sm text-muted-foreground flex items-center gap-2">
-                            <span className="flex gap-1">
-                              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 motion-safe:animate-pulse" />
-                              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 motion-safe:animate-pulse" />
-                              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 motion-safe:animate-pulse" />
+                          <div className="rounded-2xl bg-background border border-border px-4 py-3 text-sm text-muted-foreground flex items-center gap-2">
+                            <span className="flex gap-1 items-center">
+                              <span className="h-2 w-2 rounded-full bg-primary/60 motion-safe:animate-bounce [animation-delay:0ms]" />
+                              <span className="h-2 w-2 rounded-full bg-primary/60 motion-safe:animate-bounce [animation-delay:150ms]" />
+                              <span className="h-2 w-2 rounded-full bg-primary/60 motion-safe:animate-bounce [animation-delay:300ms]" />
                             </span>
-                            {t("businessChat.typingIndicator", {
-                              name: activeConversation.contact || t("businessChat.partnerFallback"),
-                            })}
+                            <span className="ml-1">
+                              {t("businessChat.typingIndicator", {
+                                name: activeConversation.contact || t("businessChat.partnerFallback"),
+                              })}
+                            </span>
                           </div>
                         </div>
                       )}
                     </div>
                   </ScrollArea>
 
+                  {showScrollButton && (
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      className="absolute bottom-24 right-8 z-10 h-9 w-9 rounded-full shadow-lg animate-in fade-in-0 zoom-in-95 duration-200"
+                      onClick={() => scrollToBottom(true)}
+                      aria-label={t("businessChat.aria.scrollToBottom") || "Scroll to bottom"}
+                    >
+                      <ArrowDown className="h-4 w-4" />
+                    </Button>
+                  )}
+
                   <div className="border-t border-border bg-background/90 p-4">
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {quickActions.map((item) => (
-                        <Button key={item} variant="secondary" size="sm" className="gap-2">
-                          <Sparkles className="h-4 w-4" />
-                          {item}
-                        </Button>
-                      ))}
+                    <div className="mb-3">
+                      <button
+                        type="button"
+                        onClick={() => setQuickActionsExpanded(!quickActionsExpanded)}
+                        className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors mb-2"
+                      >
+                        <Sparkles className="h-3.5 w-3.5" />
+                        <span>{t("businessChat.quickActionsLabel") || "Quick actions"}</span>
+                        {quickActionsExpanded ? (
+                          <ChevronUp className="h-3.5 w-3.5" />
+                        ) : (
+                          <ChevronDown className="h-3.5 w-3.5" />
+                        )}
+                      </button>
+                      {quickActionsExpanded && (
+                        <div className="flex flex-wrap gap-2 animate-in fade-in-0 slide-in-from-top-2 duration-200">
+                          {quickActions.map((item) => (
+                            <Button key={item} variant="outline" size="sm" className="gap-2 h-8 text-xs">
+                              <Sparkles className="h-3.5 w-3.5" />
+                              {item}
+                            </Button>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2">
                       <Label htmlFor="message-editor" className="sr-only">
                         {t("businessChat.messageLabel")}
                       </Label>
                       <Textarea
+                        ref={textareaRef}
                         id="message-editor"
                         value={messageInput}
-                        onChange={(event) => handleMessageChange(event.target.value)}
+                        onChange={(event) => {
+                          handleMessageChange(event.target.value);
+                          autoResizeTextarea();
+                        }}
                         onKeyDown={(event) => {
                           if (event.key === "Enter" && !event.shiftKey) {
                             event.preventDefault();
@@ -999,14 +1174,16 @@ export default function BusinessChat() {
                           }
                         }}
                         placeholder={t("businessChat.messagePlaceholder")}
-                        className="min-h-[90px] resize-none"
+                        className="min-h-[44px] max-h-[160px] resize-none transition-[height] duration-100"
                         disabled={!activeConversation || isSending}
+                        rows={1}
                       />
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div className="flex items-center gap-2">
                           <Button
                             variant="ghost"
                             size="icon"
+                            className="h-8 w-8"
                             aria-label={t("businessChat.aria.attachFile")}
                           >
                             <Paperclip className="h-4 w-4" />
@@ -1014,6 +1191,7 @@ export default function BusinessChat() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            className="h-8 w-8"
                             aria-label={t("businessChat.aria.createTask")}
                           >
                             <CheckCircle2 className="h-4 w-4" />
@@ -1021,10 +1199,15 @@ export default function BusinessChat() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            className="h-8 w-8"
                             aria-label={t("businessChat.aria.scheduleMeeting")}
                           >
                             <Calendar className="h-4 w-4" />
                           </Button>
+                          <span className="hidden sm:inline-flex text-xs text-muted-foreground ml-2">
+                            <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono">Enter</kbd>
+                            <span className="mx-1">{t("businessChat.toSend") || "to send"}</span>
+                          </span>
                         </div>
                         <Button
                           variant="cta"
