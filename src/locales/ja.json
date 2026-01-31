@@ -377,6 +377,7 @@
     "searchPlaceholder": "企業名、業界、サービス等で検索...",
     "searching": "検索中...",
     "search": "検索",
+    "searchActions": "検索アクション",
     "filters": "フィルター",
     "dataSourcesLabel": "データソース ({{count}})",
     "addCompanies": "企業追加",

@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, MapPin, Building, Globe, Users, CheckCircle, Plus, ExternalLink, Filter, Mail, Phone } from "lucide-react";
+import { Search, MapPin, Building, Globe, Users, CheckCircle, Plus, ExternalLink, Filter, Mail, Phone, SlidersHorizontal } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/Navigation";
@@ -103,6 +104,13 @@ const PartnerSearch = () => {
 
   const industries = t("partnerSearch.industries", { returnObjects: true }) as Array<{ value: string; label: string }>;
   const companySizes = t("partnerSearch.companySizes", { returnObjects: true }) as Array<{ value: string; label: string }>;
+
+  const activeFilterCount = [
+    filters.industry !== 'all',
+    filters.location !== 'all-regions',
+    filters.companySize !== 'all',
+  ].filter(Boolean).length;
+
   const handlePrimaryAction = async (company: Company) => {
     if (company.verified) {
       if (!user) {
@@ -521,30 +529,38 @@ const PartnerSearch = () => {
           <CardContent className="p-6">
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="w-full lg:flex-[3] relative">
-                <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
                 <Input
                   placeholder={t("partnerSearch.searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && searchCompanies()}
+                  onKeyDown={(e) => e.key === 'Enter' && searchCompanies()}
                   className="w-full pl-10"
+                  aria-label={t("partnerSearch.searchPlaceholder")}
                 />
               </div>
-              <div className="flex flex-wrap lg:flex-nowrap gap-2 w-full lg:flex-[2] lg:justify-end">
-                <Button onClick={() => searchCompanies(0, true)} disabled={loading} className="w-full sm:w-auto">
-                  <Search className="w-4 h-4 mr-2" />
+              <div className="flex flex-wrap lg:flex-nowrap gap-2 w-full lg:flex-[2] lg:justify-end" role="group" aria-label={t("partnerSearch.searchActions")}>
+                <Button onClick={() => searchCompanies(0, true)} disabled={loading} className="w-full sm:w-auto" aria-label={t("partnerSearch.search")}>
+                  <Search className="w-4 h-4 mr-2" aria-hidden="true" />
                   {isSearching ? t("partnerSearch.searching") : t("partnerSearch.search")}
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => {
                     setShowFilters(prev => !prev);
                     setShowDataSourceSelector(false);
                   }}
-                  className="w-full sm:w-auto"
+                  className="w-full sm:w-auto relative"
+                  aria-expanded={showFilters}
+                  aria-label={t("partnerSearch.filters")}
                 >
                   <Filter className="w-4 h-4 mr-2" />
                   {t("partnerSearch.filters")}
+                  {activeFilterCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-primary text-[10px] font-medium text-primary-foreground flex items-center justify-center">
+                      {activeFilterCount}
+                    </span>
+                  )}
                 </Button>
                 <Button 
                   variant="outline" 
@@ -836,16 +852,16 @@ const PartnerSearch = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all-regions">{t("partnerSearch.locationAll")}</SelectItem>
-                      <SelectItem value="アジア">{t("partnerSearch.locations.asia")}</SelectItem>
-                      <SelectItem value="日本">{t("partnerSearch.locations.japan")}</SelectItem>
-                      <SelectItem value="中国">{t("partnerSearch.locations.china")}</SelectItem>
-                      <SelectItem value="タイ">{t("partnerSearch.locations.thailand")}</SelectItem>
-                      <SelectItem value="ヨーロッパ">{t("partnerSearch.locations.europe")}</SelectItem>
-                      <SelectItem value="アメリカ">{t("partnerSearch.locations.usa")}</SelectItem>
-                      <SelectItem value="北米">{t("partnerSearch.locations.northAmerica")}</SelectItem>
-                      <SelectItem value="南米">{t("partnerSearch.locations.southAmerica")}</SelectItem>
-                      <SelectItem value="アフリカ">{t("partnerSearch.locations.africa")}</SelectItem>
-                      <SelectItem value="オセアニア">{t("partnerSearch.locations.oceania")}</SelectItem>
+                      <SelectItem value="Asia">{t("partnerSearch.locations.asia")}</SelectItem>
+                      <SelectItem value="Japan">{t("partnerSearch.locations.japan")}</SelectItem>
+                      <SelectItem value="China">{t("partnerSearch.locations.china")}</SelectItem>
+                      <SelectItem value="Thailand">{t("partnerSearch.locations.thailand")}</SelectItem>
+                      <SelectItem value="Europe">{t("partnerSearch.locations.europe")}</SelectItem>
+                      <SelectItem value="USA">{t("partnerSearch.locations.usa")}</SelectItem>
+                      <SelectItem value="North America">{t("partnerSearch.locations.northAmerica")}</SelectItem>
+                      <SelectItem value="South America">{t("partnerSearch.locations.southAmerica")}</SelectItem>
+                      <SelectItem value="Africa">{t("partnerSearch.locations.africa")}</SelectItem>
+                      <SelectItem value="Oceania">{t("partnerSearch.locations.oceania")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -934,33 +950,14 @@ const PartnerSearch = () => {
         {companies.length === 0 && !loading && searchQuery && (
           <Card className="bg-card/80 border-border">
             <CardContent className="p-10 text-center">
-              <p className="text-muted-foreground text-base">
-              {(() => {
-                const detectedCategory = searchQuery.includes('医療') ? t("partnerSearch.detectedCategories.medical") :
-                  searchQuery.includes('製造業') ? t("partnerSearch.detectedCategories.manufacturing") :
-                  searchQuery.includes('技術') ? t("partnerSearch.detectedCategories.technology") :
-                  searchQuery.includes('物流') ? t("partnerSearch.detectedCategories.logistics") :
-                  searchQuery.includes('貿易') ? t("partnerSearch.detectedCategories.trade") :
-                  searchQuery.includes('金融') ? t("partnerSearch.detectedCategories.finance") :
-                  searchQuery.includes('ファッション') ? t("partnerSearch.detectedCategories.fashion") :
-                  searchQuery.includes('自動車') ? t("partnerSearch.detectedCategories.automotive") : '';
-                
-                return detectedCategory 
-                  ? t("partnerSearch.noResultsCategory", { category: detectedCategory })
-                  : t("partnerSearch.noResultsDefault");
-              })()}
+              <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+                <Search className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <p className="text-muted-foreground text-base mb-2">
+                {t("partnerSearch.noResultsDefault")}
               </p>
-              <p className="text-sm text-muted-foreground mt-2">
-              {(() => {
-                const hasCategory = searchQuery.includes('医療') || searchQuery.includes('製造業') || 
-                  searchQuery.includes('技術') || searchQuery.includes('物流') || 
-                  searchQuery.includes('貿易') || searchQuery.includes('金融') || 
-                  searchQuery.includes('ファッション') || searchQuery.includes('自動車');
-                
-                return hasCategory
-                  ? t("partnerSearch.noResultsTipScrape")
-                  : t("partnerSearch.noResultsTipChangeQuery");
-              })()}
+              <p className="text-sm text-muted-foreground">
+                {t("partnerSearch.noResultsTipChangeQuery")}
               </p>
             </CardContent>
           </Card>
@@ -978,6 +975,41 @@ const PartnerSearch = () => {
 
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {loading && companies.length === 0 && (
+            <>
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Card key={i} className="border-border bg-card/80 h-full flex flex-col">
+                  <CardHeader className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <Skeleton className="h-10 w-10 rounded-xl" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-5 w-3/4" />
+                        <Skeleton className="h-3 w-1/2" />
+                      </div>
+                    </div>
+                    <Skeleton className="h-3 w-2/3" />
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col">
+                    <Skeleton className="h-4 w-full mb-2" />
+                    <Skeleton className="h-4 w-5/6 mb-4" />
+                    <div className="space-y-3">
+                      <div>
+                        <Skeleton className="h-3 w-16 mb-2" />
+                        <div className="flex gap-1.5">
+                          <Skeleton className="h-5 w-16 rounded-full" />
+                          <Skeleton className="h-5 w-20 rounded-full" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-auto pt-4">
+                      <Skeleton className="h-9 flex-1 rounded-md" />
+                      <Skeleton className="h-9 w-24 rounded-md" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          )}
           {companies.map((company) => (
             <Card key={company.id} className="border-border bg-card/80 hover:shadow-soft transition-all duration-300 h-full flex flex-col">
               <CardHeader className="space-y-4">
@@ -1033,7 +1065,7 @@ const PartnerSearch = () => {
                     <div>
                       <h4 className="font-semibold text-xs uppercase tracking-wide text-muted-foreground mb-2">{t("partnerSearch.industryLabel")}</h4>
                       <div className="flex flex-wrap gap-1.5">
-                        {company.industry.slice(0, 3).map((ind, index) => (
+                        {company.industry?.slice(0, 3).map((ind, index) => (
                           <Badge key={index} variant="secondary" className="text-[11px] px-2 py-0.5">
                             {ind}
                           </Badge>
@@ -1043,8 +1075,8 @@ const PartnerSearch = () => {
                         </Badge>
                       </div>
                     </div>
-                    
-                    {company.specialties.length > 0 && (
+
+                    {(company.specialties?.length ?? 0) > 0 && (
                       <div>
                         <h4 className="font-semibold text-xs uppercase tracking-wide text-muted-foreground mb-2">{t("partnerSearch.specialtiesLabel")}</h4>
                         <div className="flex flex-wrap gap-1.5">

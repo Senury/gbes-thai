@@ -377,6 +377,7 @@
     "searchPlaceholder": "Search by company name, industry, services...",
     "searching": "Searching...",
     "search": "Search",
+    "searchActions": "Search actions",
     "filters": "Filters",
     "dataSourcesLabel": "Data sources ({{count}})",
     "addCompanies": "Add Companies",

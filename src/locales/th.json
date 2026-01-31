@@ -377,6 +377,7 @@
     "searchPlaceholder": "ค้นหาด้วยชื่อบริษัท อุตสาหกรรม บริการ...",
     "searching": "กำลังค้นหา...",
     "search": "ค้นหา",
+    "searchActions": "ตัวเลือกการค้นหา",
     "filters": "ตัวกรอง",
     "dataSourcesLabel": "แหล่งข้อมูล ({{count}})",
     "addCompanies": "เพิ่มบริษัท",
