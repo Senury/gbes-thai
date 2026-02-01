@@ -20,22 +20,22 @@
     "logout": "ログアウト"
   },
   "hero": {
-    "badge": "国際基準のセキュリティと信頼性",
+    "badge": "セキュリティ最優先・海外取引のコンプライアンス対応",
     "titlePrefix": "グローバル・ビジネス・",
     "titleHighlight": "エクスパンション",
     "titleSuffix": "・システム",
     "description": "日本の中小企業の海外展開を支援する、AI搭載の統合プラットフォーム。翻訳、デジタル発信、パートナー発見までを一つのワークフローで実現します。",
-    "ctaPrimary": "今すぐ登録して世界とつながる",
+    "ctaPrimary": "海外展開を今すぐ始める",
     "ctaSecondary": "サービス詳細",
     "stats": [
       { "label": "海外パートナー候補", "value": "12,400+" },
       { "label": "多言語対応", "value": "24言語" },
-      { "label": "平均導入期間", "value": "2週間" }
+      { "label": "導入までの平均期間", "value": "2週間" }
     ],
     "live": "ライブ • 1,234 社がオンライン",
     "pillGlobal": "グローバル配信",
     "pillAi": "AI支援",
-    "note": "海外展開に必要なデジタル発信とパートナー開拓を統合。AIが市場分析から提案まで支援します。",
+    "note": "翻訳・発信・パートナー開拓を一つの流れで。AIが市場分析と提案を支援します。",
     "panelEyebrow": "海外展開の概要",
     "panelTitle": "プラットフォームのイメージ",
     "panelHighlightsLabel": "主要機能",
@@ -53,22 +53,22 @@
   },
   "mission": {
     "title": "私たちの目的",
-    "subtitle": "中小企業の国際進出をもっと簡単に",
+    "subtitle": "中小企業の海外展開を現実的に",
     "benefits": [
-      "多言語対応の製品翻訳ツール",
-      "SNSやGoogleマップなど複数チャネルへの情報一括配信",
+      "多言語対応の製品ローカライズ",
+      "SNSやGoogleマップなど複数チャネルへの一括配信",
       "信頼できる海外パートナーとのマッチング",
-      "決済機能"
+      "海外決済サポート"
     ],
-    "cta": "詳細を見る",
+    "cta": "詳しく見る",
     "highlights": [
       {
         "title": "一括ソリューション",
-        "description": "翻訳からマーケティングまで、すべてを統合"
+        "description": "翻訳・マーケティング・パートナー開拓を一つのプラットフォームで"
       },
       {
         "title": "安全な取引",
-        "description": "ISO認証と国際コンプライアンス準拠"
+        "description": "ISO準拠の考え方と国際コンプライアンスに対応"
       },
       {
         "title": "グローバルネットワーク",
@@ -82,34 +82,34 @@
     "items": [
       {
         "title": "多言語翻訳ツール",
-        "description": "製品情報や企業紹介を複数言語に自動翻訳し、グローバル市場への展開をサポートします。"
+        "description": "製品・企業情報を現地向けにローカライズし、海外の買い手に伝わる内容へ。"
       },
       {
         "title": "複数チャネル一括配信",
-        "description": "Instagram、Facebook、Googleマップ、X（旧Twitter）など主要SNSへの情報配信を一括管理。"
+        "description": "Instagram、Facebook、Googleマップ、Xなどへの配信を一括管理。"
       },
       {
         "title": "パートナーマッチング",
-        "description": "信頼できる海外パートナーとのマッチング機能で、安全で効率的なビジネス展開を実現。"
+        "description": "審査済みの海外パートナーとつながり、リスクを抑えて展開。"
       },
       {
         "title": "決済対応",
-        "description": "安全で効率的な国際決済システムで、取引コストと時間を削減。"
+        "description": "安全な国際決済で、手数料と時間を削減。"
       },
       {
         "title": "AIサポート",
-        "description": "国際取引に関する質問対応や市場分析など、AI搭載のビジネスサポート機能。"
+        "description": "AIが質問対応・市場分析・次のアクションを提案。"
       },
       {
-        "title": "企業審査・構造化",
-        "description": "企業情報の構造化と審査機能で、海外展開における信頼性とプレゼンテーション力を向上。"
+        "title": "企業情報の認証・標準化",
+        "description": "標準化された企業プロファイルで信頼性と見せ方を強化。"
       }
     ]
   },
   "pricing": {
     "title": "料金プラン",
-    "subtitle": "まずは無料で体験、必要に応じてアップグレード",
-    "note": "製品体験がそのまま営業ツール。使えば使うほど価値を実感していただけます",
+    "subtitle": "まずは無料で、成果が見えたらスケール",
+    "note": "使うほど海外展開の武器が増える。利用量に応じて価値が伸びます。",
     "badges": {
       "popular": "おすすめ",
       "free": "FREE"
@@ -131,10 +131,10 @@
     "plans": [
       {
         "id": "free",
-        "name": "フリー",
+        "name": "無料トライアル",
         "price": "¥0",
-        "period": "1週間限定",
-        "description": "まずは1週間体験してみてください",
+        "period": "7日間",
+        "description": "本格導入前に全体像を体験",
         "features": [
           "1週間で10回までのパートナー検索",
           "基本AI支援（1日3回まで）",
@@ -150,7 +150,7 @@
         "name": "スタンダード",
         "price": "¥2,980",
         "period": "月額",
-        "description": "本格的なビジネス活用に",
+        "description": "成長期の海外展開に",
         "features": [
           "無制限パートナー検索",
           "AI支援機能フル活用",
@@ -166,7 +166,7 @@
         "name": "ビジネス",
         "price": "¥4,980",
         "period": "月額",
-        "description": "チーム・組織での本格運用",
+        "description": "チームでのグローバル展開に",
         "features": [
           "スタンダードの全機能",
           "AI強化サポート",
@@ -198,7 +198,7 @@
   },
   "partners": {
     "title": "パートナー＆支援団体",
-    "subtitle": "信頼できる専門機関との連携により、安全で確実な国際展開をサポートします",
+    "subtitle": "信頼できるネットワークで、海外展開のリスクを最小化",
     "items": [
       {
         "name": "NEXI",
@@ -219,7 +219,7 @@
   },
   "about": {
     "title": "安全性と信頼",
-    "description": "GBESは最高レベルのセキュリティ基準と透明性を維持し、お客様のビジネス情報と取引を安全に保護します。国際基準に準拠した信頼できるプラットフォームを提供しています。",
+    "description": "セキュリティと透明性を重視した設計で、データと国際取引を保護。ISO準拠に向けたロードマップを進行中。",
     "features": [
       "ISO認証取得を予定（情報セキュリティ基準）",
       "データの透明性と契約の明確化",
@@ -230,8 +230,8 @@
     "cta": "セキュリティ詳細",
     "cards": [
       {
-        "title": "ISO認証準拠",
-        "description": "国際セキュリティ基準に基づく安全なシステム設計"
+        "title": "ISO準拠設計",
+        "description": "ISO取得を見据えたセキュリティ設計"
       },
       {
         "title": "完全な透明性",
@@ -245,9 +245,9 @@
   },
   "contact": {
     "title": "お問い合わせ",
-    "subtitle": "始める準備はできましたか？今日お問い合わせいただき、一緒に素晴らしいものを構築しましょう。",
+    "subtitle": "海外展開の準備はできましたか？今すぐご相談ください。次の一歩をご一緒に。",
     "note": "※ お問い合わせ機能をご利用いただくには、ログインしてアカウント登録が必要です。",
-    "formTitle": "メッセージを送信",
+    "formTitle": "海外展開の目標を教えてください",
     "responseTime": "24時間以内に返信",
     "labels": {
       "firstName": "姓",
@@ -281,7 +281,7 @@
     ]
   },
   "footer": {
-    "description": "日本の中小企業のグローバル展開を支援するAI搭載プラットフォームです。",
+    "description": "日本の中小企業が安心して海外展開できるAIプラットフォーム",
     "product": "プロダクト",
     "company": "会社",
     "support": "サポート",
@@ -306,7 +306,7 @@
     "madeBy": "GBESチームによって作られました"
   },
   "floatingCta": {
-    "label": "新規登録"
+    "label": "無料で始める"
   },
   "chat": {
     "buttonLabel": "チャット",
@@ -320,15 +320,15 @@
   },
   "businessChat": {
     "pageTitle": "メッセージ",
-    "pageSubtitle": "パートナーとの会話を安全かつ取引向けに整理します。",
+    "pageSubtitle": "安全な取引向けメッセージで、パートナーシップを前に進めます。",
     "filters": "フィルター",
-    "newChatButton": "新しいチャット",
-    "newChatToastTitle": "新しいチャットを開始",
-    "newChatToastDescription": "パートナー検索で企業を探して会話を開始してください。",
+    "newChatButton": "新規会話",
+    "newChatToastTitle": "会話を開始",
+    "newChatToastDescription": "パートナー検索で企業を見つけてメッセージを始めましょう。",
     "conversationsTitle": "会話",
     "activeCount": "アクティブ {{count}}件",
     "searchLabel": "会話を検索",
-    "searchPlaceholder": "企業名・担当者・タグを検索",
+    "searchPlaceholder": "企業名・担当者・タグで検索",
     "filterAll": "すべて",
     "filterUnread": "未読",
     "filterPinned": "ピン留め",
@@ -336,22 +336,22 @@
     "now": "たった今",
     "noMessages": "まだメッセージはありません。",
     "loadingConversations": "会話を読み込み中...",
-    "noConversations": "会話がまだありません。新しいチャットを開始してください。",
+    "noConversations": "会話がまだありません。新しい会話を始めましょう。",
     "loadingMessages": "メッセージを読み込み中...",
-    "partnerOverviewTitle": "パートナー概要",
+    "partnerOverviewTitle": "パートナープロフィール",
     "verifiedPartner": "認証済みパートナー",
-    "averageRating": "平均評価 {{rating}}",
+    "averageRating": "{{rating}} 平均評価",
     "about": "概要",
     "highlights": "ハイライト",
     "opportunities": "機会",
     "sharedFiles": "共有ファイル",
     "viewFile": "表示",
-    "recommendedNextStep": "次のおすすめ",
-    "recommendationCopy": "タイムラインとSLAを含む要約オファーを送信しましょう。",
-    "draftOffer": "オファー作成",
+    "recommendedNextStep": "おすすめの次のステップ",
+    "recommendationCopy": "要点とタイムライン、SLAをまとめた提案を送信しましょう。",
+    "draftOffer": "提案を下書き",
     "dismiss": "閉じる",
     "today": "今日",
-    "emptyPrompt": "目的と期限を明確にして会話を開始しましょう。",
+    "emptyPrompt": "目的・範囲・期限を明確にして始めましょう。",
     "typingIndicator": "{{name}} が入力中",
     "partnerFallback": "パートナー",
     "partnerDetailsFallback": "会話を選択するとパートナー詳細が表示されます。",
@@ -361,11 +361,11 @@
       "scheduleCall": "通話を予約"
     },
     "messageLabel": "メッセージ",
-    "messagePlaceholder": "目的と期待値を明確にしてメッセージを作成...",
-    "sendMessage": "送信",
+    "messagePlaceholder": "目的、範囲、期限、次のアクションを明確に書きましょう...",
+    "sendMessage": "送信する",
     "quickActionsLabel": "クイックアクション",
-    "toSend": "で送信",
-    "emptyTitle": "会話を始める",
+    "toSend": "送信待ち",
+    "emptyTitle": "会話を開始",
     "findPartners": "パートナーを探す",
     "aria": {
       "collapseConversations": "会話一覧を折りたたむ",
@@ -381,24 +381,24 @@
     }
   },
   "partnerSearch": {
-    "heroBadge": "審査済み・信頼ネットワークからのデータ",
+    "heroBadge": "審査済みの信頼ネットワークデータ",
     "title": "パートナー検索",
-    "subtitle": "世界中の信頼できるビジネスパートナーを見つけて、新たな機会を創出しましょう。",
+    "subtitle": "世界中の審査済みパートナーを見つけ、新しい成長機会を創出。",
     "selectedSourcesLabel": "選択中のソース",
     "totalResultsLabel": "検索結果",
     "countUnit": "件",
-    "searchPlaceholder": "企業名、業界、サービス等で検索...",
+    "searchPlaceholder": "企業名・業界・強みで検索...",
     "searching": "検索中...",
     "search": "検索",
     "searchActions": "検索アクション",
     "filters": "フィルター",
     "dataSourcesLabel": "データソース ({{count}})",
     "addCompanies": "企業追加",
-    "scrapeTitle": "Webサイトから企業データを取得",
+    "scrapeTitle": "Webサイトから企業を取り込む",
     "scrapePlaceholder": "WebサイトのURLを入力してください（1行に1つ）\n例：\nhttps://example.com\nhttps://company2.com",
-    "scrapeDescription": "入力されたWebサイトから企業情報を自動的に抽出します。",
-    "scrapeUseAiLabel": "AI補完を使う（任意）",
-    "scrapeUseAiHint": "業種、専門分野、連絡先情報の精度を改善します。",
+    "scrapeDescription": "指定したWebサイトから企業情報を抽出し、自動でプロフィールを作成します。",
+    "scrapeUseAiLabel": "AIで強化（任意）",
+    "scrapeUseAiHint": "業種・専門分野・連絡先情報の精度を向上させます。",
     "scraping": "取得中...",
     "scrapeAction": "データ取得",
     "scrapeResultsTitle": "取得結果",
@@ -437,11 +437,11 @@
     "companySizeAll": "全ての規模",
     "applyFilters": "フィルター適用",
     "reset": "リセット",
-    "tipsTitle": "検索のヒント",
+    "tipsTitle": "検索のポイント",
     "tips": [
-      "• 複数の条件を組み合わせて検索できます",
-      "• 検索バーに「製造業 アジア」などと入力しても検索できます",
-      "• 企業が見つからない場合は「企業追加」をお試しください"
+      "• 複数の条件を組み合わせると一致率が高まります",
+      "• 「製造業 アジア」などのキーワード検索も有効です",
+      "• 見つからない場合は「企業追加」でWebから取り込み可能"
     ],
     "resultsSummary": "{{shown}}件の企業を表示中（全{{total}}件）",
     "pageLabel": "表示: {{current}} / {{total}}",
@@ -458,9 +458,9 @@
     },
     "noResultsCategory": "{{category}}の企業が見つかりませんでした。",
     "noResultsDefault": "検索条件に一致する企業が見つかりませんでした。",
-    "noResultsTipScrape": "「企業追加」ボタンから関連企業のWebサイトを追加してください。",
-    "noResultsTipChangeQuery": "検索キーワードを変更するか、外部データソースから新しい企業を追加してみてください。",
-    "emptyState": "検索キーワードを入力して、パートナー企業を探してみましょう。",
+    "noResultsTipScrape": "「企業追加」で関連企業をWebから取り込んでみてください。",
+    "noResultsTipChangeQuery": "条件を広げるか、地域を変えて再検索してください。",
+    "emptyState": "企業名・業界・ニーズを入れてパートナーを探しましょう。",
     "verifiedBadge": "認証済み",
     "specialtiesLabel": "専門分野",
     "fields": {
@@ -661,20 +661,20 @@
   },
   "dashboard": {
     "welcome": "ようこそ、{{email}} さん",
-    "welcomeSubtitle": "アカウントと登録状況の概要をご確認ください。",
+    "welcomeSubtitle": "海外展開の準備状況とプランをひと目で確認できます。",
     "accountStatusActive": "アクティブ",
     "accountStatusTitle": "アカウント状況",
-    "registrationStatusTitle": "登録状況",
-    "currentPlanTitle": "現在のプラン",
-    "accountCreated": "作成日: {{date}}",
+    "registrationStatusTitle": "サービス設定",
+    "currentPlanTitle": "ご利用プラン",
+    "accountCreated": "アカウント作成日: {{date}}",
     "registrationCompleted": "完了",
     "registrationPending": "未完了",
-    "registrationCompletedNote": "サービス登録が完了しています",
-    "registrationPendingNote": "サービス登録を完了してください",
+    "registrationCompletedNote": "サービス登録完了。すぐに利用できます。",
+    "registrationPendingNote": "サービス登録を完了して利用を開始しましょう",
     "noPlan": "なし",
-    "noPlanDescription": "アクティブなプランはありません",
+    "noPlanDescription": "アクティブなプランはまだありません",
     "registrationDetailsTitle": "登録詳細",
-    "registrationDetailsSubtitle": "最新のサービス登録情報",
+    "registrationDetailsSubtitle": "サービス登録に入力した情報",
     "labels": {
       "name": "氏名",
       "email": "メールアドレス",
@@ -684,8 +684,8 @@
     },
     "notProvided": "未入力",
     "registeredOn": "登録日: {{date}}",
-    "completeRegistrationTitle": "登録を完了してください",
-    "completeRegistrationDescription": "サービス登録がまだ完了していません。",
+    "completeRegistrationTitle": "設定を完了する",
+    "completeRegistrationDescription": "サービス登録を完了してプランを有効化してください。",
     "completeRegistrationCta": "登録を完了する",
     "toasts": {
       "errorTitle": "エラー",
@@ -735,15 +735,15 @@
   },
   "social": {
     "heroBadge": "コンテンツ配信を自動化",
-    "title": "ソーシャルメディア自動化",
-    "subtitle": "企業情報を複数のプラットフォームへ一括配信し、運用時間を大幅に削減します。",
+    "title": "SNS配信の自動化",
+    "subtitle": "一度の投稿で複数SNSに配信し、運用工数を削減。",
     "selectedLabel": "選択済み",
     "createdLabel": "作成済み",
     "countUnit": "件",
     "postsUnit": "投稿",
-    "newPostTitle": "新規投稿作成",
+    "newPostTitle": "海外向け投稿を作成",
     "contentLabel": "投稿内容",
-    "contentPlaceholder": "海外展開に関する最新の取り組みや製品情報を共有しましょう...",
+    "contentPlaceholder": "製品アップデート、新規パートナー、海外展開の進捗などを共有しましょう...",
     "characterCount": "{{count}}/280文字",
     "platformLabel": "投稿プラットフォーム",
     "scheduleLabel": "投稿タイミング",

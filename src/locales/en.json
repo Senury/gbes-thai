@@ -3,7 +3,7 @@
     "home": "Home",
     "mission": "Mission",
     "services": "Services",
-    "partners": "Partners",
+    "partners": "Partner Search",
     "pricing": "Pricing",
     "more": "More",
     "moreLabel": "More links",
@@ -20,22 +20,22 @@
     "logout": "Logout"
   },
   "hero": {
-    "badge": "Enterprise-grade security & compliance",
+    "badge": "Security-first, compliance-ready for global trade.",
     "titlePrefix": "Global Business",
     "titleHighlight": "Expansion",
     "titleSuffix": "System",
     "description": "An AI-powered platform for Japanese SMEs. From translation and digital distribution to partner discovery, everything runs in a single workflow.",
-    "ctaPrimary": "Register and connect globally",
+    "ctaPrimary": "Start expanding globally",
     "ctaSecondary": "Learn More",
     "stats": [
       { "label": "Partner candidates", "value": "12,400+" },
       { "label": "Languages supported", "value": "24" },
-      { "label": "Avg. onboarding", "value": "2 weeks" }
+      { "label": "Avg. onboarding time", "value": "2 weeks" }
     ],
     "live": "Live • 1,234 companies online",
     "pillGlobal": "Global distribution",
     "pillAi": "AI assistance",
-    "note": "Unifies digital outreach and partner discovery for global expansion, with AI supporting market analysis and recommendations.",
+    "note": "One workflow for translation, publishing, and partner discovery—plus AI insights and recommendations.",
     "panelEyebrow": "Go-to-market overview",
     "panelTitle": "Platform preview",
     "panelHighlightsLabel": "Key capabilities",
@@ -53,22 +53,22 @@
   },
   "mission": {
     "title": "Our Mission",
-    "subtitle": "Make global expansion easier for SMEs",
+    "subtitle": "Make overseas expansion practical for SMEs",
     "benefits": [
-      "Multilingual product translation tools",
-      "Unified distribution across social media and Google Maps",
+      "Multilingual product localization",
+      "Publish across social and Google Maps in one place",
       "Match with trusted overseas partners",
-      "Payment support"
+      "Cross-border payment support"
     ],
-    "cta": "View Details",
+    "cta": "Learn more",
     "highlights": [
       {
         "title": "All-in-one solution",
-        "description": "Integrated from translation to marketing"
+        "description": "Translation, marketing, and partner discovery in one platform"
       },
       {
         "title": "Secure transactions",
-        "description": "ISO-aligned and compliant with international standards"
+        "description": "ISO-aligned approach with global compliance"
       },
       {
         "title": "Global network",
@@ -82,34 +82,34 @@
     "items": [
       {
         "title": "Multilingual translation tools",
-        "description": "Automatically translate product and company information to support global expansion."
+        "description": "Localize product and company information for global buyers."
       },
       {
         "title": "Multi-channel distribution",
-        "description": "Manage publishing to Instagram, Facebook, Google Maps, X, and more."
+        "description": "Publish to Instagram, Facebook, Google Maps, X, and more from one dashboard."
       },
       {
         "title": "Partner matching",
-        "description": "Match with trusted overseas partners for safe, efficient expansion."
+        "description": "Connect with vetted overseas partners to reduce risk."
       },
       {
         "title": "Payment support",
-        "description": "Reduce transaction costs and time with secure international payments."
+        "description": "Move money faster with secure cross-border payments."
       },
       {
         "title": "AI support",
-        "description": "AI-assisted answers, market analysis, and business guidance."
+        "description": "Get AI answers, market insights, and guidance on next steps."
       },
       {
-        "title": "Company verification & structuring",
-        "description": "Improve credibility and presentation with structured company review."
+        "title": "Company verification & profile standardization",
+        "description": "Boost credibility with standardized company profiles."
       }
     ]
   },
   "pricing": {
     "title": "Pricing Plans",
-    "subtitle": "Start free, upgrade when you are ready",
-    "note": "A product experience that doubles as a sales tool. The more you use it, the more value you unlock.",
+    "subtitle": "Start free, scale when you see results",
+    "note": "Every action strengthens your global presence—use more, unlock more value.",
     "badges": {
       "popular": "Popular",
       "free": "FREE"
@@ -131,10 +131,10 @@
     "plans": [
       {
         "id": "free",
-        "name": "Free",
+        "name": "Free Trial",
         "price": "¥0",
-        "period": "1-week trial",
-        "description": "Try it out for a week",
+        "period": "7-day trial",
+        "description": "Try everything before you commit",
         "features": [
           "Up to 10 partner searches in 1 week",
           "Basic AI support (up to 3 per day)",
@@ -150,7 +150,7 @@
         "name": "Standard",
         "price": "¥2,980",
         "period": "per month",
-        "description": "For serious business usage",
+        "description": "For growing businesses going global",
         "features": [
           "Unlimited partner searches",
           "Full AI support",
@@ -166,7 +166,7 @@
         "name": "Business",
         "price": "¥4,980",
         "period": "per month",
-        "description": "Built for teams and organizations",
+        "description": "For teams managing global expansion",
         "features": [
           "Everything in Standard",
           "Advanced AI support",
@@ -198,7 +198,7 @@
   },
   "partners": {
     "title": "Partners & Support Organizations",
-    "subtitle": "We collaborate with trusted institutions to help you expand globally with confidence.",
+    "subtitle": "Trusted networks that de-risk global expansion.",
     "items": [
       {
         "name": "NEXI",
@@ -219,7 +219,7 @@
   },
   "about": {
     "title": "Security & Trust",
-    "description": "GBES maintains the highest security standards and transparency to protect your business data and transactions with international compliance.",
+    "description": "Built with security and transparency to protect data and cross-border transactions, with an ISO-aligned roadmap.",
     "features": [
       "ISO certification planned (information security standards)",
       "Transparent data handling and clear contracts",
@@ -230,8 +230,8 @@
     "cta": "Security Details",
     "cards": [
       {
-        "title": "ISO-aligned security",
-        "description": "Secure system design based on international security standards."
+        "title": "ISO-aligned design",
+        "description": "Security architecture built for ISO readiness."
       },
       {
         "title": "Full transparency",
@@ -243,11 +243,11 @@
       }
     ]
   },
-  "contact": {
-    "title": "Contact Us",
-    "subtitle": "Ready to get started? Reach out today and build something great together.",
-    "note": "Note: Please log in and create an account to use the contact form.",
-    "formTitle": "Send us a message",
+    "contact": {
+      "title": "Contact Us",
+      "subtitle": "Ready to expand globally? Contact us and we’ll plan the next steps.",
+      "note": "Note: Please log in and create an account to use the contact form.",
+      "formTitle": "Tell us about your expansion goals",
     "responseTime": "Reply within 24 hours",
     "labels": {
       "firstName": "First name",
@@ -281,7 +281,7 @@
     ]
   },
   "footer": {
-    "description": "Empowering Japanese SMEs to expand globally with AI-powered solutions.",
+    "description": "An AI platform built to help Japanese SMEs expand globally with confidence.",
     "product": "Product",
     "company": "Company",
     "support": "Support",
@@ -306,7 +306,7 @@
     "madeBy": "Made for global business expansion"
   },
   "floatingCta": {
-    "label": "Sign Up"
+    "label": "Start free"
   },
   "chat": {
     "buttonLabel": "Chat",
@@ -320,15 +320,15 @@
   },
   "businessChat": {
     "pageTitle": "Messages",
-    "pageSubtitle": "Keep partnership conversations organized with secure, deal-focused messaging.",
+    "pageSubtitle": "Secure, deal-focused messaging to move partnerships forward.",
     "filters": "Filters",
-    "newChatButton": "New chat",
-    "newChatToastTitle": "Start a new chat",
-    "newChatToastDescription": "Search for a partner in Partner Search to begin a conversation.",
+    "newChatButton": "New conversation",
+    "newChatToastTitle": "Start a conversation",
+    "newChatToastDescription": "Find a partner in Partner Search to begin messaging.",
     "conversationsTitle": "Conversations",
     "activeCount": "{{count}} active",
     "searchLabel": "Search conversations",
-    "searchPlaceholder": "Search companies, people, tags",
+    "searchPlaceholder": "Search companies, contacts, tags",
     "filterAll": "All",
     "filterUnread": "Unread",
     "filterPinned": "Pinned",
@@ -336,9 +336,9 @@
     "now": "now",
     "noMessages": "No messages yet.",
     "loadingConversations": "Loading conversations...",
-    "noConversations": "No conversations yet. Start a new chat to begin.",
+    "noConversations": "No conversations yet. Start a new one to get going.",
     "loadingMessages": "Loading messages...",
-    "partnerOverviewTitle": "Partner overview",
+    "partnerOverviewTitle": "Partner profile",
     "verifiedPartner": "Verified partner",
     "averageRating": "{{rating}} average rating",
     "about": "About",
@@ -346,12 +346,12 @@
     "opportunities": "Opportunities",
     "sharedFiles": "Shared files",
     "viewFile": "View",
-    "recommendedNextStep": "Recommended next step",
-    "recommendationCopy": "Send a summarized offer with timelines and SLA.",
+    "recommendedNextStep": "Suggested next step",
+    "recommendationCopy": "Send a concise offer with timeline and SLA.",
     "draftOffer": "Draft offer",
     "dismiss": "Dismiss",
     "today": "Today",
-    "emptyPrompt": "Start the conversation with a clear goal and timeline.",
+    "emptyPrompt": "Start with your goal, scope, and timeline.",
     "typingIndicator": "{{name}} is typing",
     "partnerFallback": "Partner",
     "partnerDetailsFallback": "Select a conversation to view partner details.",
@@ -361,11 +361,11 @@
       "scheduleCall": "Schedule a call"
     },
     "messageLabel": "Message",
-    "messagePlaceholder": "Write a message with clear milestones and expectations...",
-    "sendMessage": "Send message",
+    "messagePlaceholder": "Write a clear message with scope, timeline, and next steps...",
+    "sendMessage": "Send",
     "quickActionsLabel": "Quick actions",
-    "toSend": "to send",
-    "emptyTitle": "Start the conversation",
+    "toSend": "ready to send",
+    "emptyTitle": "Start a conversation",
     "findPartners": "Find partners",
     "aria": {
       "collapseConversations": "Collapse conversations",
@@ -381,24 +381,24 @@
     }
   },
   "partnerSearch": {
-    "heroBadge": "Verified data from trusted networks",
+    "heroBadge": "Verified partner data from trusted networks",
     "title": "Partner Search",
-    "subtitle": "Discover trusted business partners worldwide and create new opportunities for growth.",
+    "subtitle": "Find vetted partners worldwide and open new growth opportunities.",
     "selectedSourcesLabel": "Selected sources",
     "totalResultsLabel": "Results",
     "countUnit": "items",
-    "searchPlaceholder": "Search by company name, industry, services...",
+    "searchPlaceholder": "Search by company, industry, or capability...",
     "searching": "Searching...",
     "search": "Search",
     "searchActions": "Search actions",
     "filters": "Filters",
     "dataSourcesLabel": "Data sources ({{count}})",
     "addCompanies": "Add Companies",
-    "scrapeTitle": "Scrape company data from websites",
+    "scrapeTitle": "Import companies from websites",
     "scrapePlaceholder": "Enter website URLs (one per line)\nExample:\nhttps://example.com\nhttps://company2.com",
-    "scrapeDescription": "Company information will be automatically extracted from the provided websites.",
-    "scrapeUseAiLabel": "Use AI enrichment (optional)",
-    "scrapeUseAiHint": "Improves industry, specialties, and contact details if available.",
+    "scrapeDescription": "We'll extract company details and build profiles automatically.",
+    "scrapeUseAiLabel": "Enhance with AI (optional)",
+    "scrapeUseAiHint": "Improves industry, specialties, and contact details when available.",
     "scraping": "Scraping...",
     "scrapeAction": "Scrape Data",
     "scrapeResultsTitle": "Scrape Results",
@@ -437,11 +437,11 @@
     "companySizeAll": "All sizes",
     "applyFilters": "Apply filters",
     "reset": "Reset",
-    "tipsTitle": "Search tips",
+    "tipsTitle": "Search smarter",
     "tips": [
-      "• Combine multiple conditions for better results",
-      "• You can also search with keywords like \"Manufacturing Asia\"",
-      "• If no companies are found, try \"Add Companies\""
+      "• Combine filters to narrow down your best matches",
+      "• Try keyword searches like \"Manufacturing Asia\"",
+      "• No results? Use \"Add Companies\" to import from websites"
     ],
     "resultsSummary": "Showing {{shown}} companies (total {{total}})",
     "pageLabel": "Page: {{current}} / {{total}}",
@@ -458,9 +458,9 @@
     },
     "noResultsCategory": "No companies found in {{category}}.",
     "noResultsDefault": "No companies matched your search criteria.",
-    "noResultsTipScrape": "Try using the \"Add Companies\" button to scrape relevant company websites.",
-    "noResultsTipChangeQuery": "Try changing your search terms or add new companies from external data sources.",
-    "emptyState": "Enter a search keyword to find partner companies.",
+    "noResultsTipScrape": "Use \"Add Companies\" to import relevant companies from their websites.",
+    "noResultsTipChangeQuery": "Try broader terms or different regions to expand your results.",
+    "emptyState": "Start with a company name, industry, or capability to find partners.",
     "verifiedBadge": "Verified",
     "specialtiesLabel": "Specialties",
     "fields": {
@@ -661,20 +661,20 @@
   },
   "dashboard": {
     "welcome": "Welcome back, {{email}}!",
-    "welcomeSubtitle": "Here's an overview of your account and registration status.",
+    "welcomeSubtitle": "Track your expansion setup, plan status, and next steps.",
     "accountStatusActive": "Active",
     "accountStatusTitle": "Account Status",
-    "registrationStatusTitle": "Registration Status",
-    "currentPlanTitle": "Current Plan",
-    "accountCreated": "Account created {{date}}",
+    "registrationStatusTitle": "Service Setup",
+    "currentPlanTitle": "Your Plan",
+    "accountCreated": "Account created on {{date}}",
     "registrationCompleted": "Completed",
     "registrationPending": "Pending",
-    "registrationCompletedNote": "Service registration complete",
-    "registrationPendingNote": "Complete your service registration",
+    "registrationCompletedNote": "Service registration complete—you're ready to go.",
+    "registrationPendingNote": "Complete registration to activate your service.",
     "noPlan": "None",
-    "noPlanDescription": "No active plan",
+    "noPlanDescription": "No active plan yet",
     "registrationDetailsTitle": "Registration Details",
-    "registrationDetailsSubtitle": "Your service registration information",
+    "registrationDetailsSubtitle": "Details you provided for service registration",
     "labels": {
       "name": "Name",
       "email": "Email",
@@ -684,9 +684,9 @@
     },
     "notProvided": "Not provided",
     "registeredOn": "Registered on {{date}}",
-    "completeRegistrationTitle": "Complete Your Registration",
-    "completeRegistrationDescription": "You haven't completed your service registration yet.",
-    "completeRegistrationCta": "Complete Registration",
+    "completeRegistrationTitle": "Finish setup",
+    "completeRegistrationDescription": "Complete your service registration to unlock your plan.",
+    "completeRegistrationCta": "Finish registration",
     "toasts": {
       "errorTitle": "Error",
       "errorDescription": "Failed to load registration data"
@@ -734,16 +734,16 @@
     "subtitle": "Manage your personal information and preferences"
   },
   "social": {
-    "heroBadge": "Automate content distribution",
+    "heroBadge": "Automate global content distribution",
     "title": "Social Media Automation",
-    "subtitle": "Distribute company information across platforms and reduce operational time.",
+    "subtitle": "Publish once to multiple platforms and cut manual work.",
     "selectedLabel": "Selected",
     "createdLabel": "Created",
     "countUnit": "items",
     "postsUnit": "posts",
-    "newPostTitle": "Create New Post",
+    "newPostTitle": "Create a global update",
     "contentLabel": "Post content",
-    "contentPlaceholder": "Share the latest initiatives and product updates for global expansion...",
+    "contentPlaceholder": "Share a product update, new partnership, or expansion milestone...",
     "characterCount": "{{count}}/280 characters",
     "platformLabel": "Platforms",
     "scheduleLabel": "Timing",
