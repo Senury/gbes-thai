@@ -5,6 +5,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 interface Plan {
   id: string;
@@ -22,8 +23,10 @@ const Pricing = () => {
   const { user } = useAuth();
   const { subscription, createCheckout } = useSubscription();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const plans = t("pricing.plans", { returnObjects: true }) as Plan[];
+  const localePrefix = i18n.language === "ja" ? "ja" : i18n.language === "th" ? "th" : "en";
 
   const handlePlanSelect = async (planId: string, isEnterprise: boolean = false) => {
     if (isEnterprise) {
@@ -36,11 +39,12 @@ const Pricing = () => {
     }
 
     if (planId === "free") {
-      // For free plan, just show a success message or redirect to signup
+      // For free plan, show toast and redirect to signup page
       toast({
         title: t("pricing.toasts.freeTitle"),
         description: t("pricing.toasts.freeDescription"),
       });
+      navigate(`/${localePrefix}/signup`);
       return;
     }
 
@@ -129,6 +133,7 @@ const Pricing = () => {
                     plan.isEnterprise ? "default" : "outline"
                   } 
                   className="w-full mt-auto"
+                  data-testid={plan.isFree ? "free-plan-button" : `${plan.id}-plan-button`}
                   onClick={() => handlePlanSelect(plan.id, plan.isEnterprise)}
                   disabled={isCurrentPlan(plan.id)}
                 >

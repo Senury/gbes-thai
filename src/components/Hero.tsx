@@ -36,7 +36,7 @@ const Hero = () => {
               {t("hero.description")}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center sm:items-center lg:items-start lg:justify-start justify-center">
+            <div data-testid="hero-buttons" className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center sm:items-center lg:items-start lg:justify-start justify-center">
               <Button variant="cta" size="xl" className="group w-full sm:w-auto" asChild>
                 <Link to={`/${localePrefix}/signup`} className="inline-flex items-center">
                   {t("hero.ctaPrimary")}
@@ -49,7 +49,7 @@ const Hero = () => {
               </Button>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+            <div data-testid="stats-grid" className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
               {stats.map((stat) => (
                 <div key={stat.label} className="rounded-xl sm:rounded-2xl border border-border bg-card/80 px-3 sm:px-4 py-2.5 sm:py-3 shadow-soft">
                   <div className="text-lg sm:text-xl font-semibold text-foreground">{stat.value}</div>
@@ -91,7 +91,7 @@ const Hero = () => {
 
                 {/* Label */}
                 <div className="absolute bottom-2 sm:bottom-3 md:bottom-4 left-2 sm:left-3 md:left-4 right-2 sm:right-3 md:right-4">
-                  <div className="text-[10px] sm:text-xs font-medium text-primary/80 uppercase tracking-wider">{t("hero.bento.globalNetwork")}</div>
+                  <div data-testid="global-network" className="text-[10px] sm:text-xs font-medium text-primary/80 uppercase tracking-wider">{t("hero.bento.globalNetwork")}</div>
                 </div>
               </div>
 
@@ -121,7 +121,7 @@ const Hero = () => {
               </div>
 
               {/* Partner Search Card */}
-              <Link to={`/${localePrefix}/partner-search`} className="col-span-3 row-span-2 rounded-xl sm:rounded-2xl bg-gradient-to-br from-violet-50 to-purple-100/50 dark:from-violet-950/30 dark:to-purple-900/20 border border-violet-200/50 dark:border-violet-800/30 p-2 sm:p-3 md:p-4 flex flex-col justify-between group hover:border-violet-400/50 transition-colors cursor-pointer">
+              <Link data-testid="partner-search-card" to={`/${localePrefix}/partner-search`} className="col-span-3 row-span-2 rounded-xl sm:rounded-2xl bg-gradient-to-br from-violet-50 to-purple-100/50 dark:from-violet-950/30 dark:to-purple-900/20 border border-violet-200/50 dark:border-violet-800/30 p-2 sm:p-3 md:p-4 flex flex-col justify-between group hover:border-violet-400/50 transition-colors cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 rounded-md sm:rounded-lg bg-violet-500/10 flex items-center justify-center">
                     <svg className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-violet-600 dark:text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -131,13 +131,13 @@ const Hero = () => {
                   <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-violet-600/70 dark:text-violet-400/70 group-hover:text-violet-700 dark:group-hover:text-violet-300 group-hover:translate-x-0.5 transition-all" />
                 </div>
                 <div>
-                  <div className="text-[10px] sm:text-xs md:text-sm font-medium text-violet-900 dark:text-violet-100">{t("hero.bento.partnerSearch")}</div>
+                  <div data-testid="partner-search" className="text-[10px] sm:text-xs md:text-sm font-medium text-violet-900 dark:text-violet-100">{t("hero.bento.partnerSearch")}</div>
                   <div className="text-[8px] sm:text-[10px] md:text-xs text-violet-700/70 dark:text-violet-300/70">{t("hero.bento.findPartners")}</div>
                 </div>
               </Link>
 
               {/* Business Chat Card */}
-              <Link to={`/${localePrefix}/messages`} className="col-span-3 row-span-2 rounded-xl sm:rounded-2xl bg-card border border-border p-2 sm:p-3 md:p-4 flex flex-col justify-between group hover:border-primary/30 transition-colors cursor-pointer">
+              <Link data-testid="business-chat-card" to={`/${localePrefix}/messages`} className="col-span-3 row-span-2 rounded-xl sm:rounded-2xl bg-card border border-border p-2 sm:p-3 md:p-4 flex flex-col justify-between group hover:border-primary/30 transition-colors cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 rounded-md sm:rounded-lg bg-primary/10 flex items-center justify-center">
                     <svg className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
