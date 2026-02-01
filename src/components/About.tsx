@@ -44,9 +44,9 @@ const About = () => {
                 <div key={card.title} className="rounded-2xl border border-border bg-card/80 p-6 shadow-soft">
                   <div className="bg-background/70 rounded-xl p-4 border border-border text-center">
                     <Icon className="h-8 w-8 text-primary mx-auto mb-3" />
-                    <h4 className="text-lg font-semibold text-foreground mb-2">
+                    <h3 className="text-lg font-semibold text-foreground mb-2">
                       {card.title}
-                    </h4>
+                    </h3>
                     <p className="text-muted-foreground text-sm">
                       {card.description}
                     </p>

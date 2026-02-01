@@ -161,6 +161,8 @@ const Navigation = () => {
               variant="ghost"
               size="icon"
               onClick={handleMenuToggle}
+              aria-label={isOpen ? t("nav.closeMenu") : t("nav.openMenu")}
+              aria-expanded={isOpen}
             >
               {isOpen ? <X /> : <Menu />}
             </Button>
