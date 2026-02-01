@@ -36,7 +36,18 @@
     "note": "รวมการสื่อสารดิจิทัลและการค้นหาพาร์ทเนอร์เพื่อการขยายธุรกิจต่างประเทศ พร้อม AI ช่วยวิเคราะห์ตลาดและให้คำแนะนำ",
     "panelEyebrow": "ภาพรวมการขยายธุรกิจ",
     "panelTitle": "ตัวอย่างแพลตฟอร์ม",
-    "panelHighlightsLabel": "ความสามารถหลัก"
+    "panelHighlightsLabel": "ความสามารถหลัก",
+    "bento": {
+      "globalNetwork": "เครือข่ายทั่วโลก",
+      "live": "สด",
+      "activeNow": "ใช้งานอยู่ตอนนี้",
+      "liveCount": "847",
+      "languages": "3 ภาษา",
+      "partnerSearch": "ค้นหาพาร์ทเนอร์",
+      "findPartners": "หาพาร์ทเนอร์",
+      "businessChat": "แชทธุรกิจ",
+      "instantMessaging": "ข้อความโต้ตอบ"
+    }
   },
   "mission": {
     "title": "พันธกิจของเรา",

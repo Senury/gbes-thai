@@ -36,7 +36,18 @@
     "note": "海外展開に必要なデジタル発信とパートナー開拓を統合。AIが市場分析から提案まで支援します。",
     "panelEyebrow": "海外展開の概要",
     "panelTitle": "プラットフォームのイメージ",
-    "panelHighlightsLabel": "主要機能"
+    "panelHighlightsLabel": "主要機能",
+    "bento": {
+      "globalNetwork": "グローバルネットワーク",
+      "live": "ライブ",
+      "activeNow": "現在アクティブ",
+      "liveCount": "847",
+      "languages": "3言語",
+      "partnerSearch": "パートナー検索",
+      "findPartners": "パートナーを探す",
+      "businessChat": "ビジネスチャット",
+      "instantMessaging": "インスタントメッセージ"
+    }
   },
   "mission": {
     "title": "私たちの目的",

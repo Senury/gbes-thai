@@ -36,7 +36,18 @@
     "note": "Unifies digital outreach and partner discovery for global expansion, with AI supporting market analysis and recommendations.",
     "panelEyebrow": "Go-to-market overview",
     "panelTitle": "Platform preview",
-    "panelHighlightsLabel": "Key capabilities"
+    "panelHighlightsLabel": "Key capabilities",
+    "bento": {
+      "globalNetwork": "Global Network",
+      "live": "Live",
+      "activeNow": "Active now",
+      "liveCount": "847",
+      "languages": "3 languages",
+      "partnerSearch": "Partner Search",
+      "findPartners": "Find partners",
+      "businessChat": "Business Chat",
+      "instantMessaging": "Instant messaging"
+    }
   },
   "mission": {
     "title": "Our Mission",

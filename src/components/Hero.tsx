@@ -91,7 +91,7 @@ const Hero = () => {
 
                 {/* Label */}
                 <div className="absolute bottom-2 sm:bottom-3 md:bottom-4 left-2 sm:left-3 md:left-4 right-2 sm:right-3 md:right-4">
-                  <div className="text-[10px] sm:text-xs font-medium text-primary/80 uppercase tracking-wider">Global Network</div>
+                  <div className="text-[10px] sm:text-xs font-medium text-primary/80 uppercase tracking-wider">{t("hero.bento.globalNetwork")}</div>
                 </div>
               </div>
 
@@ -102,11 +102,11 @@ const Hero = () => {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500" />
                   </span>
-                  <span className="text-[6px] sm:text-[8px] md:text-[10px] uppercase tracking-wider text-muted-foreground">Live</span>
+                  <span className="text-[6px] sm:text-[8px] md:text-[10px] uppercase tracking-wider text-muted-foreground">{t("hero.bento.live")}</span>
                 </div>
                 <div>
-                  <div className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">847</div>
-                  <div className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground">Active now</div>
+                  <div className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">{t("hero.bento.liveCount")}</div>
+                  <div className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground">{t("hero.bento.activeNow")}</div>
                 </div>
               </div>
 
@@ -117,7 +117,7 @@ const Hero = () => {
                   <div className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 rounded-full bg-blue-100 border border-background sm:border-2 flex items-center justify-center text-[6px] sm:text-[8px] md:text-[10px]">🇹🇭</div>
                   <div className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 rounded-full bg-slate-100 border border-background sm:border-2 flex items-center justify-center text-[6px] sm:text-[8px] md:text-[10px]">🇺🇸</div>
                 </div>
-                <div className="text-[10px] sm:text-xs font-medium text-muted-foreground text-center">3 languages</div>
+                <div className="text-[10px] sm:text-xs font-medium text-muted-foreground text-center">{t("hero.bento.languages")}</div>
               </div>
 
               {/* Partner Search Card */}
@@ -131,8 +131,8 @@ const Hero = () => {
                   <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-violet-600/70 dark:text-violet-400/70 group-hover:text-violet-700 dark:group-hover:text-violet-300 group-hover:translate-x-0.5 transition-all" />
                 </div>
                 <div>
-                  <div className="text-[10px] sm:text-xs md:text-sm font-medium text-violet-900 dark:text-violet-100">Partner Search</div>
-                  <div className="text-[8px] sm:text-[10px] md:text-xs text-violet-700/70 dark:text-violet-300/70">Find partners</div>
+                  <div className="text-[10px] sm:text-xs md:text-sm font-medium text-violet-900 dark:text-violet-100">{t("hero.bento.partnerSearch")}</div>
+                  <div className="text-[8px] sm:text-[10px] md:text-xs text-violet-700/70 dark:text-violet-300/70">{t("hero.bento.findPartners")}</div>
                 </div>
               </Link>
 
@@ -147,8 +147,8 @@ const Hero = () => {
                   <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
                 </div>
                 <div>
-                  <div className="text-[10px] sm:text-xs md:text-sm font-medium text-foreground">Business Chat</div>
-                  <div className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground">Instant messaging</div>
+                  <div className="text-[10px] sm:text-xs md:text-sm font-medium text-foreground">{t("hero.bento.businessChat")}</div>
+                  <div className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground">{t("hero.bento.instantMessaging")}</div>
                 </div>
               </Link>
 
